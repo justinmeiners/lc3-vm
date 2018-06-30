@@ -235,7 +235,7 @@ namespace Lc3 {
             // FETCH
             uint16_t instr = read(reg[PC]);
             ++reg[PC];
-            Op op = (Op)((instr >> 12) & 0xF);
+            Op op = (Op)(instr >> 12);
             op_table[op](instr);
         }  
     }
