@@ -1,3 +1,5 @@
 *.obj
 *.sym
 *.out
+lc3
+lc3-cpp
