@@ -2,6 +2,8 @@
 
 A VM for emulating the LC3 computer. 
 
+There is both a C and a C++ version. The C version is easiest to use. The C++ version uses an experimental table method for generating instructions. This method is thanks to [Bisqwit](https://github.com/bisqwit)
+
 Check out my friend [Ryan's](https://github.com/rpendleton/c-lc3sim)
 
 

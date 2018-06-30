@@ -147,6 +147,10 @@ namespace Lc3 {
         }
         fclose(file);
     }
+    /*
+      I got this method from Bisquit's NES emulator tutorial.
+      You can see his work here: https://github.com/bisqwit
+       */
 
     template <unsigned op>
     void ins(uint16_t instr) {
