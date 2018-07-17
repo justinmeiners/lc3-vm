@@ -19,78 +19,47 @@ uint16_t check_key() {
     struct timeval timeout;
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
-    if (select(1, &readfds, NULL, NULL, &timeout)) {
-        return 1;
-    } else {
-        return 0;
-    }
+    return select(1, &readfds, NULL, NULL, &timeout);
 }
 
 namespace Lc3 {
     uint16_t sign_extend(uint16_t x, int bit_count) {
-        if ((x >> (bit_count - 1)) & 1) {
-            // extend 1s
-            for (int i = bit_count; i < 16; ++i)
-                x |= (1 << i);
-        }
+        if ((x >> (bit_count - 1)) & 1)
+            x |= (0xFFFF << bit_count);
         return x;
     }
 
-    uint16_t swap16(uint16_t x) {
-        return (x << 8) | (x >> 8);
-    }
+    uint16_t swap16(uint16_t x) { return (x << 8) | (x >> 8); }
 
-    enum Op {
-         BR, ADD,  LD,  ST, JSR,
-        AND, LDR, STR, RTI, NOT, 
-        LDI, STI, JMP, REV, LEA, TRAP
-    };
+    enum Reg { R0, R1, R2, R3, R4, R5, R6, R7, PC, COND, RC };
+    enum MemReg { KBSR = 0xFE00, KBDR = 0xFE02 };
 
-    enum Flags {
-        POS = 1 << 0, ZRO = 1 << 1, NEG = 1 << 2,
-    };
-
-    enum Reg {
-        R0, R1, R2, R3, R4, R5, R6, R7,
-        PC, COND, COUNT
-    };
-
-    enum MemReg {
-        KBSR = 0xFE00, KBDR = 0xFE02
-    };
-
-    enum Trap {
-        GETC = 0x20, OUT = 0x21, PUTS=0x22,
-        IN = 0x23, PUTSP = 0x24, HALT = 0x25
-    };
-
-    uint16_t reg[COUNT];
+    uint16_t reg[RC];
     uint16_t memory[UINT16_MAX];
     bool running;
 
     void update_flags(int r0) {
         if (reg[r0] == 0) {
-            reg[COND] = ZRO;
+            reg[COND] = 1 << 1; // ZERO
         } else if ((reg[r0] >> 15) & 0x1) {
-            reg[COND] = NEG;
+            reg[COND] = 1 << 2; // NEG
         } else {
-            reg[COND] = POS;
+            reg[COND] = 1 << 0; // POS
         }  
     }
 
     void trap(uint16_t code) {
         switch (code) {
-            case GETC:
-                // reads a single ASCII char
+            case 0x20: // GETC
                 reg[R0] = (uint16_t)getchar(); 
                 break;
-            case OUT:
+            case 0x21: // OUT
                 putc((char)reg[R0], stdout);
                 fflush(stdout);
                 break;
-            case PUTS: {
+            case 0x22: // PUTS
+            {
                 int address = reg[R0];
-
                 while (memory[address]) {
                     putc((char)memory[address], stdout);
                     ++address; 
@@ -98,27 +67,27 @@ namespace Lc3 {
                 fflush(stdout);
                 break;
             }
-            case IN:
+            case 0x23: // IN
                 printf("Enter a character: ");
                 reg[R0] = (uint16_t)getchar();
                 break;
-            case PUTSP: {
+            case 0x24: // PUTSP
+            {
                 const char* str = (const char*)(memory + reg[R0]);
                 printf("%s", str);
                 break;
             }
-            case HALT:
+            case 0x25: // HALT
                 puts("HALT");
                 fflush(stdout);
-                running = 0; 
+                running = false;
                 break;
         }
     }
 
     uint16_t read(uint16_t address) {
         if (address == KBSR) {
-            uint16_t has_key = check_key();
-            
+            uint16_t has_key = check_key(); 
             if (has_key) {
                 memory[KBSR] = (1 << 15);
                 memory[KBDR] = getchar();
@@ -129,9 +98,7 @@ namespace Lc3 {
         return memory[address];
     }
 
-    void write(uint16_t address, uint16_t x) {
-        memory[address] = x;
-    }
+    void write(uint16_t address, uint16_t x) { memory[address] = x; }
 
     void read_image(const char* image_path) {
         FILE* file = fopen(image_path, "rb");
@@ -216,11 +183,11 @@ namespace Lc3 {
         if (0x4666 & opbit) { update_flags(r0); }
     }
 
-    static void (*op_table[])(uint16_t) = {
-        ins<BR>, ins<ADD>, ins<LD>, ins<ST>, 
-        ins<JSR>, ins<AND>, ins<LDR>, ins<STR>, 
-        NULL, ins<NOT>, ins<LDI>, ins<STI>, 
-        ins<JMP>, NULL, ins<LEA>, ins<TRAP>  
+    static void (*op_table[16])(uint16_t) = {
+        ins<0>, ins<1>, ins<2>, ins<3>, 
+        ins<4>, ins<5>, ins<6>, ins<7>, 
+        NULL, ins<9>, ins<10>, ins<11>, 
+        ins<12>, NULL, ins<14>, ins<15>  
     };
 
     void init() {
@@ -232,11 +199,9 @@ namespace Lc3 {
         running = true;
         while (running)
         {
-            // FETCH
             uint16_t instr = read(reg[PC]);
             ++reg[PC];
-            Op op = (Op)(instr >> 12);
-            op_table[op](instr);
+            op_table[instr >> 12](instr);
         }  
     }
 };

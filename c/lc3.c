@@ -140,10 +140,16 @@ void trap(uint16_t code)
 
 uint16_t sign_extend(uint16_t x, int bit_count)
 {
+    // 1000
+    // ->
+    // 1111 1000
+
+    // 0100
+    // ->
+    // 0000 0100
     if ((x >> (bit_count - 1)) && 1) {
         // extend 1s
-        for (int i = bit_count; i < 16; ++i)
-            x |= (1 << i);
+        x |= (0xFFFF << bit_count);
     }
     return x;
 }
