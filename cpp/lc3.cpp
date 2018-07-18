@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cstdint>
 #include <signal.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -17,8 +17,7 @@ uint16_t check_key() {
     FD_SET(STDIN_FILENO, &readfds);
 
     struct timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 0;
+    memset(&timeout, 0, sizeof(struct timeval));
     return select(1, &readfds, NULL, NULL, &timeout);
 }
 
@@ -31,8 +30,7 @@ namespace Lc3 {
 
     uint16_t swap16(uint16_t x) { return (x << 8) | (x >> 8); }
 
-    enum Reg { R0, R1, R2, R3, R4, R5, R6, R7, PC, COND, RC };
-    enum MemReg { KBSR = 0xFE00, KBDR = 0xFE02 };
+    enum Reg { R0, R1, R2, R3, R4, R5, R6, R7, PC, CF, RC, KBSR=0xFE00, KBDR=0xFE02 };
 
     uint16_t reg[RC];
     uint16_t memory[UINT16_MAX];
@@ -40,11 +38,11 @@ namespace Lc3 {
 
     void update_flags(int r0) {
         if (reg[r0] == 0) {
-            reg[COND] = 1 << 1; // ZERO
+            reg[CF] = 1 << 1; // ZERO
         } else if ((reg[r0] >> 15) & 0x1) {
-            reg[COND] = 1 << 2; // NEG
+            reg[CF] = 1 << 2; // NEG
         } else {
-            reg[COND] = 1 << 0; // POS
+            reg[CF] = 1 << 0; // POS
         }  
     }
 
@@ -73,8 +71,7 @@ namespace Lc3 {
                 break;
             case 0x24: // PUTSP
             {
-                const char* str = (const char*)(memory + reg[R0]);
-                printf("%s", str);
+                printf("%s", (const char*)(memory + reg[R0]));
                 break;
             }
             case 0x25: // HALT
@@ -87,8 +84,7 @@ namespace Lc3 {
 
     uint16_t read(uint16_t address) {
         if (address == KBSR) {
-            uint16_t has_key = check_key(); 
-            if (has_key) {
+            if (check_key()) {
                 memory[KBSR] = (1 << 15);
                 memory[KBDR] = getchar();
             } else {
@@ -140,7 +136,7 @@ namespace Lc3 {
         }
         if (0x0001 & opbit) {  // BR
             uint16_t cond = (instr >> 9) & 0x7; 
-            if (cond & reg[COND]) { reg[PC] = pc_plus_off; }
+            if (cond & reg[CF]) { reg[PC] = pc_plus_off; }
         } 
         if (0x0002 & opbit) {  // ADD
             if (imm_flag) {
@@ -190,17 +186,12 @@ namespace Lc3 {
         ins<12>, NULL, ins<14>, ins<15>  
     };
 
-    void init() {
-        memset(memory, 0, sizeof(memory));
-        reg[PC] = 0x3000;
-    }
-
     void run() {
+        reg[PC] = 0x3000;
         running = true;
         while (running)
         {
-            uint16_t instr = read(reg[PC]);
-            ++reg[PC];
+            uint16_t instr = read(reg[PC]++);
             op_table[instr >> 12](instr);
         }  
     }
@@ -208,21 +199,8 @@ namespace Lc3 {
 
 struct termios original_tio;
 
-void disable_input_buffering() 
-{
-    tcgetattr(STDIN_FILENO, &original_tio);
-    struct termios new_tio = original_tio;
-    new_tio.c_lflag &= ~ICANON & ~ECHO;
-    tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
-}
-
-void restore_input_buffering() 
-{
-    tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
-}
-
 void handle_interrupt(int signal) {
-    restore_input_buffering();
+    tcsetattr(STDIN_FILENO, TCSANOW, &original_tio); // restore input buffering
     printf("\n");
     exit(-2);
 }
@@ -230,10 +208,14 @@ void handle_interrupt(int signal) {
 int main(int argc, const char* argv[])
 {
     signal(SIGINT, handle_interrupt);
-    disable_input_buffering();
-    Lc3::init();
+
+    tcgetattr(STDIN_FILENO, &original_tio); // disable input buffering
+    struct termios new_tio = original_tio;
+    new_tio.c_lflag &= ~ICANON & ~ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
+
     if (argc > 1) Lc3::read_image(argv[1]);
     Lc3::run();
-    restore_input_buffering();
+    tcsetattr(STDIN_FILENO, TCSANOW, &original_tio); // restore input buffering
 }
 
