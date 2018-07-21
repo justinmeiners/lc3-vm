@@ -74,9 +74,8 @@ enum
 };
 
 #define PC_START 0x3000
-#define ADDRESS_SPACE UINT16_MAX
 
-uint16_t memory[ADDRESS_SPACE];
+uint16_t memory[UINT16_MAX];
 uint16_t reg[R_COUNT];
 int running = 1;
 
