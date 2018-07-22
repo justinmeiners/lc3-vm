@@ -4,7 +4,10 @@ A VM for emulating the [LC3 computer](https://en.wikipedia.org/wiki/LC-3).
 
 There is both a C and a C++ version. The C version is easiest to use. The C++ version uses an experimental table method for generating instructions. This method is thanks to [Bisqwit](https://github.com/bisqwit) and his [video](https://www.youtube.com/watch?v=QIUVSD3yqqE) on NES emulation.
 
+There are two versions included in the project:
+
 **C** - This version focusess on readablity. If you want to learn how LC3 works this is the one to use.
+
 **CPP** - The goal of this one is minimalism. It uses a unique techinque to generate instructions at compile time.
 
 
