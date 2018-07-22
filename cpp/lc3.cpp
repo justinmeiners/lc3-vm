@@ -30,7 +30,7 @@ namespace Lc3 {
 
     uint16_t swap16(uint16_t x) { return (x << 8) | (x >> 8); }
 
-    enum Reg { R0, R1, R2, R3, R4, R5, R6, R7, PC, CF, RC, KBSR=0xFE00, KBDR=0xFE02 };
+    enum Reg { R0=0, R7=7, PC, CF, RC, KBSR=0xFE00, KBDR=0xFE02 };
 
     uint16_t reg[RC];
     uint16_t memory[UINT16_MAX];

@@ -11,35 +11,36 @@
 #include <sys/termios.h>
 #include <sys/mman.h>
 
-// OP codes
+/* opcodes */
 enum 
 {
     OP_BR = 0,
-    OP_ADD = 1,
-    OP_LD = 2,
-    OP_ST = 3,
-    OP_JSR = 4,
-    OP_AND = 5,
-    OP_LDR = 6,
-    OP_STR = 7,
-    OP_RTI = 8,
-    OP_NOT = 9,
-    OP_LDI = 10,
-    OP_STI = 11,
-    OP_JMP = 12,
-    OP_LEA = 14,
-    OP_TRAP = 15
+    OP_ADD,
+    OP_LD,
+    OP_ST,
+    OP_JSR,
+    OP_AND,
+    OP_LDR,
+    OP_STR,
+    OP_RTI,
+    OP_NOT,
+    OP_LDI,
+    OP_STI,
+    OP_JMP,
+    OP_RES,
+    OP_LEA,
+    OP_TRAP
 };
 
-// Condition Flags
+/* condition flags */
 enum
 {
-    FL_POS = 1 << 0, // P
-    FL_ZRO = 1 << 1, // Z
-    FL_NEG = 1 << 2, // N
+    FL_POS = 1 << 0, /* P */
+    FL_ZRO = 1 << 1, /* Z */
+    FL_NEG = 1 << 2, /* N */
 };
 
-// Registers
+/* registers */
 enum
 {
     R_R0 = 0,
@@ -50,19 +51,19 @@ enum
     R_R5,
     R_R6,
     R_R7,
-    R_PC,
+    R_PC, /* program counter */
     R_COND,
     R_COUNT
 };
 
-// Memory mapped registers
+/* memory mapped registers */
 enum
 {
-    MR_KBSR = 0xFE00,
-    MR_KBDR = 0xFE02
+    MR_KBSR = 0xFE00, /* keyboard status */
+    MR_KBDR = 0xFE02  /* keyboard data */
 };
 
-// Trap Codes (OS Calls)
+/* trap codes (OS calls) */
 enum
 {
     TRAP_GETC = 0x20,
@@ -73,13 +74,11 @@ enum
     TRAP_HALT = 0x25
 };
 
-#define PC_START 0x3000
-
 uint16_t memory[UINT16_MAX];
 uint16_t reg[R_COUNT];
 int running = 1;
 
-void update_flags(int r0)
+void update_flags(uint16_t r0)
 {
     if (reg[r0] == 0)
     {
@@ -93,48 +92,6 @@ void update_flags(int r0)
     {
         reg[R_COND] = FL_POS;
     }  
-}
-
-void trap(uint16_t code)
-{
-    switch (code)
-    {
-        case TRAP_GETC:
-            // reads a single ASCII char
-            reg[R_R0] = (uint16_t)getchar(); 
-            break;
-        case TRAP_OUT:
-            putc((char)reg[R_R0], stdout);
-            fflush(stdout);
-            break;
-        case TRAP_PUTS:
-        {
-            int address = reg[R_R0];
-
-            while (memory[address])
-            {
-                putc((char)memory[address], stdout);
-                ++address; 
-            }
-            fflush(stdout);
-            break;
-        }
-        case TRAP_IN:
-            printf("Enter a character: ");
-            reg[R_R0] = (uint16_t)getchar();
-            break;
-        case TRAP_PUTSP:
-        {
-            const char* str = (const char*)(memory + reg[R_R0]);
-            printf("%s", str);
-            break;
-        }
-        case TRAP_HALT:
-            puts("HALT");
-            fflush(stdout);
-            running = 0; 
-            break;
-    }
 }
 
 uint16_t sign_extend(uint16_t x, int bit_count)
@@ -158,26 +115,87 @@ uint16_t swap16(uint16_t x)
     return (x << 8) | (x >> 8);
 }
 
-void read_image_file(FILE* file)
+void trap(uint16_t code)
 {
-    uint16_t origin;
-    fread(&origin, sizeof(origin), 1, file);
-    origin = swap16(origin);
-    
-    while (!feof(file))
+    switch (code)
     {
-        uint16_t temp;
-        fread(&temp, sizeof(uint16_t), 1, file);
-        memory[origin] = swap16(temp);
-        ++origin;
+        case TRAP_GETC:
+            /* read a single ASCII char */
+            reg[R_R0] = (uint16_t)getchar(); 
+            break;
+        case TRAP_OUT:
+            putc((char)reg[R_R0], stdout);
+            fflush(stdout);
+            break;
+        case TRAP_PUTS:
+        {
+            /* one char per word */
+            uint16_t* c = memory + reg[R_R0];
+            while (*c)
+            {
+                putc((char)*c, stdout);
+                ++c;
+            }
+            fflush(stdout);
+            break;
+        }
+        case TRAP_IN:
+            printf("Enter a character: ");
+            reg[R_R0] = (uint16_t)getchar();
+            break;
+        case TRAP_PUTSP:
+        {
+            /* one char per byte (two bytes per word)
+               here we need to swap back to 
+               big endian format */
+            uint16_t* c = memory + reg[R_R0];
+            while (*c)
+            {
+                char char1 = (*c) & 0xFF;
+                putc(char1, stdout);
+                char char2 = (*c) >> 8;
+                if (char2) putc(char2, stdout);
+                ++c;
+            }
+            fflush(stdout);
+            break;
+        }
+        case TRAP_HALT:
+            puts("HALT");
+            fflush(stdout);
+            running = 0; 
+            break;
     }
 }
 
-void read_image(const char* image_path)
+void read_image_file(FILE* file)
+{
+    enum { BLOCK_SIZE = 2048 };
+
+    /* the origin tells us where in memory to place the image */
+    uint16_t origin;
+    fread(&origin, sizeof(origin), 1, file);
+    origin = swap16(origin);
+
+    uint16_t* p = memory + origin;
+    while (!feof(file))
+    {
+        size_t length = fread(p, sizeof(uint16_t), BLOCK_SIZE, file);
+        while (length-- > 0)
+        {
+            *p = swap16(*p); /* swap endianness of data */
+            ++p;
+        }
+    }
+}
+
+int read_image(const char* image_path)
 {
     FILE* file = fopen(image_path, "rb");
+    if (!file) { return 0; };
     read_image_file(file);
     fclose(file);
+    return 1;
 }
 
 struct termios original_tio;
@@ -209,14 +227,7 @@ uint16_t check_key() {
     struct timeval timeout;
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
-
-    if (select(1, &readfds, NULL, NULL, &timeout)) {
-        return 1;
-    }
-    else 
-    {
-        return 0;
-    }
+    return select(1, &readfds, NULL, NULL, &timeout) != 0;
 }
 
 void mem_write(uint16_t address, uint16_t val)
@@ -227,10 +238,9 @@ void mem_write(uint16_t address, uint16_t val)
 uint16_t mem_read(uint16_t address)
 {
     if (address == MR_KBSR)
-    {
-        uint16_t has_key = check_key();
-        
-        if (has_key) {
+    { 
+        if (check_key()) 
+        {
             memory[MR_KBSR] = (1 << 15);
             memory[MR_KBDR] = getchar();
         }
@@ -242,42 +252,47 @@ uint16_t mem_read(uint16_t address)
     return memory[address];
 }
 
-// input a character from the keyboard (0x23)
-// output a character to the monitor (0x21)
-// halt the program (0x25)
-
 int main(int argc, const char* argv[])
 {
     signal(SIGINT, handle_interrupt);
     disable_input_buffering();
 
-    memset(memory, 0, sizeof(memory));
+    if (argc < 2) 
+    {
+        printf("lc3 [image-file]\n"); 
+        exit(2);
+    }
 
+    if (!read_image(argv[1]))
+    {
+        printf("failed to load image: %s\n", argv[1]);
+        exit(1);
+    }  
+
+    enum { PC_START = 0x3000 };
     reg[R_PC] = PC_START;
-    if (argc > 1) read_image(argv[1]);
-    
+
     while (running)
     {
-        // FETCH
-        uint16_t instr = mem_read(reg[R_PC]);
-        ++reg[R_PC];
+        /* FETCH */
+        uint16_t instr = mem_read(reg[R_PC]++);
 
-        // DECODE
+        /* DECODE */
 
-        // registers
+        /* registers */
         uint16_t r2 = instr & 0x7;
         uint16_t r1 = (instr >> 6) & 0x7;
         uint16_t r0 = (instr >> 9) & 0x7;
         uint16_t op = instr >> 12;
 
-        // immediate mode [0-5)
+        /* immediate mode [0-5) */
         uint16_t imm_flag = (instr >> 5) & 0x1;
         uint16_t imm = sign_extend((instr) & 0x1F, 5);
 
-        // pc offset [0-9)
+        /* pc offset [0-9) */
         uint16_t pc_offset = sign_extend((instr) & 0x1ff, 9);
 
-        // condition flags [9-12)
+        /* condition flags [9-12) */
         uint16_t cond_flag = (instr >> 9) & 0x7;
 
         switch (op)
@@ -316,25 +331,23 @@ int main(int argc, const char* argv[])
                 }
                 break;
             case OP_JMP:
-                // ret handled implicity when r1 = 7
+                /* ret handled implicity when r1 = 7 */
                 reg[R_PC] = reg[r1];
                 break;
             case OP_JSR:
             {
-                // special decode for unique instruction
+                /* special decode for unique instruction */
                 uint16_t long_pc_offset = sign_extend(instr & 0x7ff, 11);
                 uint16_t long_flag = (instr >> 11) & 1;
 
                 reg[R_R7] = reg[R_PC];
                 if (long_flag)
                 {
-                    // JSR
-                    reg[R_PC] += long_pc_offset;  
+                    reg[R_PC] += long_pc_offset;  /* JSR */
                 }
                 else
                 {
-                    // JSRR
-                    reg[R_PC] = reg[r1];
+                    reg[R_PC] = reg[r1]; /* JSRR */
                 }
                 break;
             }
@@ -367,12 +380,12 @@ int main(int argc, const char* argv[])
             }
             case OP_TRAP:
             {
-                // special decode for unique instruction
-                trap(instr & 0xFF);
+                trap(instr & 0xFF); /* special decode here */
                 break;
             }
+            case OP_RES:
             case OP_RTI:
-                // BLEH?
+                abort(); /* unimplemented instruction */
                 break;
             default:
                 break;

@@ -1,3 +1,6 @@
-lc3: lc3.c
-	gcc $^ -O3 -o $@
+CC=gcc
+CFLAGS=-O3
+
+lc3: *.c
+	${CC} $^ -o $@
 
