@@ -84,7 +84,7 @@ void update_flags(uint16_t r0)
     {
         reg[R_COND] = FL_ZRO;
     }
-    else if ((reg[r0] >> 15) & 0x1)
+    else if (reg[r0] >> 15)
     {
         reg[R_COND] = FL_NEG;
     }
