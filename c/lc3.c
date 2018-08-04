@@ -177,15 +177,16 @@ void read_image_file(FILE* file)
     fread(&origin, sizeof(origin), 1, file);
     origin = swap16(origin);
 
+    /* we know the maximum file size so we only need one fread */
+    uint16_t max_read = UINT16_MAX - origin;
     uint16_t* p = memory + origin;
-    while (!feof(file))
+    size_t read = fread(p, sizeof(uint16_t), max_read, file);
+
+    /* swap to little endian */
+    while (read-- > 0)
     {
-        size_t length = fread(p, sizeof(uint16_t), BLOCK_SIZE, file);
-        while (length-- > 0)
-        {
-            *p = swap16(*p); /* swap endianness of data */
-            ++p;
-        }
+        *p = swap16(*p); 
+        ++p;
     }
 }
 

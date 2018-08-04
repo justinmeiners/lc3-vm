@@ -69,10 +69,8 @@ void trap(uint16_t code) {
             reg[R0] = (uint16_t)getchar();
             break;
         case 0x24: // PUTSP
-        {
             printf("%s", (const char*)(memory + reg[R0]));
             break;
-        }
         case 0x25: // HALT
             puts("HALT");
             fflush(stdout);
@@ -100,14 +98,11 @@ void read_image(const char* image_path) {
     origin = swap16(origin);
 
     uint16_t* p = memory + origin;
-    while (!feof(file))
+    size_t length = fread(p, sizeof(uint16_t), UINT16_MAX - origin, file);
+    while (length-- > 0)
     {
-        size_t length = fread(p, sizeof(uint16_t), 2048, file);
-        while (length-- > 0)
-        {
-            *p = swap16(*p); /* swap endianness of data */
-            ++p;
-        }
+        *p = swap16(*p); /* swap endianness of data */
+        ++p;
     }
     fclose(file);
 }
