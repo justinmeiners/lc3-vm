@@ -1,15 +1,12 @@
-# LC3 VM
+# LC-3 VM
 
-A VM for emulating the [LC3 computer](https://en.wikipedia.org/wiki/LC-3).
+A VM for emulating the [LC3 computer](https://en.wikipedia.org/wiki/LC-3). Ideally, it will run any LC-3 assembly program.
 
-There is both a C and a C++ version. The C version is easiest to use. The C++ version uses an experimental table method for generating instructions. This method is thanks to [Bisqwit](https://github.com/bisqwit) and his [video](https://www.youtube.com/watch?v=QIUVSD3yqqE) on NES emulation.
+There is both a C and a C++ version with their own implementation strategies:
 
-There are two versions included in the project:
+**C** - This version focusess on readablity. If you want to learn how the LC-3 works this is the one to use.
 
-**C** - This version focusess on readablity. If you want to learn how LC3 works this is the one to use.
-
-**CPP** - The goal of this one is minimalism. It uses a unique techinque to generate instructions at compile time.
-
+**CPP** - The goal of this one is minimalism. It uses a unique technique to generate instructions at compile time. This method is thanks to [Bisqwit](https://github.com/bisqwit) and his [video](https://www.youtube.com/watch?v=QIUVSD3yqqE) on NES emulation.
 
 ## Other Links
 
@@ -18,7 +15,6 @@ My game [LC3 Rogue](https://github.com/justinmeiners/lc3-rogue)
 My friend's game [LC3 2048](https://github.com/rpendleton/lc3-2048)
 
 My friend's [alternate VM](https://github.com/rpendleton/c-lc3sim)
-
 
 ## Project License
 
