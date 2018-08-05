@@ -1,0 +1,891 @@
+@code_type c .c
+@comment_type /* %s */
+
+@title Writing your own Virtual Machine
+
+@s Introduction
+
+In this article I will teach you how to write your own virtual machine. If you know how to program, but don't understand the internals of a computer well, this article is for you. Writing your own VM may sound a little scary, but I you will find it be suprisingly simple and gain a greater understanding of how computers work. 
+
+The [final project](https://github.com/justinmeiners/lc3-vm/blob/master/c/lc3.c) is about 250 lines of code. All you need to know is how to read basic C or C++ and know what assembly is.
+
+This article is actually a [literate program](https://en.wikipedia.org/wiki/Literate_programming). What this means is that you are actually reading the source code! I will explain small blocks of code one at a time, and they will be "woven" together to make the final program. Nothing will be left out.
+
+### What is a VM?
+
+A virtual machine is a program that simulates a CPU along with a few other hardware components, so that it can run programs written for that hardware. A VM executes instructions, reads and writes to memory, and interacts with I/O devices, just like a physical computer. 
+
+Virtual machines are useful for creating a standard platform which is portable across different hardware configurations. Instead of rewriting a program in different dialects of assembly for each CPU architecture, developers only need to write the small VM program in each assembly language. Each program is then written only once in the VM's assembly langauge. 
+
+The [Java Virtual Machine (JVM)](https://en.wikipedia.org/wiki/Java_virtual_machine) is a very successful example. The JVM itself is a moderately sized program, that is small enough that one programmer to understand. This has made it possible to be written for thousands of devices including your phone. Once the JVM is implemented on a new device, any Java/Kotlin/Clojure program ever written can run it, without modification. The only cost is the performance of the VM itself and the further abstraction from the machine. Most of the time, this is a pretty good tradeoff. 
+
+> **Note:** A compiler solves a similar problem by a compiling a *standard high level language* to each CPU architecture. A VM creates a *standard platform* which is simulated by a program. A compiler has no runtime component while a VM does. In practice VMs and compilers are mixed at various levels.
+
+Virtual machines are also useful for executing code in a "secure" or "isolated" way. One application of this is garbage collection. There [is no trivial way](https://www.lua.org/pil/24.2.html) to implement automatic garbage collection on top of C or C++, since a program cannot see its own stack. However, a VM is “outside the system” so to speak and so can keep track of all the memory references on the stack. 
+
+[Ethereum smart contracts](https://solidity.readthedocs.io/en/v0.4.24/introduction-to-smart-contracts.html) also take advantage of this behviour. Smart contracts are small programs which must be executed by each validating node in the network. This requries the nodes to run a programs acquired anonymously. To prevent a contract from doing malicious things, it is run inside a [VM](http://ethdocs.org/en/latest/introduction/what-is-ethereum.html#ethereum-virtual-machine) which restricts the program from accessing the file system, network, disc, etc.
+
+> **Note:** Ethereum is also a good demonstration of the portablity features mentioned. Ethereum nodes can be run on many kinds of computers. But, smart contracts can be written without any consideration of the specific platforms they run on.
+
+@s LC-3 Architecture
+
+We will be implementing a VM for a computer called the [LC-3](https://en.wikipedia.org/wiki/LC-3). The LC-3 is popular for teaching university students assembly language. It has a simplified instruction set compared to x86, but contains all the main ideas used in our modern CPUs.
+
+At the end you will be able to run most LC-3 program's such as my [Roguelike](https://github.com/justinmeiners/lc3-rogue) or my friend Ryan's [2048](https://github.com/rpendleton/lc3-2048). This article will not teach you assembly. But, you can write and assembly your own LC-3 programs with the [LC-3 Tools](http://highered.mheducation.com/sites/0072467509/student_view0/lc-3_simulator.html).
+
+### Architecture
+
+First, we need to implement the basic "hardware" and structural components of the machine. Try to get a good understanding of what each component is, but don't worry right now if you are unsure of how it fits into the larger picture. This will be explained in [The Execution Loop]().
+
+Start by creating an empty C file. I called mine `lc3.c`. Each of the code snippets in this section should be placed in the global scope of this file.
+
+### Memory
+
+The LC3 has 65536  memory locations, each of which stores a 16 bit value. The number of locations is the maximum addressable by a 16 bit unsigned integer $2^{16}$. In our program this memory can be stored in a simple array:
+
+--- Memory Storage
+uint16_t memory[UINT16_MAX];
+---
+
+### Registers
+
+A register is a slot on the CPU in which a single value can be stored. Registers are the fastest memory in the computer, but they are limited, so only a few values can be loaded at the same time. The idea is that values are loaded from memory into registers, calculations are made and outputed to other registers, and the final results are then stored back into memory.
+
+The LC3 has 10 total registers, each of which are 16 bits. Most of them are general purpose, but a few have designated roles.
+- 8 general purpose registers  (R0-R7)
+- 1 program counter (PC) register
+- 1 condition flags (COND) register
+
+The program counter is an unsigned integer which is the address of the next instruction in memory to execute. The condition flags tells us information about the previous calculation.
+
+--- Registers 
+enum
+{
+    R_R0 = 0,
+    R_R1,
+    R_R2,
+    R_R3,
+    R_R4,
+    R_R5,
+    R_R6,
+    R_R7,
+    R_PC, /* program counter */
+    R_COND,
+    R_COUNT
+};
+--- 
+
+--- Register Storage
+uint16_t reg[R_COUNT];
+---
+
+### Condition Flags
+
+The `R_COND` register stores condition flags which give us some information about the most recently executed calculation. This is what allows the program to do logical conditions such as `if (x > 0) { ... }`. 
+
+Different CPUs will have a variety of condition flags. The LC-3 uses only 3 condition flags. They tell us the sign of the previous calculation. 
+
+--- Condition Flags
+enum
+{
+    FL_POS = 1 << 0, /* P */
+    FL_ZRO = 1 << 1, /* Z */
+    FL_NEG = 1 << 2, /* N */
+};
+---
+
+> **Note:** (The << symbol is called the [left bitshift operator](https://msdn.microsoft.com/en-us/library/336xbhcz.aspx). Basically n << k will shift the bits of n up k places. Read that link if you are not familiar. It will be important.)
+
+### Instructions
+
+An instruction is a tiny command which tells the CPU to do some basic task. Instructions have both an **opcode** which indicates its type and some **parameters**. 
+
+Each type of instruction represents one task that the CPU "knows" how to do. The **opcode** is a number assigned to each instruction type which allows the CPU to identify it. There are just 16 opcodes in LC-3. Everything the computer can calculate is just some sequence of these simple instructions.
+
+Each instruction is 16 bits long, with the last 4 bits storing the opcode. The rest of the bits are used to store the inputs.
+
+We will discuss how each instruction works later. For now define the following opcodes. Make sure they stay in this order so they are assigned the proper value:
+
+--- Opcodes
+enum 
+{
+    OP_BR = 0,
+    OP_ADD,
+    OP_LD,
+    OP_ST,
+    OP_JSR,
+    OP_AND,
+    OP_LDR,
+    OP_STR,
+    OP_RTI,
+    OP_NOT,
+    OP_LDI,
+    OP_STI,
+    OP_JMP,
+    OP_RES,
+    OP_LEA,
+    OP_TRAP
+};
+---
+
+> **Note:** The x86 architecture has hundreds of instructions, while others such as ARM have very few like the LC-3. Small instruction sets are referred to as [RISCs](https://en.wikipedia.org/wiki/Reduced_instruction_set_computer) while larger ones are called [CISCs](https://en.wikipedia.org/wiki/Complex_instruction_set_computer). Larger instruction sets are more convenient to write assembly for and require instructions to complete a task, but are more complex and expensive for engineers to design and manufacture. There are many other tradeoffs which make the designs come into and out of style.
+
+We are now done setting up the structure! Your file should now look something like this:
+
+--- lc3.c
+@{Includes}
+
+@{Registers}
+@{Condition Flags}
+@{Opcodes}
+
+/* these will be discussed later, ignore them for now.*/
+@{Memory Mapped Registers}
+@{TRAP Codes} 
+
+@{Memory Storage}
+@{Register Storage}
+---
+
+@s Execution Loop
+
+The execution loop is the big idea behind VMs (and computers in general). A VM performs the following:
+1. Load one instruction from memory at the address of the PC register. 
+2. Increment the PC register.
+3. Look at the opcode to determine which of the tasks it should do. 
+4. Do it.
+5. Go back to 1.
+
+That process is all we need our program to do. All the wonderful things that can be done with a computer are a result of this simple loop. 
+
+Here is an LC-3 assembly "hello world":
+
+--- Hello World
+.ORIG x3000                        ; instruct the computer to load program to this address 
+LEA R0, HELLO_STR                  ; load the address of the HELLO_STR string into R0 
+PUTs                               ; output the string pointed to by R0to the console 
+HELLO_STR .STRINGZ "Hello World!"  ; store this string here in the program 
+---
+
+You may be wondering, "if it keeps incrementing the PC, won't it quickly run out of instructions?" The answer is no, because some instructions change the execution flow by moving the PC. This is how `if`, and  `while`  are implemented.
+
+Let's start outlining this process in the main loop:
+
+--- lc3.c +=
+@{Functions}
+
+int main(int argc, const char* argv[])
+{
+    @{Setup}
+    @{Load Arguments}
+
+    /* set the PC to starting position */
+    enum { PC_START = 0x3000 };
+    reg[R_PC] = PC_START;
+
+    int running = 1;
+    while (running) 
+    {
+        /* FETCH */
+        uint16_t instr = mem_read(reg[R_PC]++);
+        uint16_t op = instr >> 12;
+
+        switch (op)
+        {
+            case OP_ADD:
+                @{ADD} 
+                break;
+            case OP_AND:
+                @{AND}
+                break;
+            case OP_NOT:
+                @{NOT}
+                break;
+            case OP_BR:
+                @{BR}
+                break;
+            case OP_JMP:
+                @{JMP}
+                break;
+            case OP_JSR:
+                @{JSR}
+                break;
+            case OP_LD:
+                @{LD}
+                break;
+            case OP_LDR:
+                @{LDR}
+                break;
+            case OP_LEA:
+                @{LEA}
+                break;
+            case OP_ST:
+                @{ST}
+                break;
+            case OP_STI:
+                @{STI}
+                break;
+            case OP_STR:
+                @{STR}
+                break;
+            case OP_TRAP:
+                @{TRAP}
+                break;
+            case OP_RES:
+            case OP_RTI:
+            default:
+                @{BAD OPCODE}
+                break;      
+        }
+    }
+    @{Shutdown}
+}
+---
+
+@s Implementing Instructions
+
+Your task now is fill in each opcode case with a proper implementation. A detailed specification for each instruction is included in the project [documents](https://github.com/justinmeiners/lc3-vm/blob/master/docs/lc3-isa.pdf). You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will walk through implementng two of them here. The implementations for the rest are shown later.
+
+Two of the opcodes specified will not be needed in this project, they are `OP_RTI` and `OP_RES`. You can ignore these cases or throw an error if they are executed:
+
+--- BAD OPCODE
+abort();
+---
+
+### ADD
+
+The add instruction takes two numbers, adds them together, and stores the result in a register. Each add instruction looks like the following:
+
+![Encoding](img/add.png)
+
+From left to write there are 4 bits for the opcode, 3 bits for a destination register, 3 bits for a source register.
+
+The encoding tells us that there are two versions the ADD instruction. This is indicated by whether the 5th bit is assigned a `1` or a `0`. A 1 specifies immediate modes and a 0 specifies normal mode. 
+
+The specification describes its operation: 
+
+> If bit [5] is 0, the second source operand is obtained from SR2. If bit [5] is 1, the second source operand is obtained by sign-extending the imm5 field to 16 bits. In either case, the second source operand and the contents of SR1 are bit- wise ANDed, and the result stored in DR. The condition codes are set, based on whether the binary value produced, taken as a 2’s complement integer, is negative, zero, or positive. (Pg. 526)
+
+In immediate mode, the second operand is actually embedded in the instruction itself, wheras in normal mode it is in another register. This is useful because the value doesn't need to loaded into a register before being used, but the tradeoff is that it is limited to only 5 bits. This is mostly useful for adding `+1` or `-1` to some number.
+
+The description says that `ADD` needs to update the flags after writing to r0.
+
+--- ADD
+{
+    uint16_t r0 = (instr >> 9) & 0x7;
+    uint16_t r1 = (instr >> 6) & 0x7;
+    uint16_t imm_flag = (instr >> 5) & 0x1;
+
+    if (imm_flag)
+    {
+        uint16_t imm5 = sign_extend(instr & 0x1F, 5);
+        reg[r0] = reg[r1] + imm5;
+    }
+    else
+    { 
+        uint16_t r2 = instr & 0x7;
+        reg[r0] = reg[r1] + reg[r2];
+    }
+
+    update_flags(r0);
+}
+---
+
+Anytime a register is written to the condition flags need to be updated. This function examines the value stored in a register and sets the flags appropriately. 
+
+--- Update Flags
+void update_flags(uint16_t r0)
+{
+    if (reg[r0] == 0)
+    {
+        reg[R_COND] = FL_ZRO;
+    }
+    else if (reg[r0] >> 15)
+    {
+        reg[R_COND] = FL_NEG;
+    }
+    else
+    {
+        reg[R_COND] = FL_POS;
+    }  
+}
+---
+
+Many of the instructions with an immediate value use sign extension. The sign extension is used to "extend" the shorter value to 16 bits, while presering the sign (whether its positive or negative). In [Two's Complement](https://en.wikipedia.org/wiki/Two%27s_complement), if the left most bit is 1 then the number is negative. If this is the case for our shorter value we need to fill the new bits with 1s, otherwise we leave them as 0s.
+
+--- Sign Extend
+uint16_t sign_extend(uint16_t x, int bit_count)
+{
+    if ((x >> (bit_count - 1)) & 1) {
+        x |= (0xFFFF << bit_count);
+    }
+    return x;
+}
+---
+
+The specification also mentions zero extension. This is handles automatically by the bitshift/mask extraction, so you do not need to do anything explicity.
+
+@s Trap Codes
+
+A trap code is a system routine which your program can call into to perform a special task such as interacting with an I/O device. The trap codes essentially provide a simple operating system for the LC-3.
+
+--- TRAP Codes
+enum
+{
+    TRAP_GETC = 0x20,  /* get character from keyboard */
+    TRAP_OUT = 0x21,   /* output a character */
+    TRAP_PUTS = 0x22,  /* output a word string */
+    TRAP_IN = 0x23,    /* input a string */
+    TRAP_PUTSP = 0x24, /* output a byte string */
+    TRAP_HALT = 0x25   /* halt the program */
+};
+---
+
+In the real LC3 simulator the trap codes are actually [written in assembly](https://github.com/justinmeiners/lc3-vm/blob/master/docs/os.asm) and live in memory, just like a regular program. When a TRAP code is called the PC is moved to that codes address. The procedure is completed and the PC is returned to the location it was called from. 
+
+> **Note:** Programs start at 0x3000 to leave space for the TRAP codes.
+
+However, in our VM we will implement the trap codes in C. This serves the same purpose of providing system functions and is much more friendly to our computer. There is no specification of how the TRAP codes are implemented, just what they are supposed to do. Once the C function is completed, execution will return back to the program. 
+
+In our opcode switch case we will introduce another switch:
+--- TRAP
+switch (instr & 0xFF)
+{
+    case TRAP_GETC:
+        @{TRAP GETC}       
+        break;
+    case TRAP_OUT:
+        @{TRAP OUT}
+        break;
+    case TRAP_PUTS:
+        @{TRAP PUTS}
+        break;
+    case TRAP_IN:
+        @{TRAP IN}
+        break;
+    case TRAP_PUTSP:
+        @{TRAP PUTSP}
+        break;
+    case TRAP_HALT:
+        @{TRAP HALT}
+        break;
+}
+---
+
+As with instructions, I will show you how to implement one and leave the rest to you.
+
+### PUTS
+
+The PUTS trap code is used to output a null terminated string. The address of the first character must be loaded into `R0` before calling the trap code.
+
+The specification says:
+
+> Write a string of ASCII characters to the console display. The characters are contained
+in consecutive memory locations, one character per memory location, starting with the address specified in R0. Writing terminates with the occurrence of x0000 in a memory location. (Pg. 543)
+
+Notice that unlike strings in C, characters are not stored in each byte, but in each memory location. In other words, each character is 16 bits. In order, to display this we will need to interpret each value as a C char and output them one at a time.
+
+--- TRAP PUTS
+{
+    /* one char per word */
+    uint16_t* c = memory + reg[R_R0];
+    while (*c)
+    {
+        putc((char)*c, stdout);
+        ++c;
+    }
+    fflush(stdout);
+}
+---
+
+@s Loading Programs
+
+A program is just an array of instructions and data which is loaded into memory. The first uint16 of the program is the location in memory where the program should start, called the **origin**. This needs to be read first, and then the rest can be read all at once.
+
+--- Read Image File
+void read_image_file(FILE* file)
+{
+    /* the origin tells us where in memory to place the image */
+    uint16_t origin;
+    fread(&origin, sizeof(origin), 1, file);
+    origin = swap16(origin);
+
+    /* we know the maximum file size so we only need one fread */
+    uint16_t max_read = UINT16_MAX - origin;
+    uint16_t* p = memory + origin;
+    size_t read = fread(p, sizeof(uint16_t), max_read, file);
+
+    /* swap to little endian */
+    while (read-- > 0)
+    {
+        *p = swap16(*p); 
+        ++p;
+    }
+}
+---
+
+You will notice that we call `swap16` on each of the values that are loaded. LC-3 programs are big endian, but most of the computers we use are little endian. So, we need to swap each uint16 that is loaded.
+
+--- Swap
+uint16_t swap16(uint16_t x)
+{
+    return (x << 8) | (x >> 8);
+}
+---
+
+> **Note:** [Endianness](https://en.wikipedia.org/wiki/Endianness) refers to how bytes of an integer are interpreted. In little endian the first byte is the least significant digit, and in big endian it is reversed. As far as I know the decision is *mostly* arbitray. Different companies made different decisions and so now we are left with varying implementations.
+
+@s Memory Mapped Registers
+
+Some special registers are not accessible through the normal register table. Instead, they are given an address in memory. To read and write to these registers, you just read and write to their memory location. These are called **memory mapped registers**. They are commonly used to give access to special hardware devices.
+
+The LC-3 has two memory mapped registers that we will implement. They are, the keyboard status register (KBSR) and keyboard data register (KBDR). The KBSR indicates whethere there is a key being pressed, and the KBDR indicates the key that was pressed.
+
+Although you can request keyboard input using GETC, this blocks until input is received. The KBSR/KBDR combo allows you to poll the input in a loop, so the program can stay responsive while waiting for input.
+
+--- Memory Mapped Registers
+enum
+{
+    MR_KBSR = 0xFE00, /* keyboard status */
+    MR_KBDR = 0xFE02  /* keyboard data */
+};
+---
+
+Memory mapped registers require all access to memory to be done through functions rather than the array directly. When memory is read at KBSR we will check the keyboard and update both memory locations.
+
+--- Memory Access
+void mem_write(uint16_t address, uint16_t val)
+{
+    memory[address] = val;
+}
+
+uint16_t mem_read(uint16_t address)
+{
+    if (address == MR_KBSR)
+    { 
+        if (check_key()) 
+        {
+            memory[MR_KBSR] = (1 << 15);
+            memory[MR_KBDR] = getchar();
+        }
+        else
+        {
+            memory[MR_KBSR] = 0;
+        }
+    }
+    return memory[address];
+}
+---
+
+@s Full Instructions 
+
+This section contains the full implementations of the remaining instructions.
+
+--- AND
+{
+    uint16_t r0 = (instr >> 9) & 0x7;
+    uint16_t r1 = (instr >> 6) & 0x7;
+    uint16_t imm_flag = (instr >> 5) & 0x1;
+
+    if (imm_flag)
+    {
+        uint16_t imm5 = sign_extend(instr & 0x1F, 5);
+        reg[r0] = reg[r1] & imm5;
+    }
+    else
+    {
+        uint16_t r2 = instr & 0x7;
+        reg[r0] = reg[r1] & reg[r2];
+    }
+    update_flags(r0);
+}
+---
+
+--- NOT
+{
+    uint16_t r0 = (instr >> 9) & 0x7;
+    uint16_t r1 = (instr >> 6) & 0x7;
+
+    reg[r0] = ~reg[r1];
+    update_flags(r0);
+}
+---
+
+--- BR
+{
+    uint16_t pc_offset = sign_extend((instr) & 0x1ff, 9);
+    uint16_t cond_flag = (instr >> 9) & 0x7;
+    if (cond_flag & reg[R_COND])
+    {
+        reg[R_PC] += pc_offset;
+    }
+}
+---
+
+RET is listed as a separate instruction in the specification, but it is handled implicity by having R1=7.
+
+--- JMP
+{
+    /* Also RET */
+    uint16_t r1 = (instr >> 6) & 0x7;
+    reg[R_PC] = reg[r1];
+}
+---
+
+--- JSR
+{
+    uint16_t r1 = (instr >> 6) & 0x7;
+    uint16_t long_pc_offset = sign_extend(instr & 0x7ff, 11);
+    uint16_t long_flag = (instr >> 11) & 1;
+
+    reg[R_R7] = reg[R_PC];
+    if (long_flag)
+    {
+        reg[R_PC] += long_pc_offset;  /* JSR */
+    }
+    else
+    {
+        reg[R_PC] = reg[r1]; /* JSRR */
+    }
+    break;
+}
+---
+
+--- LD
+{
+    uint16_t r0 = (instr >> 9) & 0x7;
+    uint16_t pc_offset = sign_extend(instr & 0x1ff, 9);
+    reg[r0] = mem_read(reg[R_PC] + pc_offset);
+    update_flags(r0);
+}
+---
+
+--- LDI
+{
+    uint16_t r0 = (instr >> 9) & 0x7;
+    uint16_t pc_offset = sign_extend(instr & 0x1ff, 9);
+    reg[r0] = mem_read(mem_read(reg[R_PC] + pc_offset));
+    update_flags(r0);
+}
+---
+
+--- LDR
+{
+    uint16_t r0 = (instr >> 9) & 0x7;
+    uint16_t r1 = (instr >> 6) & 0x7;
+    uint16_t offset = sign_extend(instr & 0x3F, 6);
+    reg[r0] = mem_read(reg[r1] + offset);
+    update_flags(r0);
+}
+---
+
+--- LEA
+{
+    uint16_t r0 = (instr >> 9) & 0x7;
+    uint16_t pc_offset = sign_extend(instr & 0x1ff, 9);
+    reg[r0] = reg[R_PC] + pc_offset;
+    update_flags(r0);
+}
+--- 
+
+--- ST
+{
+    uint16_t r0 = (instr >> 9) & 0x7;
+    uint16_t pc_offset = sign_extend(instr & 0x1ff, 9);
+    mem_write(reg[R_PC] + pc_offset, reg[r0]);
+}
+---
+
+--- STI
+{
+    uint16_t r0 = (instr >> 9) & 0x7;
+    uint16_t pc_offset = sign_extend(instr & 0x1ff, 9);
+    mem_write(mem_read(reg[R_PC] + pc_offset), reg[r0]);
+}
+---
+
+--- STR
+{
+    uint16_t r0 = (instr >> 9) & 0x7;
+    uint16_t r1 = (instr >> 6) & 0x7;
+    uint16_t offset = sign_extend(instr & 0x3F, 6);
+    mem_write(reg[r1] + offset, reg[r0]);
+}
+---
+
+@s Full Trap Codes
+
+This section contains the full implementations of the remaining trap codes.
+
+--- TRAP GETC
+/* read a single ASCII char */
+reg[R_R0] = (uint16_t)getchar(); 
+---
+
+--- TRAP OUT
+putc((char)reg[R_R0], stdout);
+fflush(stdout);
+---
+
+--- TRAP IN
+printf("Enter a character: ");
+reg[R_R0] = (uint16_t)getchar();
+---
+
+--- TRAP PUTSP
+{
+    /* one char per byte (two bytes per word)
+       here we need to swap back to 
+       big endian format */
+    uint16_t* c = memory + reg[R_R0];
+    while (*c)
+    {
+        char char1 = (*c) & 0xFF;
+        putc(char1, stdout);
+        char char2 = (*c) >> 8;
+        if (char2) putc(char2, stdout);
+        ++c;
+    }
+    fflush(stdout);
+}
+---
+
+--- TRAP HALT
+puts("HALT");
+fflush(stdout);
+running = 0; 
+---
+
+@s Additional Program Details
+
+The check key function is not insightful. It is just some unix system calls.
+
+--- Check Key
+uint16_t check_key() {
+    fd_set readfds;
+    FD_ZERO(&readfds);
+    FD_SET(STDIN_FILENO, &readfds);
+
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
+    return select(1, &readfds, NULL, NULL, &timeout) != 0;
+}
+---
+
+--- Load Arguments
+if (argc < 2) 
+{
+    printf("lc3 [image-file]\n"); 
+    exit(2);
+}
+
+if (!read_image(argv[1]))
+{
+    printf("failed to load image: %s\n", argv[1]);
+    exit(1);
+}  
+---
+
+This is the unix specific code for setting up a terminal. If you are trying to run on windows, the rest of the VM will operate just fine without it.
+
+--- Input Buffering
+struct termios original_tio;
+
+void disable_input_buffering() 
+{
+    tcgetattr(STDIN_FILENO, &original_tio);
+    struct termios new_tio = original_tio;
+    new_tio.c_lflag &= ~ICANON & ~ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
+}
+
+void restore_input_buffering() 
+{
+    tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
+}
+---
+
+When the program is interrupted we want to restore the terminal 
+settings back to normal.
+
+--- Handle Interrupt
+void handle_interrupt(int signal) 
+{
+    restore_input_buffering();
+    printf("\n");
+    exit(-2);
+}
+---
+
+--- Setup
+signal(SIGINT, handle_interrupt);
+disable_input_buffering();
+---
+
+--- Shutdown
+restore_input_buffering();
+---
+
+Convenience function for `read_image_file`;
+
+--- Read Image
+int read_image(const char* image_path)
+{
+    FILE* file = fopen(image_path, "rb");
+    if (!file) { return 0; };
+    read_image_file(file);
+    fclose(file);
+    return 1;
+}
+---
+
+--- Functions
+@{Sign Extend}
+@{Swap}
+@{Update Flags}
+@{Read Image File}
+@{Read Image}
+@{Check Key}
+@{Memory Access}
+@{Input Buffering}
+@{Handle Interrupt}
+---
+
+--- Includes
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+#include <signal.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/termios.h>
+#include <sys/mman.h>
+---
+
+@s Alternative C++ Implementation
+
+Since C++ has powerful compile time generic, there is an alternative way of implementing the instructions. This method reduces code duplication and is actually closer to how instructions would be wired in hardware.
+
+I learned about this technique from [Bisqwit's NES emulator tutorial](https://www.youtube.com/watch?v=QIUVSD3yqqE).
+
+--- Instruction C++
+template <unsigned op>
+void ins(uint16_t instr) {
+    uint16_t r0, r1, r2, imm5, imm_flag;
+    uint16_t pc_plus_off, base_plus_off;
+
+    uint16_t opbit = (1 << op);
+    if (0x4EEE & opbit) { r0 = (instr >> 9) & 0x7; }
+    if (0x12E3 & opbit) { r1 = (instr >> 6) & 0x7; }
+    if (0x0022 & opbit) { 
+        r2 = instr & 0x7; 
+        imm_flag = (instr >> 5) & 0x1;
+        imm5 = sign_extend((instr) & 0x1F, 5);
+    }
+    if (0x00C0 & opbit) { // Base + offset
+        base_plus_off = reg[r1] + sign_extend(instr & 0x3f, 6); 
+    }
+    if (0x4C0D & opbit) { // Indirect address
+        pc_plus_off = reg[R_PC] + sign_extend(instr & 0x1ff, 9); 
+    }
+    if (0x0001 & opbit) {  // BR
+        uint16_t cond = (instr >> 9) & 0x7; 
+        if (cond & reg[R_COND]) { reg[R_PC] = pc_plus_off; }
+    } 
+    if (0x0002 & opbit) {  // ADD
+        if (imm_flag) {
+            reg[r0] = reg[r1] + imm5;
+        } else {
+            reg[r0] = reg[r1] + reg[r2]; 
+        }
+    }
+    if (0x0020 & opbit) {  // AND
+        if (imm_flag) {
+            reg[r0] = reg[r1] & imm5;
+        } else {
+            reg[r0] = reg[r1] & reg[r2];
+        }
+    }
+    if (0x0200 & opbit) { reg[r0] = ~reg[r1]; } // NOT
+    if (0x1000 & opbit) {  // JMP
+        reg[R_PC] = reg[r1]; 
+    }
+    if (0x0010 & opbit) { // JSR
+        uint16_t long_flag = (instr >> 11) & 1; 
+        pc_plus_off = reg[R_PC] +  sign_extend(instr & 0x7ff, 11);
+        reg[R_R7] = reg[R_PC]; 
+        if (long_flag) {
+            reg[R_PC] = pc_plus_off;
+        } else {
+            reg[R_PC] = reg[r1];
+        }
+    }
+
+    if (0x0004 & opbit) { reg[r0] = mem_read(pc_plus_off); } // LD
+    if (0x0400 & opbit) { reg[r0] = mem_read(mem_read(pc_plus_off)); } // LDI
+    if (0x0040 & opbit) { reg[r0] = mem_read(base_plus_off); }  // LDR
+    if (0x4000 & opbit) { reg[r0] = pc_plus_off; } // LEA
+    if (0x0008 & opbit) { mem_write(pc_plus_off, reg[r0]); } // ST
+    if (0x0800 & opbit) { mem_write(mem_read(pc_plus_off), reg[r0]); } // STI
+    if (0x0080 & opbit) { mem_write(base_plus_off, reg[r0]); } // STR
+    if (0x8000 & opbit) {
+         @{TRAP} 
+    }; // TRAP
+    //if (0x0100 & opbit) { } // RTI
+    if (0x4666 & opbit) { update_flags(r0); }
+}
+---
+
+
+--- Op Table
+static void (*op_table[16])(uint16_t) = {
+    ins<0>, ins<1>, ins<2>, ins<3>, 
+    ins<4>, ins<5>, ins<6>, ins<7>, 
+    NULL, ins<9>, ins<10>, ins<11>, 
+    ins<12>, NULL, ins<14>, ins<15>  
+};
+---
+
+--- lc3-alt.cpp
+@{Includes}
+
+@{Registers}
+@{Condition Flags}
+@{Opcodes}
+
+/* these will be discussed later, ignore them for now.*/
+@{Memory Mapped Registers}
+@{TRAP Codes} 
+
+@{Memory Storage}
+@{Register Storage}
+
+@{Functions}
+
+int running = 1;
+@{Instruction C++}
+@{Op Table}
+
+int main(int argc, const char* argv[])
+{
+    @{Setup}
+    @{Load Arguments}
+
+    enum { PC_START = 0x3000 };
+    reg[R_PC] = PC_START;
+
+    while (running) 
+    {
+        uint16_t instr = mem_read(reg[R_PC]++);
+        uint16_t op = instr >> 12;
+        op_table[op](instr);
+    }
+    @{Shutdown}
+}
+---
+
