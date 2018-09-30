@@ -151,7 +151,8 @@ int read_image(const char* image_path)
 }
 
 /* Check Key */
-uint16_t check_key() {
+uint16_t check_key() 
+{
     fd_set readfds;
     FD_ZERO(&readfds);
     FD_SET(STDIN_FILENO, &readfds);
@@ -237,6 +238,7 @@ int main(int argc, const char* argv[])
 
 
     /* set the PC to starting position */
+    /* 0x3000 is the default */
     enum { PC_START = 0x3000 };
     reg[R_PC] = PC_START;
 
@@ -321,7 +323,7 @@ int main(int argc, const char* argv[])
             case OP_JMP:
                 /* JMP */
                 {
-                    /* Also RET */
+                    /* Also handles RET */
                     uint16_t r1 = (instr >> 6) & 0x7;
                     reg[R_PC] = reg[r1];
                 }
