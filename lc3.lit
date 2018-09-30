@@ -7,7 +7,7 @@
 
 In this tutorial I will teach you how to write your own virtual machine (VM). If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer, or you would like to better understand how programming languages work, then this article is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be a suprisingly simple and enlightening project.
 
-The [final project](https://github.com/justinmeiners/lc3-vm/blob/master/c/lc3.c) is about 250 lines of C code. All you need to know is how to read basic C or C++ and how to do arithemtic with binary.
+The [final project](lc3.c) is about 250 lines of C code. All you need to know is how to read basic C or C++ and how to do arithemtic with binary.
 
 At the end your VM will be able to run LC-3 assembly program's such as my friend's [2048](https://github.com/rpendleton/lc3-2048) or my [Roguelike](https://github.com/justinmeiners/lc3-rogue).
 
@@ -250,7 +250,7 @@ int main(int argc, const char* argv[])
 
 @s Implementing Instructions
 
-Your task now is fill in each opcode case with a proper implementation. A detailed specification for each instruction is included in the project [documents](https://github.com/justinmeiners/lc3-vm/blob/master/docs/lc3-isa.pdf). You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will explain how to implement two of them here. The code for the rest are shown later.
+Your task now is fill in each opcode case with a proper implementation. A detailed specification for each instruction is included in the project [documents](docs/lc3-isa.pdf). You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will explain how to implement two of them here. The code for the rest are shown later.
 
 Two of the opcodes specified will not be needed in this project, they are `OP_RTI` and `OP_RES`. You can ignore these cases or throw an error if they are executed:
 
@@ -985,7 +985,7 @@ static void (*op_table[16])(uint16_t) = {
 > **Note:** I learned about this technique from [Bisqwit's NES emulator](https://www.youtube.com/watch?v=QIUVSD3yqqE). 
 > If you are interested in emulation, or the NES, I highly recommend his videos.
 
-The rest of the program can use the code we already wrote.
+The rest of the program can use the code we already wrote. The full code is [here](lc3-alt.cpp).
 
 --- lc3-alt.cpp
 @{Includes}
