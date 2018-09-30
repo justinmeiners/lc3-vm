@@ -46,7 +46,7 @@ body{min-width:200px;max-width:850px;margin:0 auto;padding:30px;}.chapter-nav{fo
 <a name="1:1"><div class="section"><h4>1. Introduction</h4></a>
 <p>In this tutorial I will teach you how to write your own virtual machine (VM). If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer, or you would like to better understand how programming languages work, then this article is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be a suprisingly simple and enlightening project.
 </p>
-<p>The <a href="https://github.com/justinmeiners/lc3-vm/blob/master/c/lc3.c">final project</a> is about 250 lines of C code. All you need to know is how to read basic C or C++ and how to do arithemtic with binary.
+<p>The <a href="lc3.c">final project</a> is about 250 lines of C code. All you need to know is how to read basic C or C++ and how to do arithemtic with binary.
 </p>
 <p>At the end your VM will be able to run LC-3 assembly program's such as my friend's <a href="https://github.com/rpendleton/lc3-2048">2048</a> or my <a href="https://github.com/justinmeiners/lc3-rogue">Roguelike</a>.
 </p>
@@ -348,7 +348,7 @@ int main(int argc, const char* argv[])
 </div>
 </div>
 <a name="1:4"><div class="section"><h4>4. Implementing Instructions</h4></a>
-<p>Your task now is fill in each opcode case with a proper implementation. A detailed specification for each instruction is included in the project <a href="https://github.com/justinmeiners/lc3-vm/blob/master/docs/lc3-isa.pdf">documents</a>. You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will explain how to implement two of them here. The code for the rest are shown later.
+<p>Your task now is fill in each opcode case with a proper implementation. A detailed specification for each instruction is included in the project <a href="docs/lc3-isa.pdf">documents</a>. You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will explain how to implement two of them here. The code for the rest are shown later.
 </p>
 <p>Two of the opcodes specified will not be needed in this project, they are <code>OP_RTI</code> and <code>OP_RES</code>. You can ignore these cases or throw an error if they are executed:
 </p>
@@ -1365,7 +1365,7 @@ static void (*op_table[16])(uint16_t) = {
  If you are interested in emulation, or the NES, I highly recommend his videos.
 </p>
 </blockquote>
-<p>The rest of the program can use the code we already wrote.
+<p>The rest of the program can use the code we already wrote. The full code is <a href="lc3-alt.cpp">here</a>.
 </p>
 
 <div class="codeblock">
