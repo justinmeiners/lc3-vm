@@ -277,7 +277,7 @@ ADD R0 R0 1 ; add 1 to R0 and store back in R0
 
 Here is a summary from the specification:
 
-> If bit [5] is 0, the second source operand is obtained from `SR2`. If bit [5] is 1, the second source operand is obtained by sign-extending the `imm5` field to 16 bits. In either case, the second source operand and the contents of `SR1` are bit-wise ANDed, and the result stored in DR. (Pg. 526)
+> If bit [5] is 0, the second source operand is obtained from `SR2`. If bit [5] is 1, the second source operand is obtained by sign-extending the `imm5` field to 16 bits. In either case, the second source operand and the contents of `SR1` are bitwise ANDed, and the result stored in DR. (Pg. 526)
 
 That sounds just like we discussed. But what is "sign-extending"? While the immediate mode value has only 5 bits, it needs to be added to a 16-bit number. For positive numbers, we can just use 0's for the additional bits and the value is the same. However, for negative numbers, this causes a problem. For example, -1 in 5 bits is `1 1111`. If we just add 0's, this is `0000 0000 0001 1111` which is 32. Sign extension prevents this problem by filling in 0's for positive numbers and 1's for negative numbers. 
 
