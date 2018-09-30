@@ -1,9 +1,5 @@
-*.obj
 *.sym
 *.out
-*.c
-*.cpp
 
 lc3
 lc3-alt
-*.html

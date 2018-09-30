@@ -3,7 +3,7 @@ C-FLAGS=-O3
 CPP=g++
 CPP-FLAGS=-std=c++14 -O3
 
-all: lc3 lc3-alt
+all: lc3 lc3-alt lc3.html
 
 lc3.c lc3.cpp: lc3.lit
 	lit --tangle $^
