@@ -3,12 +3,12 @@ C-FLAGS=-O3
 CPP=g++
 CPP-FLAGS=-std=c++14 -O3
 
-all: lc3 lc3-alt lc3.html
+all: lc3 lc3-alt index.html
 
 lc3.c lc3.cpp: lc3.lit
 	lit --tangle $^
 
-lc3.html: lc3.lit
+index.html: lc3.lit
 	lit --weave $^
 
 lc3-alt: lc3-alt.cpp
