@@ -1,5 +1,9 @@
 *.sym
 *.out
+*.obj
+*.html
+lc3.c
+lc3-alt.cpp
 
 lc3
 lc3-alt
