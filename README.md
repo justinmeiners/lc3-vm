@@ -1,6 +1,10 @@
+# [READ TUTORIAL HERE](https://justinmeiners.github.io/lc3-vm/)
+
 # LC-3 VM
 
-A VM for emulating the [LC3 computer](https://en.wikipedia.org/wiki/LC-3). Ideally, it will run any LC-3 assembly program.
+This is a tutorial and source code for creating a VM of the  [LC3 computer](https://en.wikipedia.org/wiki/LC-3). 
+
+Ideally, it will run any LC-3 assembly program.
 
 ## Other Links
 
