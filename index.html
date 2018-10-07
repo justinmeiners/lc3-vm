@@ -44,45 +44,45 @@ body{min-width:200px;max-width:850px;margin:0 auto;padding:30px;}.chapter-nav{fo
 <section>
 <h1>Write your Own Virtual Machine</h1>
 <a name="1:1"><div class="section"><h4>1. Introduction</h4></a>
-<p>In this tutorial I will teach you how to write your own virtual machine (VM). If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer, or you would like to better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be suprisingly simple and enlightening.
+<p>In this tutorial, I will teach you how to write your own virtual machine (VM). If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer and better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be surprisingly simple and enlightening.
 </p>
-<p>The <a href="lc3.c">final code</a> is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do arithemtic with binary. A few parts of the code are written specifically for unix systems (including macOS). They are necessary for running the program, but are not important to the tutorial itself. At the end your VM will be able to run program's such as my friend's <a href="https://github.com/rpendleton/lc3-2048">2048</a> or my <a href="https://github.com/justinmeiners/lc3-rogue">Roguelike</a>.
+<p>The <a href="lc3.c">final code</a> is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do arithmetic with binary. A few parts of the code are written specifically for Unix systems (including macOS). They are necessary for running the program but are not important to the tutorial itself. By the end, your VM will be able to run programs such as my friend's <a href="https://github.com/rpendleton/lc3-2048">2048</a> or my <a href="https://github.com/justinmeiners/lc3-rogue">Roguelike</a>.
 </p>
 <blockquote><p> <strong>Note:</strong> This article is a <a href="https://en.wikipedia.org/wiki/Literate_programming">literate program</a>. This means you are reading the source code right now! I will explain each block of code, one at a time, and these will be "woven" together to make the final program. You can be sure that no detail will be left out.
 </p>
 </blockquote>
 <h3> What is a virtual machine?</h3>
-<p>A VM is a program that acts like a computer. It simulates a CPU along with a few other hardware components, so that it can do arithmetic, read and write to memory, and interact with I/O devices, just like a physical computer. Most importantly, it has its own machine language which you can you can use to program it.
+<p>A VM is a program that acts like a computer. It simulates a CPU along with a few other hardware components, allowing it to perform arithmetic, read and write to memory, and interact with I/O devices, just like a physical computer. Most importantly, it has its own machine language which you can you can use to program it.
 </p>
-<p>Some VMs are designed to reproduce the behaviour of some particular computer. You may have played video game emulators for platforms such as the NES. Most people don't have a NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program.
+<p>Some VMs are designed to reproduce the behavior of some particular computer. You may have played video game emulators for platforms such as the NES. Most people don't have an NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program.
 </p>
-<p>Other VMs don't act like any real computer, but are entirely made up! This is done to make software development easier. A VM is a standard platform which is portable across different hardware configurations. Instead of rewriting a program in different dialects of assembly for each CPU architecture, developers only need to write the small VM program in each assembly language. Each program is then written only once in the VM's assembly langauge. 
+<p>Other VMs don't act like any real computer and are entirely made up! This is done to make software development easier. A VM is a standard platform which is portable across different hardware configurations. Instead of rewriting a program in different dialects of assembly for each CPU architecture, developers only need to write the small VM program in each assembly language. Each program is then written only once in the VM's assembly language. 
 </p>
 <p><img src="img/no_vm.gif" alt="architecture specific implementation">
 </p>
 <p><img src="img/vm.gif" alt="vm for each architecture">
 </p>
-<blockquote><p> <strong>Note:</strong> A compiler solves a similar problem by compiling a standard <em>high level language</em> to several CPU architectures. A VM creates a standard <em>CPU architecture</em> which is simulated by a program. A compiler has no runtime component while a VM does. Even though compilers do a pretty good job, writing a new one that targets multiple platforms is very difficult, so VMs are still helpful here. In practice VMs and compilers are mixed at various levels.
+<blockquote><p> <strong>Note:</strong> A compiler solves a similar problem by compiling a standard <em>high-level language</em> to several CPU architectures. A VM creates a standard <em>CPU architecture</em> which is simulated by a program. A compiler has no runtime component while a VM does. Even though compilers do a pretty good job, writing a new one that targets multiple platforms is very difficult, so VMs are still helpful here. In practice, VMs and compilers are mixed at various levels.
 </p>
 </blockquote>
-<p>The <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">Java Virtual Machine (JVM)</a> is a very successful example. The JVM itself is a moderately sized program, that is small enough for one programmer to understand. This has made it possible to be written for thousands of devices including your phone. Once the JVM is implemented on a new device, any Java/Kotlin/Clojure program ever written can run it, without modification. The only cost is the overhead of the VM itself and the <a href="https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/">further abstraction</a> from the machine. Most of the time, this is a pretty good tradeoff. 
+<p>The <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">Java Virtual Machine (JVM)</a> is a very successful example. The JVM itself is a moderately sized program that is small enough for one programmer to understand. This has made it possible to be written for thousands of devices including your phone. Once the JVM is implemented on a new device, any Java/Kotlin/Clojure program ever written can run it without modification. The only cost is the overhead of the VM itself and the <a href="https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/">further abstraction</a> from the machine. Most of the time, this is a pretty good tradeoff. 
 </p>
-<p>Virtual machines are also useful for executing code in a secure or isolated way. One application of this is garbage collection. There <a href="https://www.lua.org/pil/24.2.html">is no trivial way</a> to implement automatic garbage collection on top of C or C++, since a program cannot see its own stack or variables. However, a VM is “outside” the program it is running and can observe all the <a href="https://en.wikipedia.org/wiki/Tracing_garbage_collection">memory references</a> on the stack. 
+<p>Virtual machines are also useful for executing code in a secure or isolated way. One application of this is garbage collection. There <a href="https://www.lua.org/pil/24.2.html">is no trivial way</a> to implement automatic garbage collection on top of C or C++ since a program cannot see its own stack or variables. However, a VM is “outside” the program it is running and can observe all of the <a href="https://en.wikipedia.org/wiki/Tracing_garbage_collection">memory references</a> on the stack. 
 </p>
-<p><a href="https://solidity.readthedocs.io/en/v0.4.24/introduction-to-smart-contracts.html">Ethereum smart contracts</a> also take advantage of this behaviour. Smart contracts are small programs which are executed by each validating node in the network. This requries the nodes to accept programs to run from anonymous strangers to run on their machines. To prevent a contract from doing malicious things, it is run inside a <a href="http://ethdocs.org/en/latest/introduction/what-is-ethereum.html#ethereum-virtual-machine">VM</a> which prevents the program from accessing the file system, network, disc, etc. Ethereum is also a good application of the portablity features mentioned. Ethereum nodes can be run on many kinds of computers. But, smart contracts can be written without any consideration of the specific platforms they run on.
+<p><a href="https://solidity.readthedocs.io/en/v0.4.24/introduction-to-smart-contracts.html">Ethereum smart contracts</a> also take advantage of this behavior. Smart contracts are small programs which are executed by each validating node in the network. This requires the nodes to run programs on their machines that have been obtained from strangers. To prevent a contract from doing malicious things, contracts are run inside a <a href="http://ethdocs.org/en/latest/introduction/what-is-ethereum.html#ethereum-virtual-machine">VM</a> which prevents the program from accessing the file system, network, disc, etc. Ethereum is also a good application of the portability features mentioned. While Ethereum nodes can be run on many kinds of computers, the use of a VM allows smart contracts to be written without any consideration of the specific platforms they run on.
 </p>
 
 </div>
 <a name="1:2"><div class="section"><h4>2. LC-3 Architecture</h4></a>
-<p>For our project, we will be implementing a VM for a fictional computer called the <a href="https://en.wikipedia.org/wiki/LC-3">LC-3</a>. The LC-3 is popular for teaching university students assembly language. It has a simplified instruction set <a href="http://ref.x86asm.net/coder64.html">compared to x86</a>, but contains all the main ideas used in modern CPUs.
+<p>For our project, we will be implementing a VM for a fictional computer called the <a href="https://en.wikipedia.org/wiki/LC-3">LC-3</a>. The LC-3 is popular for teaching university students assembly language. It has a simplified instruction set <a href="http://ref.x86asm.net/coder64.html">compared to x86</a> but contains all the main ideas used in modern CPUs.
 </p>
-<blockquote><p> <strong>Note:</strong> This article will not teach you assembly. It is not at all necessary. But, if you are interested you can write and assemble your own LC-3 programs with the <a href="http://highered.mheducation.com/sites/0072467509/student_view0/lc-3_simulator.html">LC-3 Tools</a>.
+<blockquote><p> <strong>Note:</strong> This article will not teach you assembly. It is not at all necessary. However, if you are interested, you can write and assemble your own LC-3 programs using the <a href="http://highered.mheducation.com/sites/0072467509/student_view0/lc-3_simulator.html">LC-3 Tools</a>.
 </p>
 </blockquote>
-<p>First, we need to simulate the basic hardware components of the machine. Try to understand what each component is, but don't worry right now if you are unsure of how it fits into the larger picture. This will be explained in <a href="#Executing_Programs">Executing Programs</a>. Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.
+<p>First, we need to simulate the essential hardware components of the machine. Try to understand what each component is, but don't worry right now if you are unsure of how it fits into the larger picture. This is explained in <a href="#Executing_Programs">Executing Programs</a>. Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.
 </p>
 <h3> Memory</h3>
-<p>The LC-3 has 65536 memory locations (the maximum that is addressible by a 16 bit unsigned integer <span class="math">2^{16}</span>), each of which stores a 16 bit value. It can store only 128kb which is a lot smaller than you may be used to! In our program this memory will be stored in an array:
+<p>The LC-3 has 65536 memory locations (the maximum that is addressable by a 16-bit unsigned integer <span class="math">2^{16}</span>), each of which stores a 16-bit value. It can store only 128kb which is a lot smaller than you may be used to! In our program this memory will be stored in an array:
 </p>
 
 <div class="codeblock">
@@ -96,9 +96,9 @@ uint16_t memory[UINT16_MAX];
 <p class="seealso">Used in sections <a href="lc3.html#1:9">9</a> and <a href="lc3.html#1:12">12</a></p>
 </div>
 <h3> Registers</h3>
-<p>A register is a slot for storing a single value on the CPU. Registers are like the "workbench" of the CPU. In order the CPU to work with a piece of data it has to be in one of the registers. But there are only a few, so only a very limited amount of data can be loaded at one time. Programs work around this by loading values from memory into registers, calculating values into other registers, and then storing the final results back in memory.
+<p>A register is a slot for storing a single value on the CPU. Registers are like the "workbench" of the CPU. For the CPU to work with a piece of data, it has to be in one of the registers. However, since there are only a few registers, only a minimal amount of data can be loaded at any given time. Programs work around this by loading values from memory into registers, calculating values into other registers, and then storing the final results back in memory.
 </p>
-<p>The LC-3 has 10 total registers, each of which are 16 bits. Most of them are general purpose, but a few have designated roles.
+<p>The LC-3 has 10 total registers, each of which is 16 bits. Most of them are general purpose, but a few have designated roles.
 </p>
 <ul>
 <li>8 general purpose registers  (<code>R0</code>-<code>R7</code>)
@@ -108,7 +108,7 @@ uint16_t memory[UINT16_MAX];
 <li>1 condition flags (<code>COND</code>) register
 </li>
 </ul>
-<p>The general purpose registers can be used to perform any program calculations. The program counter is an unsigned integer which is the address of the next instruction in memory to execute. The condition flags tells us information about the previous calculation.
+<p>The general purpose registers can be used to perform any program calculations. The program counter is an unsigned integer which is the address of the next instruction in memory to execute. The condition flags tell us information about the previous calculation.
 </p>
 
 <div class="codeblock">
@@ -146,7 +146,7 @@ uint16_t reg[R_COUNT];
 <h3> Condition Flags</h3>
 <p>The <code>R_COND</code> register stores condition flags which give us information about the most recently executed calculation. This allows programs to check logical conditions such as <code>if (x &gt; 0) { ... }</code>. 
 </p>
-<p>Different CPUs will have a variety of condition flags. The LC-3 uses only 3 condition flags which indicate the sign of the previous calculation. 
+<p>Different CPUs have a variety of condition flags. The LC-3 uses only 3 condition flags which indicate the sign of the previous calculation. 
 </p>
 
 <div class="codeblock">
@@ -163,15 +163,15 @@ enum
 
 <p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
 </div>
-<blockquote><p> <strong>Note:</strong> (The <code>&lt;&lt;</code> symbol is called the <a href="https://msdn.microsoft.com/en-us/library/336xbhcz.aspx">left bitshift operator</a>. <code>(n &lt;&lt; k)</code> will shift the bits of <code>n</code> to the left <code>k</code> places. Read that link if you are not familiar. It will be important.)
+<blockquote><p> <strong>Note:</strong> (The <code>&lt;&lt;</code> symbol is called the <a href="https://msdn.microsoft.com/en-us/library/336xbhcz.aspx">left bitshift operator</a>. <code>(n &lt;&lt; k)</code> shifts the bits of <code>n</code> to the left <code>k</code> places. Read that link if you are not familiar. It will be important.)
 </p>
 </blockquote>
 <h3> Instructions</h3>
-<p>An instruction is a command which tells the CPU to do some tiny task, such as add two numbers. Instructions have both an <strong>opcode</strong> which indicates the kind of operation it will do, and some <strong>parameters</strong> which provide data for it to work on. 
+<p>An instruction is a command which tells the CPU to do some fundamental task, such as add two numbers. Instructions have both an <strong>opcode</strong> which indicates the kind of task to perform and a set of <strong>parameters</strong> which provide data to the task being performed.
 </p>
-<p>Each <strong>opcode</strong> represents one task that the CPU "knows" how to do. There are just 16 opcodes in LC-3. Everything the computer can calculate is just some sequence of these simple instructions. Each instruction is 16 bits long, with the left 4 bits storing the opcode. The rest of the bits are used to store the parmeters.
+<p>Each <strong>opcode</strong> represents one task that the CPU "knows" how to do. There are just 16 opcodes in LC-3. Everything the computer can calculate is just some sequence of these simple instructions. Each instruction is 16 bits long, with the left 4 bits storing the opcode. The rest of the bits are used to store the parameters.
 </p>
-<p>We will discuss, in detail, what each instruction does later. For now define the following opcodes. Make sure they stay in this order so they are assigned the proper enum value:
+<p>We will discuss, in detail, what each instruction does later. For now, define the following opcodes. Make sure they stay in this order so that they are assigned the proper enum value:
 </p>
 
 <div class="codeblock">
@@ -201,7 +201,7 @@ enum
 
 <p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
 </div>
-<blockquote><p> <strong>Note:</strong> The Intel x86 architecture has hundreds of instructions, while others such as ARM have very few like the LC-3. Small instruction sets are referred to as <a href="https://en.wikipedia.org/wiki/Reduced_instruction_set_computer">RISCs</a> while larger ones are called <a href="https://en.wikipedia.org/wiki/Complex_instruction_set_computer">CISCs</a>. Larger instruction sets are more convenient to write assembly for and require instructions to complete a task, but are more complex and expensive for engineers to design and manufacture. There are many other tradeoffs which make the designs come into and out of style.
+<blockquote><p> <strong>Note:</strong> The Intel x86 architecture has hundreds of instructions, while others such as ARM have very few like the LC-3. Small instruction sets are referred to as <a href="https://en.wikipedia.org/wiki/Reduced_instruction_set_computer">RISCs</a> while larger ones are called <a href="https://en.wikipedia.org/wiki/Complex_instruction_set_computer">CISCs</a>. Larger instruction sets are more convenient to write assembly for and require instructions to complete a task but are more complex and expensive for engineers to design and manufacture. There are many other tradeoffs which make the designs come into and out of style.
 </p>
 </blockquote>
 <p>We are finished setting up the hardware components of our VM! You will need to include some system headers (listed later). Your file should now look something like this:
@@ -222,7 +222,7 @@ enum
 </div>
 </div>
 <a name="1:3"><div class="section"><h4>3. Executing Programs</h4></a>
-<p>Let's now look at an LC-3 assembly program, to get an idea of what the VM will actually run. You don't need to understand everything, just have a general idea of what is going on. Here is a simple "Hello World":
+<p>Let's now look at an LC-3 assembly program to get an idea of what the VM actually runs. You don't need to understand everything, just have a general idea of what is going on. Here is a simple "Hello World":
 </p>
 
 <div class="codeblock">
@@ -230,7 +230,7 @@ enum
 <pre class="prettyprint lang-c">
 .ORIG x3000                        ; instruct the computer to load program to this address 
 LEA R0, HELLO_STR                  ; load the address of the HELLO_STR string into R0 
-PUTs                               ; output the string pointed to by R0to the console 
+PUTs                               ; output the string pointed to by R0 to the console 
 HALT                               ; halt the program
 HELLO_STR .STRINGZ "Hello World!"  ; store this string here in the program 
 </pre>
@@ -238,17 +238,17 @@ HELLO_STR .STRINGZ "Hello World!"  ; store this string here in the program
 
 
 </div>
-<p>Just like C, the program will start at the top, and execute one statement at a time. But, unlike C there are no scopes <code>{}</code> or control structures, such as <code>if</code> or <code>while</code>, just a flat list of statements. Control flow is controlled in a <a href="https://en.wikipedia.org/wiki/Goto">goto</a> like way. 
+<p>Just like in C, the program starts at the top and executes one statement at a time. However, unlike in C, there are no scopes <code>{}</code> or control structures such as <code>if</code> or <code>while</code>; just a flat list of statements. Control flow is controlled in a <a href="https://en.wikipedia.org/wiki/Goto">goto</a> like way. 
 </p>
-<p>Notice that some of the statements correspond to the opcodes we defined earlier. Previously, we learned that every instruction was 16 bits, but each line looks like it is a different number of characters. That is because this code is written in <strong>assembly</strong> which is a human readable and writable form. A tool called an <strong>assembler</strong> is used to transform each line of text, into a binary 16 bit instruction. This binary form is what the VM actually runs. 
+<p>Notice that some of the statements correspond to the opcodes we defined earlier. Previously, we learned that every instruction was 16 bits, but each line looks like it is a different number of characters. That is because this code is written in <strong>assembly</strong> which is a human-readable and writable form. A tool called an <strong>assembler</strong> is used to transform each line of text, into a binary 16-bit instruction. This binary form is what the VM actually runs. 
 </p>
-<p>The commands <code>.ORIG</code> and <code>.STRINGZ</code> look like instructions but they aren't. They are assembler commands which generate some code or data. For example the <code>.STRINGZ</code> places a string into the program binary, at the location it is written.
+<p>The commands <code>.ORIG</code> and <code>.STRINGZ</code> look like instructions but they aren't. They are assembler directives which generate some code or data. For example the <code>.STRINGZ</code> places a string into the program binary at the location it is written.
 </p>
 <p>PICTURE HERE
 </p>
-<p>To write the VM, you don't need to be fluent in assembly. As long as you follow the proper procedure for reading and executing instructions, then <em>any</em> LC-3 program will work properly. 
+<p>To write the VM, you don't need to be fluent in assembly. As long as you follow the proper procedure for reading and executing instructions, <em>any</em> LC-3 program will run properly.
 </p>
-<blockquote><p> <strong>Note:</strong> If you think deeper about this property it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that you never anticipated and may not understand. But, at the same time everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works.
+<blockquote><p> <strong>Note:</strong> If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that you never anticipated and may not understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works.
 </p>
 </blockquote>
 <p>Here is the procedure we need to write:
@@ -258,14 +258,14 @@ HELLO_STR .STRINGZ "Hello World!"  ; store this string here in the program
 </li>
 <li>Increment the <code>PC</code> register.
 </li>
-<li>Look at the opcode to determine which type of instruction it should do. 
+<li>Look at the opcode to determine which type of instruction it should perform. 
 </li>
-<li>Do it, using the parameters in the instruction.
+<li>Perform the instruction using the parameters in the instruction.
 </li>
-<li>Go back to 1.
+<li>Go back to step 1.
 </li>
 </ol>
-<p>You may be wondering, "if the loop keeps incrementing the <code>PC</code>, and we don't have <code>if</code> or <code>while</code> won't it quickly run out of instructions?" The answer is no. As we mentioned before, some goto-like instructions change the execution flow by jumping the <code>PC</code> around. 
+<p>You may be wondering, "if the loop keeps incrementing the <code>PC</code>, and we don't have <code>if</code> or <code>while</code>, won't it quickly run out of instructions?" The answer is no. As we mentioned before, some goto-like instructions change the execution flow by jumping the <code>PC</code> around. 
 </p>
 <p>Let's start outlining this process in the main loop:
 </p>
@@ -348,7 +348,7 @@ int main(int argc, const char* argv[])
 </div>
 </div>
 <a name="1:4"><div class="section"><h4>4. Implementing Instructions</h4></a>
-<p>Your task now is fill in each opcode case with a proper implementation. A detailed specification for each instruction is included in the project <a href="docs/lc3-isa.pdf">documents</a>. You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will explain how to implement two of them here. The code for the rest can be found in the next section.
+<p>Your task now is to fill in each opcode case with a proper implementation. A detailed specification for each instruction is included in the project <a href="docs/lc3-isa.pdf">documents</a>. You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will demonstrate how to implement two of them here. The code for the rest can be found in the next section.
 </p>
 <p>Two of the opcodes specified will not be needed in this project, they are <code>OP_RTI</code> and <code>OP_RES</code>. You can ignore these cases or throw an error if they are executed:
 </p>
@@ -367,9 +367,9 @@ abort();
 </p>
 <p><img src="img/add_layout.gif" alt="Encoding">
 </p>
-<p>The encoding shows two rows because there are actually two different "modes" for this instruction. Before I explain modes, let's look at the parts that are the same. In both rows, we can see that we start with 4 bits, <code>0001</code>. This is the opcode value <code>OP_ADD</code>. The next 3 bits are marked <code>DR</code>. This stands for destination register. This is where the added sum will be stored. The next 3 bits are <code>SR1</code>. This is the register containing the first number to add. 
+<p>The encoding shows two rows because there are actually two different "modes" for this instruction. Before I explain modes, let's look at the parts that are the same. In both rows, we can see that we start with 4 bits, <code>0001</code>. This is the opcode value <code>OP_ADD</code>. The next 3 bits are marked <code>DR</code>. This stands for destination register. This register is where the added sum will be stored. The next 3 bits are <code>SR1</code>. This is the register containing the first number to add. 
 </p>
-<p>So we know where we want to store the result, and we know the first number to add. Now we need to get the second number to add. But, here the top and bottom start to look different. Notice that on the top row the 5th bit is a <code>0</code> and in the second row it is <code>1</code>. This bit indicates whether it is <em>immediate mode</em> or <em>register mode</em>. In <em>register mode</em> the second number is stored in a register just like the first. This is marked <code>SR2</code> and is contained in bits 2-0. Bits 3 and 4 are unused. In assembly this would like: 
+<p>So we know where we want to store the result and we know the first number to add. Now we need to get the second number to add. However, here the two rows start to look different. Notice that on the top row the 5th bit is a <code>0</code> and in the second row it is <code>1</code>. This bit indicates whether it is <em>immediate mode</em> or <em>register mode</em>. In <em>register mode</em>, the second number is stored in a register just like the first. This is marked <code>SR2</code> and is contained in bits 2-0. Bits 3 and 4 are unused. In assembly this would be written as: 
 </p>
 
 <div class="codeblock">
@@ -381,7 +381,7 @@ ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
 
 
 </div>
-<p>In immediate mode instead of adding the contents of a register, the value is embedded in the instruction itself. This is convenient because the program doesn't need to load that number into the register in the first place. Instead it is right inside the instruction when we need it. The tradeoff is that it can only store a small number <span class="math">2^{5}=32</span> (unsigned) to be exact. This is most useful for incremeting a value. In assembly it might look like:
+<p>In immediate mode, instead of adding the contents of a register, the value is embedded in the instruction itself. This is convenient because the program doesn't need to load that number into the register in an earlier instruction. Instead, it is right inside the instruction when we need it. The tradeoff is that it can only store a small number <span class="math">2^{5}=32</span> (unsigned) to be exact. This is most useful for incrementing a value. In assembly, it might be written as:
 </p>
 
 <div class="codeblock">
@@ -395,12 +395,12 @@ ADD R0 R0 1 ; add 1 to R0 and store back in R0
 </div>
 <p>Here is a summary from the specification:
 </p>
-<blockquote><p> If bit [5] is 0, the second source operand is obtained from <code>SR2</code>. If bit [5] is 1, the second source operand is obtained by sign-extending the <code>imm5</code> field to 16 bits. In either case, the second source operand and the contents of <code>SR1</code> are bit- wise ANDed, and the result stored in DR. (Pg. 526)
+<blockquote><p> If bit [5] is 0, the second source operand is obtained from <code>SR2</code>. If bit [5] is 1, the second source operand is obtained by sign-extending the <code>imm5</code> field to 16 bits. In either case, the second source operand and the contents of <code>SR1</code> are bitwise ANDed, and the result stored in DR. (Pg. 526)
 </p>
 </blockquote>
-<p>That sounds just like we discussed. But, what is "sign-extending"? The immediate mode value has only 5 bits, but it needs to be added to a 16 bit number. For positive numbers we can just add 0's to the empty space and the value is the same. But, for negative numbers this casues a problem. For example, -1 in 5 bits is <code>1 1111</code>. If we just add 0s this is <code>0000 0000 0001 1111</code>. But this is 32! Sign extension prevents this problem by filling in 0's for positive numbers and 1's for negative numbers. 
+<p>That sounds just like we discussed. But what is "sign-extending"? While the immediate mode value has only 5 bits, it needs to be added to a 16-bit number. For positive numbers, we can just use 0's for the additional bits and the value is the same. However, for negative numbers, this causes a problem. For example, -1 in 5 bits is <code>1 1111</code>. If we just add 0's, this is <code>0000 0000 0001 1111</code> which is 32. Sign extension prevents this problem by filling in 0's for positive numbers and 1's for negative numbers. 
 </p>
-<blockquote><p> <strong>Note:</strong> If you are interested in exactly how negative numbers can be represented in binary. You can read about <a href="https://en.wikipedia.org/wiki/Two%27s_complement">Two's Complement</a>. However, this is not essential. You can just copy the code below, and use it when you need to sign extend numbers.
+<blockquote><p> <strong>Note:</strong> If you are interested in exactly how negative numbers can be represented in binary. You can read about <a href="https://en.wikipedia.org/wiki/Two%27s_complement">Two's Complement</a>. However, this is not essential. You can just copy the code below and use it when you need to sign extend numbers.
 </p>
 </blockquote>
 
@@ -421,10 +421,10 @@ uint16_t sign_extend(uint16_t x, int bit_count)
 </div>
 <p>There is one last sentence in the specification:
 </p>
-<blockquote><p> The condition codes are set, based on whether the binary value produced, taken as a 2’s complement integer, is negative, zero, or positive. (Pg. 526)
+<blockquote><p> The condition codes are set based on whether the binary value produced, taken as a 2’s complement integer, is negative, zero, or positive. (Pg. 526)
 </p>
 </blockquote>
-<p>Earlier we defined a condition flags enum, now its time to put them to good use. <em>Anytime</em> a value is written to a register, we need to update the flags to indicate its sign.
+<p>Earlier we defined a condition flags enum, and now it's time to put them to good use. <em>Any time</em> a value is written to a register, we need to update the flags to indicate its sign.
 </p>
 
 <div class="codeblock">
@@ -450,18 +450,18 @@ void update_flags(uint16_t r0)
 
 <p class="seealso">Used in section <a href="lc3.html#1:10">10</a></p>
 </div>
-<p>This is a lot of information, so let's summarize.
+<p>This section contained a lot of information, so let's summarize.
 </p>
 <ul>
 <li>ADD takes two values and stores them in a register.
 </li>
-<li>In register mode the second value to add is in a register.
+<li>In register mode, the second value to add is in a register.
 </li>
-<li>In immediate mode it is embedded in the right-most 5 bits of the instruction.
+<li>In immediate mode, the second value is embedded in the right-most 5 bits of the instruction.
 </li>
-<li>Values which are less than 16 bits need to be sign extended.
+<li>Values which are smaller than 16 bits need to be sign extended.
 </li>
-<li>Anytime an instruction modifies a register, it needs to update flags.
+<li>Any time an instruction modifies a register, the condition flags need to be updated.
 </li>
 </ul>
 <p>Now we are ready to write the code for the <code>ADD</code> case:
@@ -496,25 +496,25 @@ void update_flags(uint16_t r0)
 
 <p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
 </div>
-<p>You may be feeling overwhelmed about writing 15 more instructions. However, all of what you learned here will be reused. Most of the instructions use some combination of sign extension, different modes, and update flags.
+<p>You may be feeling overwhelmed about writing 15 more instructions. However, all of what you learned here will be reused. Most of the instructions use some combination of sign extension and different modes, and then update flags.
 </p>
 <h3> LDI</h3>
-<p><code>LDI</code> stands for "load indirect". This instruction is used to load a value from a location in memory into a register. The specification is found on page 532.
+<p><code>LDI</code> stands for "load indirect." This instruction is used to load a value from a location in memory into a register. The specification is found on page 532.
 </p>
 <p>Here is what it looks like:
 </p>
 <p><img src="img/ldi_layout.gif" alt="Encoding">
 </p>
-<p>In contrast to <code>ADD</code> there are no modes and fewer parameters. This time the opcode is <code>1010</code> which corresponds with the <code>OP_LDI</code> enum value. Just like add we have a 3 bit <code>DR</code> the destination register for storing the loaded value. The remaining bits are labeled <code>PCoffset9</code>. This is an immediate value, embedded in the instruction (similar to <code>imm5</code>). Since this instruction loads from memory, we can guess that this number is some kind of address which tells us where to load from. The specification provides more detail:
+<p>In contrast to <code>ADD</code>, there are no modes and fewer parameters. This time, the opcode is <code>1010</code> which corresponds with the <code>OP_LDI</code> enum value. Just like in <code>ADD</code>, we have a 3-bit <code>DR</code> (the destination register) for storing the loaded value. The remaining bits are labeled <code>PCoffset9</code>. This is an immediate value embedded in the instruction (similar to <code>imm5</code>). Since this instruction loads from memory, we can guess that this number is some kind of address which tells us where to load from. The specification provides more detail:
 </p>
 <blockquote><p> An address is computed by sign-extending bits [8:0] to 16 bits and adding this value to the incremented <code>PC</code>. What is stored in memory at this address is the address of the data to be loaded into <code>DR</code>. (Pg. 532)
 </p>
 </blockquote>
-<p>Just like before we need to sign extend this 9 bit value, which is then added to the current <code>PC</code>. (If you look back at the execution loop, the <code>PC</code> was incremented right after this instruction was loaded.) This sum is an address to a location in memory, and that address <em>contains, yet another</em> value which is the address of the value to load.
+<p>Just like before, we need to sign extend this 9-bit value and then add it to the current <code>PC</code>. (If you look back at the execution loop, the <code>PC</code> was incremented right after this instruction was loaded.) The resulting sum is an address to a location in memory, and that address <em>contains, yet another</em> value which is the address of the value to load.
 </p>
-<p>It looks something like this:
+<p>Let's look at an example:
 </p>
-<p>This may seem like a roundabot way to read from memory. This is because the value is limited to 9 bits, when the entire memory needs 16 bits to address. This function is useful for loading stuff which is far away in memory from the current PC. But, in order to use it an address to this location needs be stored in a neighborhood nearby. You can think of it like having a local variable which is pointer to some data.
+<p>While the following may seem like a roundabout way to read from memory, it may be necessary at times. The <code>LD</code> instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. <code>LDI</code> is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable which is a pointer to some data.
 </p>
 
 <div class="codeblock">
@@ -524,8 +524,10 @@ void update_flags(uint16_t r0)
 
 LDI R0 DATA_ADDRESS
 ; ...
-; far away in memory...
+; near in memory...
+DATA_ADDRESS .FILL DATA
 ; ...
+; far away in memory...
 DATA .STRINGZ "Hello World!"
 </pre>
 
@@ -534,7 +536,7 @@ DATA .STRINGZ "Hello World!"
 </div>
 <p>Same as before, we need to update flags after putting the value into <code>DR</code>:
 </p>
-<blockquote><p> The condition codes are set, based on whether the value loaded is negative, zero, or positive. (Pg. 532)
+<blockquote><p> The condition codes are set based on whether the value loaded is negative, zero, or positive. (Pg. 532)
 </p>
 </blockquote>
 <p>Here is the code for this case:
@@ -557,9 +559,9 @@ DATA .STRINGZ "Hello World!"
 
 
 </div>
-<p>(We will discuss <code>mem_read</code> soon.)
+<p>(We discuss <code>mem_read</code> soon in a later section.)
 </p>
-<p>As I said, this instruction shared a lot of the code and knowledge learned form <code>ADD</code>. You will find this is the case with the remaining instructions.
+<p>As I said, this instruction shared a lot of the code and knowledge learned from <code>ADD</code>. You will find this is the case with the remaining instructions.
 </p>
 <p>You now need to go back and implement the rest of the switch cases for the instructions. Follow the specification and use the code listed here to complete the others. The code for all instructions is listed at the end of the tutorial. After you are done, the bulk of your VM will be completed!
 </p>
@@ -631,7 +633,7 @@ DATA .STRINGZ "Hello World!"
 <p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
 </div>
 <h3> Jump</h3>
-<p><code>RET</code> is listed as a separate instruction in the specification, since it is a different keyword in assembly. But, it is actually a special case of <code>JMP</code>. <code>RET</code> happens whenever <code>R1</code> is 7.
+<p><code>RET</code> is listed as a separate instruction in the specification, since it is a different keyword in assembly. However, it is actually a special case of <code>JMP</code>. <code>RET</code> happens whenever <code>R1</code> is 7.
 </p>
 
 <div class="codeblock">
@@ -770,7 +772,7 @@ DATA .STRINGZ "Hello World!"
 </div>
 </div>
 <a name="1:6"><div class="section"><h4>6. Trap Routines</h4></a>
-<p>A trap code is a like an opcode for a routine that performs a special tasks such as interacting with an I/O device. These include getting input from the keyboard and displaying strings to the console. The trap routines are provided by the system, and act like a very simple operating system for the LC-3.
+<p>A trap code is a like an opcode for a routine that performs a special task such as interacting with an I/O device. These include getting input from the keyboard and displaying strings to the console. The trap routines are provided by the system and act like a very simple operating system for the LC-3.
 </p>
 
 <div class="codeblock">
@@ -792,12 +794,12 @@ enum
 </div>
 <p>The trap codes are called like an instruction in assembly, but they are actually composed of other instructions. In the official LC-3 simulator trap routines are <a href="docs/os.asm">written in assembly</a>, just like a regular program. When a trap code is called the <code>PC</code> is moved to that codes address. The CPU executes instructions of the proced, and when it is complete the PC is returned to the location it was called from. 
 </p>
-<blockquote><p> <strong>Note:</strong> This is why programs start at address <code>0x3000</code>. The earlier addresses are left empty to leave space for the trap routines.
+<blockquote><p> <strong>Note:</strong> This is why programs start at address <code>0x3000</code>. The lower addresses are left empty to leave space for the trap routines.
 </p>
 </blockquote>
 <p>The assembly trap routines are a good simulation of what a physically constructed LC-3 computer would do, but it isn't the best fit for a VM. Instead of implementing rudimentary I/O routines from scratch, we want to expose the ones that are already available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability.
 </p>
-<p>There is no specification for <em>how</em> trap routines must be implemented, just what they are supposed to do. So, we will write ours in C. When a trap code is called, a C function w ill be called, and when it is completed, execution will return back to the program.
+<p>There is no specification for <em>how</em> trap routines must be implemented, just what they are supposed to do. So, we will write ours in C. When a trap code is called, a C function will be called, and when it is completed, execution will return to the program.
 </p>
 <p>In the switch case form the <code>TRAP</code> opcode, add another switch:
 </p>
@@ -831,12 +833,12 @@ switch (instr &amp; 0xFF)
 
 <p class="seealso">Used in sections <a href="lc3.html#1:3">3</a> and <a href="lc3.html#1:12">12</a></p>
 </div>
-<p>As with instructions, I will show you how to implement one and leave the rest to you.
+<p>As with instructions, I will show you how to implement a single TRAP and leave the rest to you.
 </p>
 <h3> PUTS</h3>
-<p>The <code>PUTS</code> trap code is used to output a null terminated string (similar to <code>printf</code> in C). The specification is found on page 543.
+<p>The <code>PUTS</code> trap code is used to output a null-terminated string (similar to <code>printf</code> in C). The specification is found on page 543.
 </p>
-<p>In order to display a string, we must give it a string to display. This is done by storing the address of the first character in <code>R0</code> before beginning the trap routine.
+<p>To display a string, we must give the trap routine a string to display. This is done by storing the address of the first character in <code>R0</code> before beginning the trap.
 </p>
 <p>The specification says:
 </p>
@@ -844,7 +846,7 @@ switch (instr &amp; 0xFF)
  in consecutive memory locations, one character per memory location, starting with the address specified in R0. Writing terminates with the occurrence of <code>x0000</code> in a memory location. (Pg. 543)
 </p>
 </blockquote>
-<p>Notice that unlike C strings, characters are <em>not stored</em> in a single byte, but in a single memory location. Memory locations are 16 bits, so each character in the string is 16 bits wide. In order, to display this with a C function we will need to convert each value to a char and output them, one at a time.
+<p>Notice that unlike C strings, characters are <em>not stored</em> in a single byte, but in a single memory location. Memory locations in LC-3 are 16 bits, so each character in the string is 16 bits wide. To display this with a C function, we will need to convert each value to a char and output them individually.
 </p>
 
 <div class="codeblock">
@@ -865,7 +867,7 @@ switch (instr &amp; 0xFF)
 
 
 </div>
-<p>Thats all for this routine. The trap routines are pretty easy. Go back to the specification and implement the others now. As with the instructions the full code can be found at the end of the tutorial.
+<p>That's all for this routine. The trap routines are pretty straightforward. Go back to the specification and implement the others now. As with the instructions, the full code can be found at the end of the tutorial.
 </p>
 
 </div>
@@ -911,7 +913,7 @@ reg[R_R0] = (uint16_t)getchar();
 
 <p class="seealso">Used in section <a href="lc3.html#1:6">6</a></p>
 </div>
-<p>Ooutput String
+<p>Output String
 </p>
 
 <div class="codeblock">
@@ -953,11 +955,11 @@ running = 0;
 </div>
 </div>
 <a name="1:8"><div class="section"><h4>8. Loading Programs</h4></a>
-<p>We have talked a lot about loading and executing instructions from memory, but how do instructions get into memory in the first place? When an assembly program is converted to machine code, the result is a file containing an array of instructions and data. This can be loaded by simply copying the contents right into an address in memory.
+<p>We have talked a lot about loading and executing instructions from memory, but how do instructions get into memory in the first place? When an assembly program is converted to machine code, the result is a file containing an array of instructions and data. This can be loaded by just copying the contents right into an address in memory.
 </p>
-<p>The first 16 bits of the program file specific the address in memory where the program should start. This address is called the <strong>origin</strong>. It must be read first. Then the rest of the data can be read from the file into this address.
+<p>The first 16 bits of the program file specify the address in memory where the program should start. This address is called the <strong>origin</strong>. It must be read first, after which the rest of the data can be read from the file into memory starting at the origin address.
 </p>
-<p>Here is the code for reading a LC-3 program file:
+<p>Here is the code for reading an LC-3 program file:
 </p>
 
 <div class="codeblock">
@@ -987,7 +989,7 @@ void read_image_file(FILE* file)
 
 <p class="seealso">Used in section <a href="lc3.html#1:10">10</a></p>
 </div>
-<p>Notice that <code>swap16</code> is called on each of the values that are loaded. LC-3 programs are big endian, but most of the computers we use are little endian. So, we need to swap each <code>uint16</code> that is loaded. (If you happen to be using an odd computer, like a PPC then you should not swap.)
+<p>Notice that <code>swap16</code> is called on each of the values that are loaded. LC-3 programs are big-endian, but most of the modern computers we use are little endian. As a result, we need to swap each <code>uint16</code> that is loaded. (If you happen to be using an odd computer, like a PPC then you should not swap.)
 </p>
 
 <div class="codeblock">
@@ -1002,7 +1004,7 @@ uint16_t swap16(uint16_t x)
 
 <p class="seealso">Used in section <a href="lc3.html#1:10">10</a></p>
 </div>
-<blockquote><p> <strong>Note:</strong> <a href="https://en.wikipedia.org/wiki/Endianness">Endianness</a> refers to how bytes of an integer are interpreted. In little endian the first byte is the least significant digit, and in big endian it is reversed. As far as I know the decision is <em>mostly</em> arbitrary. Different companies made different decisions and so now we are left with varying implementations. You do not need to know anything else about endiannes for this project.
+<blockquote><p> <strong>Note:</strong> <a href="https://en.wikipedia.org/wiki/Endianness">Endianness</a> refers to how bytes of an integer are interpreted. In little-endian, the first byte is the least significant digit, and in big-endian, it is reversed. As far as I know, the decision is <em>mostly</em> arbitrary. Different companies made different decisions, so now we are left with varying implementations. You do not need to know anything else about endianness for this project.
 </p>
 </blockquote>
 
@@ -1010,9 +1012,9 @@ uint16_t swap16(uint16_t x)
 <a name="1:9"><div class="section"><h4>9. Memory Mapped Registers</h4></a>
 <p>Some special registers are not accessible from the normal register table. Instead, a special address is reserved for them in memory. To read and write to these registers, you just read and write to their memory location. These are called <strong>memory mapped registers</strong>. They are commonly used to interact with special hardware devices.
 </p>
-<p>The LC-3 has two memory mapped registers that we will implement. They are, the keyboard status register (<code>KBSR</code>) and keyboard data register (<code>KBDR</code>). The <code>KBSR</code> indicates whethere there is a key being pressed, and the <code>KBDR</code> indicates the key that was pressed.
+<p>The LC-3 has two memory mapped registers that we will implement. They are the keyboard status register (<code>KBSR</code>) and keyboard data register (<code>KBDR</code>). The <code>KBSR</code> indicates whether a key has been pressed, and the <code>KBDR</code> indicates which specific key was pressed.
 </p>
-<p>Although you can request keyboard input using <code>GETC</code>, this blocks execution until input is received. <code>KBSR</code> and <code>KBDR</code> allows you to <a href="https://en.wikipedia.org/wiki/Polling_(computer_science)">poll the state</a> of the input and continue on, so the program can stay responsive while waiting for input.
+<p>Although you can request keyboard input using <code>GETC</code>, this blocks execution until input is received. <code>KBSR</code> and <code>KBDR</code> allows you to <a href="https://en.wikipedia.org/wiki/Polling_(computer_science)">poll the state</a> of the device and continue execution, so the program can stay responsive while waiting for input.
 </p>
 
 <div class="codeblock">
@@ -1028,7 +1030,7 @@ enum
 
 <p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
 </div>
-<p>Memory mapped registers make memory access a bit more complicated. We can't read and write to the memory array directly, but must instead call setter and getter functions. When memory is read at <code>KBSR</code> it will check the keyboard and update both memory locations.
+<p>Memory mapped registers make memory access a bit more complicated. We can't read and write to the memory array directly, but must instead call setter and getter functions. When memory is read from <code>KBSR</code>, it will check the keyboard and update both memory locations.
 </p>
 
 <div class="codeblock">
@@ -1062,7 +1064,7 @@ uint16_t mem_read(uint16_t address)
 </div>
 <p>That completes the last component of the VM! Provided that you implemented the rest of the trap routines and instructions, you are almost ready to try it out!
 </p>
-<p>All that we have written should have been addded to the c file.
+<p>All that we have written should have been added to the C file.
 </p>
 
 <div class="codeblock">
@@ -1084,9 +1086,9 @@ uint16_t mem_read(uint16_t address)
 </div>
 </div>
 <a name="1:10"><div class="section"><h4>10. Platform Specific Details</h4></a>
-<p>This section contains some tedious details that we need to access the keyboard, and behave nicely. These are not insightful or relevant to learning about VMs. Feel free to copy paste!
+<p>This section contains some tedious details that we need to access the keyboard and behave nicely. These are not insightful or relevant to learning about VMs. Feel free to copy paste!
 </p>
-<p>If you are trying to run the VM on another operating system, such as Windows, these functions need to be replaced with Windows specific versions.
+<p>If you are trying to run the VM on a non-Unix operating system, such as Windows, these functions need to be replaced with Windows-specific versions.
 </p>
 
 <div class="codeblock">
@@ -1133,7 +1135,7 @@ for (int j = 1; j &lt; argc; ++j)
 
 <p class="seealso">Used in sections <a href="lc3.html#1:3">3</a> and <a href="lc3.html#1:12">12</a></p>
 </div>
-<p>This is unix specific code for setting up terminal input.
+<p>This is Unix specific code for setting up terminal input.
 </p>
 
 <div class="codeblock">
@@ -1158,7 +1160,7 @@ void restore_input_buffering()
 
 
 </div>
-<p>When the program is interrupted we want to restore the terminal 
+<p>When the program is interrupted, we want to restore the terminal 
 settings back to normal.
 </p>
 
@@ -1287,11 +1289,9 @@ Are you on an ANSI terminal (y/n)? y
 <a name="1:12"><div class="section"><h4>12. Alternate C++ Technique</h4></a>
 <p>This section shows a more advanced way of executing instructions. This section is entirely optional.
 </p>
-<p>Since C++ has powerful compile time generic, there is an alternative way of implementing the instructions. This method reduces code duplication and is actually closer to how the computer would be wired in hardware.
+<p>Since C++ has powerful compile-time generics, there is an alternative way of implementing the instructions. This method reduces code duplication and is actually closer to how the computer would be wired in hardware.
 </p>
-<p>The idea here is to reuse the steps common to each instruction. For example,
-several of the instructions use indrect addressing. They sign extend a value and add it to the current PC value.
-Wouldn't it be nice if we could write this code once for all instructions?
+<p>The idea here is to reuse the steps common to each instruction. For example, several of the instructions use indirect addressing or sign extend a value and add it to the current PC value. Wouldn't it be nice if we could write this code once for all instructions?
 </p>
 
 <div class="codeblock">
