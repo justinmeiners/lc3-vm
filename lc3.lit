@@ -701,6 +701,19 @@ uint16_t swap16(uint16_t x)
 ---
 > **Note:** [Endianness](https://en.wikipedia.org/wiki/Endianness) refers to how bytes of an integer are interpreted. In little-endian, the first byte is the least significant digit, and in big-endian, it is reversed. As far as I know, the decision is *mostly* arbitrary. Different companies made different decisions, so now we are left with varying implementations. You do not need to know anything else about endianness for this project.
 
+Let's also add a convenience function for `read_image_file` which takes a path a string;
+
+--- Read Image
+int read_image(const char* image_path)
+{
+    FILE* file = fopen(image_path, "rb");
+    if (!file) { return 0; };
+    read_image_file(file);
+    fclose(file);
+    return 1;
+}
+---
+
 @s Memory Mapped Registers
 
 Some special registers are not accessible from the normal register table. Instead, a special address is reserved for them in memory. To read and write to these registers, you just read and write to their memory location. These are called **memory mapped registers**. They are commonly used to interact with special hardware devices.
@@ -836,19 +849,6 @@ disable_input_buffering();
 
 --- Shutdown
 restore_input_buffering();
----
-
-Convenience function for `read_image_file`;
-
---- Read Image
-int read_image(const char* image_path)
-{
-    FILE* file = fopen(image_path, "rb");
-    if (!file) { return 0; };
-    read_image_file(file);
-    fclose(file);
-    return 1;
-}
 ---
 
 --- Functions
