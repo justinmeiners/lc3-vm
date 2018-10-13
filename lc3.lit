@@ -26,7 +26,7 @@ In this tutorial, I will teach you how to write your own virtual machine (VM). I
 
 The [final code](lc3.c) is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do arithmetic with binary. A few parts of the code are written specifically for Unix systems (including macOS). They are necessary for running the program but are not important to the tutorial itself. By the end, your VM will be able to run programs such as my friend's [2048](https://github.com/rpendleton/lc3-2048) or my [Roguelike](https://github.com/justinmeiners/lc3-rogue).
 
-> **Note:** This article is a [literate program](https://en.wikipedia.org/wiki/Literate_programming). This means you are reading the source code right now! I will explain each block of code, one at a time, and these will be "woven" together to make the final program. You can be sure that no detail will be left out.
+> **Note:** This VM is a [literate program](https://en.wikipedia.org/wiki/Literate_programming). This means you are reading the source code right now! I will explain each block of code, one at a time, and these will be "woven" together to make the final program. You can be sure that no detail will be left out.
 
 ### What is a virtual machine?
 
@@ -52,7 +52,7 @@ Virtual machines are also useful for executing code in a secure or isolated way.
 
 For our project, we will be implementing a VM for a fictional computer called the [LC-3](https://en.wikipedia.org/wiki/LC-3). The LC-3 is popular for teaching university students how to program in assembly language. It has a simplified instruction set [compared to x86](http://ref.x86asm.net/coder64.html) but contains all the main ideas used in modern CPUs.
 
-> **Note:** This article will not teach you assembly, and it is not at all necessary. However, if you are interested, you can write and assemble your own LC-3 programs using the [LC-3 Tools](http://highered.mheducation.com/sites/0072467509/student_view0/lc-3_simulator.html).
+> **Note:** This tutorial will not teach you assembly, and it is not at all necessary. However, if you are interested, you can write and assemble your own LC-3 programs using the [LC-3 Tools](http://highered.mheducation.com/sites/0072467509/student_view0/lc-3_simulator.html).
 
 First, we need to simulate the essential hardware components of the machine. Try to understand what each component is, but don't worry right now if you are unsure of how it fits into the larger picture. This is explained in [Executing Programs](#Executing_Programs). Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.
 
@@ -294,7 +294,7 @@ abort();
 
 The `ADD` instruction takes two numbers, adds them together, and stores the result in a register. The specification for it is found on page 526. Each `ADD` instruction looks like the following:
 
-![Encoding](img/add_layout.gif)
+![Add Encoding](img/add_layout.gif)
 
 The encoding shows two rows because there are two different "modes" for this instruction. Before I explain modes, let's just observe the similarites between them. In both rows, we can see that we start with 4 bits, `0001`. This is the opcode value for `OP_ADD`. The next 3 bits are marked `DR`. This stands for destination register. This register is where the added sum will be stored. The next 3 bits are `SR1`. This is the register containing the first number to add. 
 
@@ -393,7 +393,7 @@ You may be feeling overwhelmed about writing 15 more instructions. However, all 
 
 Here is what the binary layout looks like:
 
-![Encoding](img/ldi_layout.gif)
+![LDI Encoding](img/ldi_layout.gif)
 
 In contrast to `ADD`, there are no modes and fewer parameters. This time, the opcode is `1010` which corresponds with the `OP_LDI` enum value. Just like `ADD`, it contains a 3-bit `DR` (the destination register) for storing the loaded value. The remaining bits are labeled `PCoffset9`. This is an immediate value embedded in the instruction (similar to `imm5`). Since this instruction loads from memory, we can guess that this number is some kind of address which tells us where to load from. The specification provides more detail:
 
@@ -403,25 +403,13 @@ Just like before, we need to sign extend this 9-bit value and then add it to the
 
 TODO: picture
 
-This may seem like a roundabout way to read from memory, but it is very necessary.  The `LD` instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. `LDI` is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable which is a pointer to some data.
-
---- LDI Assembly
-; char* far_data = ...; // local variable containing a pointer to some far away data
-
-LDI R0 DATA_ADDRESS
-; ...
-; near in memory...
-DATA_ADDRESS .FILL DATA
-; ...
-; far away in memory...
-DATA .STRINGZ "Hello World!"
----
+This may seem like a roundabout way to read from memory, but it is very necessary.  The `LD` instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. `LDI` is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data (`char* far_data = ...;`).
 
 Same as before, the flags need to be updated after putting the value into `DR`:
 
 > The condition codes are set based on whether the value loaded is negative, zero, or positive. (Pg. 532)
 
-Here is the code for this case:
+Here is the code for this case: (`mem_read` will be discussed in a later section.)
 --- LDI
 {
     /* destination register (DR) */
@@ -433,8 +421,6 @@ Here is the code for this case:
     update_flags(r0);
 }
 ---
-
-(`mem_read` will be discussed in a later section.)
 
 As I said, this instruction shared a lot of the code and knowledge learned from `ADD`. You will find this is the case with the remaining instructions.
 
@@ -573,7 +559,7 @@ This section contains the full implementations of the remaining instructions.
 
 The LC-3 provides a few predefined routines for performing common tasks, and interacting with I/O devices. For example, routines are provided for getting input from the keyboard and for displaying strings to the console. These are called *trap routines* which you can think of as the operating system for the LC-3. Each trap routine is assigned a *trap code* which identifies it (similar to an opcode). To execute one, the `TRAP` instruction is called with the trap code of the desired routine.
 
-// TODO: TRAP picture
+![Trap Encoding](img/trap_layout.gif)
 
 Define an enum for each trap code:
 
