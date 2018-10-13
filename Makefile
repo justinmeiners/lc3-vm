@@ -5,7 +5,7 @@ CPP-FLAGS=-std=c++14 -O3
 
 all: lc3 lc3-alt index.html
 
-lc3.c lc3-alt.cpp: lc3.lit
+lc3.c lc3-alt.cpp: lc3.lit main.css
 	lit --tangle $^
 
 index.html: lc3.lit

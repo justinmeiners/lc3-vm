@@ -1,7 +1,24 @@
 @code_type c .c
 @comment_type /* %s */
+@add_css main.css
 
 @title Write your Own Virtual Machine
+
+@s Contents
+
+1. [Introduction](#1:2)
+2. [LC-3 Architecture](#1:3)
+3. [Assembly Examples](#1:4)
+4. [Executing Programs](#1:5)
+5. [Implementing Instructions](#1:6)
+6. [Instruction Cheat Sheet](#1:7)
+7. [Trap Routines](#1:8)
+8. [Trap Routine Cheat Sheet](#1:9)
+9. [Loading Programs](#1:10)
+10. [Memory Mapped Registers](#1:11)
+11. [Platform Details](#1:12)
+12. [Running the VM](#1:13)
+13. [Alternate C++ Technique](#1:14)
 
 @s Introduction
 
@@ -15,9 +32,9 @@ The [final code](lc3.c) is about 250 lines of C. All you need to know is how to 
 
 A VM is a program that acts like a computer. It simulates a CPU along with a few other hardware components, allowing it to perform arithmetic, read and write to memory, and interact with I/O devices, just like a physical computer. Most importantly, it has its own machine language which you can you can use to program it.
 
-Some VMs are designed to reproduce the behavior of some particular computer. You may have played video game emulators for platforms such as the NES. Most people don't have an NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program.
+Some VMs are designed to reproduce the behavior of some particular computer, such as video game emulators. Most people don't have an NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program.
 
-Other VMs don't act like any real computer and are entirely made up! This is done to make software development easier. A VM is a standard platform which is portable across different hardware configurations. Instead of rewriting a program in different dialects of assembly for each CPU architecture, developers only need to write the small VM program in each assembly language. Each program is then written only once in the VM's assembly language. 
+Other VMs don't act like any real computer and are entirely made up! This is useful for making software development easier. A VM is a standard platform which is portable across different hardware configurations. Instead of rewriting a program in different dialects of assembly for each CPU architecture, developers only need to write the small VM program in each assembly language. Each program is then written only once in the VM's assembly language. 
 
 ![architecture specific implementation](img/no_vm.gif)
 
@@ -25,7 +42,7 @@ Other VMs don't act like any real computer and are entirely made up! This is don
 
 > **Note:** A compiler solves a similar problem by compiling a standard *high-level language* to several CPU architectures. A VM creates a standard *CPU architecture* which is simulated by a program. A compiler has no runtime component while a VM does. Even though compilers do a pretty good job, writing a new one that targets multiple platforms is very difficult, so VMs are still helpful here. In practice, VMs and compilers are mixed at various levels.
 
-The [Java Virtual Machine (JVM)](https://en.wikipedia.org/wiki/Java_virtual_machine) is a very successful example. The JVM itself is a moderately sized program that is small enough for one programmer to understand. This has made it possible to be written for thousands of devices including your phone. Once the JVM is implemented on a new device, any Java/Kotlin/Clojure program ever written can run it without modification. The only cost is the overhead of the VM itself and the [further abstraction](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/) from the machine. Most of the time, this is a pretty good tradeoff. 
+The [Java Virtual Machine (JVM)](https://en.wikipedia.org/wiki/Java_virtual_machine) is a very successful example. The JVM itself is a moderately sized program that is small enough for one programmer to understand. This has made it possible to be written for thousands of devices including phones. Once the JVM is implemented on a new device, any Java/Kotlin/Clojure program ever written can run it without modification. The only cost is the overhead of the VM itself and the [further abstraction](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/) from the machine. Most of the time, this is a pretty good tradeoff. 
 
 Virtual machines are also useful for executing code in a secure or isolated way. One application of this is garbage collection. There [is no trivial way](https://www.lua.org/pil/24.2.html) to implement automatic garbage collection on top of C or C++ since a program cannot see its own stack or variables. However, a VM is “outside” the program it is running and can observe all of the [memory references](https://en.wikipedia.org/wiki/Tracing_garbage_collection) on the stack. 
 
@@ -33,15 +50,15 @@ Virtual machines are also useful for executing code in a secure or isolated way.
 
 @s LC-3 Architecture
 
-For our project, we will be implementing a VM for a fictional computer called the [LC-3](https://en.wikipedia.org/wiki/LC-3). The LC-3 is popular for teaching university students assembly language. It has a simplified instruction set [compared to x86](http://ref.x86asm.net/coder64.html) but contains all the main ideas used in modern CPUs.
+For our project, we will be implementing a VM for a fictional computer called the [LC-3](https://en.wikipedia.org/wiki/LC-3). The LC-3 is popular for teaching university students how to program in assembly language. It has a simplified instruction set [compared to x86](http://ref.x86asm.net/coder64.html) but contains all the main ideas used in modern CPUs.
 
-> **Note:** This article will not teach you assembly. It is not at all necessary. However, if you are interested, you can write and assemble your own LC-3 programs using the [LC-3 Tools](http://highered.mheducation.com/sites/0072467509/student_view0/lc-3_simulator.html).
+> **Note:** This article will not teach you assembly, and it is not at all necessary. However, if you are interested, you can write and assemble your own LC-3 programs using the [LC-3 Tools](http://highered.mheducation.com/sites/0072467509/student_view0/lc-3_simulator.html).
 
 First, we need to simulate the essential hardware components of the machine. Try to understand what each component is, but don't worry right now if you are unsure of how it fits into the larger picture. This is explained in [Executing Programs](#Executing_Programs). Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.
 
 ### Memory
 
-The LC-3 has 65536 memory locations (the maximum that is addressable by a 16-bit unsigned integer $2^{16}$), each of which stores a 16-bit value. It can store only 128kb which is a lot smaller than you may be used to! In our program this memory will be stored in an array:
+The LC-3 has 65536 memory locations (the maximum that is addressable by a 16-bit unsigned integer $2^{16}$), each of which stores a 16-bit value. The total amount it can store is only 128kb which is a lot smaller than you may be used to! In our program, this memory can be simulated with a simple array:
 
 --- Memory Storage
 /* 65536 locations */
@@ -50,7 +67,7 @@ uint16_t memory[UINT16_MAX];
 
 ### Registers
 
-A register is a slot for storing a single value on the CPU. Registers are like the "workbench" of the CPU. For the CPU to work with a piece of data, it has to be in one of the registers. However, since there are only a few registers, only a minimal amount of data can be loaded at any given time. Programs work around this by loading values from memory into registers, calculating values into other registers, and then storing the final results back in memory.
+A register is a slot for storing a single value on the CPU. Registers are like the "workbench" of the CPU. For the CPU to work with a piece of data, it has to be in one of the registers. However, since there just a few registers, only a minimal amount of data can be loaded at any given time. Programs work around this by loading values from memory into registers, calculating values into other registers, and then storing the final results back in memory.
 
 The LC-3 has 10 total registers, each of which is 16 bits. Most of them are general purpose, but a few have designated roles.
 - 8 general purpose registers  (`R0`-`R7`)
@@ -76,13 +93,15 @@ enum
 };
 --- 
 
+Just like the memory, we will store the registers in an array:
+
 --- Register Storage
 uint16_t reg[R_COUNT];
 ---
 
 ### Condition Flags
 
-The `R_COND` register stores condition flags which give us information about the most recently executed calculation. This allows programs to check logical conditions such as `if (x > 0) { ... }`. 
+The `R_COND` register stores condition flags which provide information about the most recently executed calculation. This allows programs to check logical conditions such as `if (x > 0) { ... }`. 
 
 Different CPUs have a variety of condition flags. The LC-3 uses only 3 condition flags which indicate the sign of the previous calculation. 
 --- Condition Flags
@@ -138,35 +157,51 @@ We are finished setting up the hardware components of our VM! You will need to i
 @{Opcodes}
 ---
 
-@s Executing Programs
+@s Assembly Examples
 
 Let's now look at an LC-3 assembly program to get an idea of what the VM actually runs. You don't need to understand everything, just have a general idea of what is going on. Here is a simple "Hello World":
 
 --- Hello World Assembly
-.ORIG x3000                        ; instruct the computer to load program to this address 
+.ORIG x3000                        ; this is the address in memory where the program will be loaded
 LEA R0, HELLO_STR                  ; load the address of the HELLO_STR string into R0 
 PUTs                               ; output the string pointed to by R0 to the console 
 HALT                               ; halt the program
 HELLO_STR .STRINGZ "Hello World!"  ; store this string here in the program 
 ---
 
-Just like in C, the program starts at the top and executes one statement at a time. However, unlike in C, there are no scopes `{}` or control structures such as `if` or `while`; just a flat list of statements. Control flow is controlled in a [goto](https://en.wikipedia.org/wiki/Goto) like way. 
+Just like in C, the program starts at the top and executes one statement at a time. However, unlike C, there are no nested scopes (`{}`) or control structures such as `if` or `while`; just a flat list of statements. This makes it much easer to execute. 
 
-Notice that some of the statements correspond to the opcodes we defined earlier. Previously, we learned that every instruction was 16 bits, but each line looks like it is a different number of characters. That is because this code is written in **assembly** which is a human-readable and writable form. A tool called an **assembler** is used to transform each line of text, into a binary 16-bit instruction. This binary form is what the VM actually runs. 
+Notice that some of the statements have names which match the opcodes we defined earlier. Previously, we learned that every instruction was 16 bits, but each line looks like it is a different number of characters. That is because this code is written in **assembly** which is a human-readable and writable form. A tool called an **assembler** is used to transform each line of text, into a binary 16-bit instruction. This binary form, called **machine code** is what the VM actually runs. 
 
-The commands `.ORIG` and `.STRINGZ` look like instructions but they aren't. They are assembler directives which generate some code or data. For example the `.STRINGZ` places a string into the program binary at the location it is written.
+The commands `.ORIG` and `.STRINGZ` look like instructions but they aren't. They are assembler directives which generate a piece of code or data. For example the `.STRINGZ` places a string into the program binary at the location it is written.
 
-PICTURE HERE
+TODO: PICTURE HERE
 
-To write the VM, you don't need to be fluent in assembly. As long as you follow the proper procedure for reading and executing instructions, *any* LC-3 program will run properly.
+Loops and conditions are done with a [goto](https://en.wikipedia.org/wiki/Goto)-like instruction. Here is another example which counts to 10.
 
-> **Note:** If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that you never anticipated and may not understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works.
+TODO: verify this
+--- Loop Assembly
+.ORIG x3000                        ; this is the address in memory where the program will be loaded
+AND R0, 0                          ; clear R0
+LOOP                               ; label at the top of our loop
+ADD R0, R0, 1                      ; add 1 to R0 and store back in R0
+ADD R1, R0, -10                    ; subtract 10 from R0 and store back in R1
+BRn R1 LOOP                        ; go back to LOOP if the result was negative
+---
 
-Here is the procedure we need to write:
+@s Executing Programs
+
+Once again, these examples are just to give you an idea of what the VM does. To write a VM, you don't need to be fluent in assembly. As long as you follow the proper procedure for reading and executing instructions, *any* LC-3 program will run properly, no matter how complicated it is.
+
+If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that you never anticipated and may not understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works. Here is Turing's take on the subject:
+
+> "The view that machines cannot give rise to surprises is due, I believe, to a fallacy to which philosophers and mathematicians are particularly subject. This is the assumption that as soon as a fact is presented to a mind all consequences of that fact spring into the mind simultaneously with it. It is a very useful assumption under many circumstances, but one too easily forgets that it is false." — [Alan M. Turing](https://watermark.silverchair.com/433.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAAh4wggIaBgkqhkiG9w0BBwagggILMIICBwIBADCCAgAGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMiDpOQkKU7HE7rRrtAgEQgIIB0YetXEZpcE8mvSdDvkl0bjTwLcleUZ7si1mQeISyLC6oZWA-zHOq7IkWd-Iq1xQMJCoi0r1s0F2Y-XJ93Z7fJdAWRztiGgjBamgvLYcdcbxwgeVbIVGaJQTXic7zrRyzt3I0jeCKcVl0S2Y-_GDtNJCjcFWlWvAea_mkKGip6u0IHSQgj4Xdj8qBPV5MqFRyGUY-Zu3JLF8waxBaEEpDUmeoZYSB_LJn75IZgZDj7YEa_2bHe5G5SZVU1ln5jTyGeZ0drBoXIy3otEixAy18MbBC5pYGvgODnePCAdJj0UgWQC9hASfj3W0FP9KGGFjuPciuGgn-17_DNONphEXRxPGcmxUh-s2npl4emepIsMBpGgkDHKYb6LcsuWOuwlizUsl1FGm2ajRNi1d7hJOg6lDmy-pwEtTEDkGmcmqCR7anQgkuAJxuXqZOVvWrJlJsAWCEzbxdFBrcv2TUWC3Veo62sQyIWmMDCcZ-CspIkaPMo1RjLhVq89y3yoSE-uDJK-hQSTgOIASs3Zl1UrPdBr61NNC9zYAs5w_2oZLyX6CR6CN7Zg2lWNqVZvNPs0RDNURCgJsGrJLj9GwyVTXSgr7fsem2d1HsXl9VdwSmg2q6Jw)
+
+Here is a precise description of the procedure we need to write:
 
 1. Load one instruction from memory at the address of the `PC` register. 
 2. Increment the `PC` register.
-3. Look at the opcode to determine which type of instruction it should perform. 
+3. Look at the *opcode* to determine which type of instruction it should perform. 
 4. Perform the instruction using the parameters in the instruction.
 5. Go back to step 1.
 
@@ -261,9 +296,9 @@ The `ADD` instruction takes two numbers, adds them together, and stores the resu
 
 ![Encoding](img/add_layout.gif)
 
-The encoding shows two rows because there are actually two different "modes" for this instruction. Before I explain modes, let's look at the parts that are the same. In both rows, we can see that we start with 4 bits, `0001`. This is the opcode value `OP_ADD`. The next 3 bits are marked `DR`. This stands for destination register. This register is where the added sum will be stored. The next 3 bits are `SR1`. This is the register containing the first number to add. 
+The encoding shows two rows because there are two different "modes" for this instruction. Before I explain modes, let's just observe the similarites between them. In both rows, we can see that we start with 4 bits, `0001`. This is the opcode value for `OP_ADD`. The next 3 bits are marked `DR`. This stands for destination register. This register is where the added sum will be stored. The next 3 bits are `SR1`. This is the register containing the first number to add. 
 
-So we know where we want to store the result and we know the first number to add. Now we need to get the second number to add. However, here the two rows start to look different. Notice that on the top row the 5th bit is a `0` and in the second row it is `1`. This bit indicates whether it is *immediate mode* or *register mode*. In *register mode*, the second number is stored in a register just like the first. This is marked `SR2` and is contained in bits 2-0. Bits 3 and 4 are unused. In assembly this would be written as: 
+So we know where we want to store the result and we know the first number to add. The last bit of information we need is the second number to add. Now the two rows start to look different. Notice that on the top row the 5th bit is a `0` and in the second row it is `1`. This bit indicates whether it is *immediate mode* or *register mode*. In *register mode*, the second number is stored in a register just like the first. This is marked `SR2` and is contained in bits 2-0. Bits 3 and 4 are unused. In assembly this would be written as: 
 
 --- Add Register Assembly
 ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
@@ -279,9 +314,7 @@ Here is a summary from the specification:
 
 > If bit [5] is 0, the second source operand is obtained from `SR2`. If bit [5] is 1, the second source operand is obtained by sign-extending the `imm5` field to 16 bits. In either case, the second source operand and the contents of `SR1` are bitwise ANDed, and the result stored in DR. (Pg. 526)
 
-That sounds just like we discussed. But what is "sign-extending"? While the immediate mode value has only 5 bits, it needs to be added to a 16-bit number. For positive numbers, we can just use 0's for the additional bits and the value is the same. However, for negative numbers, this causes a problem. For example, -1 in 5 bits is `1 1111`. If we just add 0's, this is `0000 0000 0001 1111` which is 32. Sign extension prevents this problem by filling in 0's for positive numbers and 1's for negative numbers. 
-
-> **Note:** If you are interested in exactly how negative numbers can be represented in binary. You can read about [Two's Complement](https://en.wikipedia.org/wiki/Two%27s_complement). However, this is not essential. You can just copy the code below and use it when you need to sign extend numbers.
+That sounds just like what we discussed. But what is "sign-extending"? Although the immediate mode value has only 5 bits, it needs to be added to a 16-bit number. Those 5 bits need to be extended to 16 to match the other number. For positive numbers, we can fill in 0's for the additional bits and the value is the same. However, for negative numbers, this causes a problem. For example, -1 stored in 5 bits is `1 1111`. If we just extended it with 0's, this is `0000 0000 0001 1111` which is equal to 32! Sign extension prevents this problem by filling in 0's for positive numbers and 1's for negative numbers. 
  
 --- Sign Extend
 uint16_t sign_extend(uint16_t x, int bit_count)
@@ -293,11 +326,13 @@ uint16_t sign_extend(uint16_t x, int bit_count)
 }
 ---
 
+> **Note:** If you are interested in exactly how negative numbers can be represented in binary. You can read about [Two's Complement](https://en.wikipedia.org/wiki/Two%27s_complement). However, this is not essential. You can just copy the code above and use it when you need to sign extend numbers.
+
 There is one last sentence in the specification:
 
 > The condition codes are set based on whether the binary value produced, taken as a 2’s complement integer, is negative, zero, or positive. (Pg. 526)
 
-Earlier we defined a condition flags enum, and now it's time to put them to good use. *Any time* a value is written to a register, we need to update the flags to indicate its sign.
+Earlier we defined a condition flags enum, and now it's time to use them. *Any time* a value is written to a register, we need to update the flags to indicate its sign. We will write a function so that this can be easily reused:
 
 --- Update Flags
 void update_flags(uint16_t r0)
@@ -316,13 +351,6 @@ void update_flags(uint16_t r0)
     }  
 }
 ---
-
-This section contained a lot of information, so let's summarize.
-- ADD takes two values and stores them in a register.
-- In register mode, the second value to add is in a register.
-- In immediate mode, the second value is embedded in the right-most 5 bits of the instruction.
-- Values which are smaller than 16 bits need to be sign extended.
-- Any time an instruction modifies a register, the condition flags need to be updated.
 
 Now we are ready to write the code for the `ADD` case:
 
@@ -350,25 +378,32 @@ Now we are ready to write the code for the `ADD` case:
 }
 ---
 
-You may be feeling overwhelmed about writing 15 more instructions. However, all of what you learned here will be reused. Most of the instructions use some combination of sign extension and different modes, and then update flags.
+This section contained a lot of information, so let's summarize.
+- ADD takes two values and stores them in a register.
+- In register mode, the second value to add is in a register.
+- In immediate mode, the second value is embedded in the right-most 5 bits of the instruction.
+- Values which are shorter than 16 bits need to be sign extended.
+- Any time an instruction modifies a register, the condition flags need to be updated.
+
+You may be feeling overwhelmed about writing 15 more instructions. However, all of what you learned here will be reused. Most of the instructions use some combination of sign extension, different modes, and updating flags.
 
 ### LDI 
 
 `LDI` stands for "load indirect." This instruction is used to load a value from a location in memory into a register. The specification is found on page 532.
 
-Here is what it looks like:
+Here is what the binary layout looks like:
 
 ![Encoding](img/ldi_layout.gif)
 
-In contrast to `ADD`, there are no modes and fewer parameters. This time, the opcode is `1010` which corresponds with the `OP_LDI` enum value. Just like in `ADD`, we have a 3-bit `DR` (the destination register) for storing the loaded value. The remaining bits are labeled `PCoffset9`. This is an immediate value embedded in the instruction (similar to `imm5`). Since this instruction loads from memory, we can guess that this number is some kind of address which tells us where to load from. The specification provides more detail:
+In contrast to `ADD`, there are no modes and fewer parameters. This time, the opcode is `1010` which corresponds with the `OP_LDI` enum value. Just like `ADD`, it contains a 3-bit `DR` (the destination register) for storing the loaded value. The remaining bits are labeled `PCoffset9`. This is an immediate value embedded in the instruction (similar to `imm5`). Since this instruction loads from memory, we can guess that this number is some kind of address which tells us where to load from. The specification provides more detail:
 
-> An address is computed by sign-extending bits [8:0] to 16 bits and adding this value to the incremented `PC`. What is stored in memory at this address is the address of the data to be loaded into `DR`. (Pg. 532)
+> An address is computed by sign-extending bits `[8:0]` to 16 bits and adding this value to the incremented `PC`. What is stored in memory at this address is the address of the data to be loaded into `DR`. (Pg. 532)
 
 Just like before, we need to sign extend this 9-bit value and then add it to the current `PC`. (If you look back at the execution loop, the `PC` was incremented right after this instruction was loaded.) The resulting sum is an address to a location in memory, and that address *contains, yet another* value which is the address of the value to load.
 
-Let's look at an example:
+TODO: picture
 
-While the following may seem like a roundabout way to read from memory, it may be necessary at times. The `LD` instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. `LDI` is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable which is a pointer to some data.
+This may seem like a roundabout way to read from memory, but it is very necessary.  The `LD` instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. `LDI` is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable which is a pointer to some data.
 
 --- LDI Assembly
 ; char* far_data = ...; // local variable containing a pointer to some far away data
@@ -382,7 +417,7 @@ DATA_ADDRESS .FILL DATA
 DATA .STRINGZ "Hello World!"
 ---
 
-Same as before, we need to update flags after putting the value into `DR`:
+Same as before, the flags need to be updated after putting the value into `DR`:
 
 > The condition codes are set based on whether the value loaded is negative, zero, or positive. (Pg. 532)
 
@@ -399,13 +434,13 @@ Here is the code for this case:
 }
 ---
 
-(We discuss `mem_read` soon in a later section.)
+(`mem_read` will be discussed in a later section.)
 
 As I said, this instruction shared a lot of the code and knowledge learned from `ADD`. You will find this is the case with the remaining instructions.
 
 You now need to go back and implement the rest of the switch cases for the instructions. Follow the specification and use the code listed here to complete the others. The code for all instructions is listed at the end of the tutorial. After you are done, the bulk of your VM will be completed!
 
-@s Full Instructions 
+@s Instruction Cheat Sheet
 
 This section contains the full implementations of the remaining instructions.
 
@@ -536,7 +571,11 @@ This section contains the full implementations of the remaining instructions.
 
 @s Trap Routines
 
-A trap code is a like an opcode for a routine that performs a special task such as interacting with an I/O device. These include getting input from the keyboard and displaying strings to the console. The trap routines are provided by the system and act like a very simple operating system for the LC-3.
+The LC-3 provides a few predefined routines for performing common tasks, and interacting with I/O devices. For example, routines are provided for getting input from the keyboard and for displaying strings to the console. These are called *trap routines* which you can think of as the operating system for the LC-3. Each trap routine is assigned a *trap code* which identifies it (similar to an opcode). To execute one, the `TRAP` instruction is called with the trap code of the desired routine.
+
+// TODO: TRAP picture
+
+Define an enum for each trap code:
 
 --- TRAP Codes
 enum
@@ -549,13 +588,16 @@ enum
     TRAP_HALT = 0x25   /* halt the program */
 };
 ---
-The trap codes are called like an instruction in assembly, but they are actually composed of other instructions. In the official LC-3 simulator trap routines are [written in assembly](docs/os.asm), just like a regular program. When a trap code is called the `PC` is moved to that codes address. The CPU executes instructions of the proced, and when it is complete the PC is returned to the location it was called from. 
 
-> **Note:** This is why programs start at address `0x3000`. The lower addresses are left empty to leave space for the trap routines.
+You may be wondering why the trap codes are not included in the instructions. This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system functions in C). In the official LC-3 simulator trap routines are [written in assembly](docs/os.asm). When a trap code is called the `PC` is moved to that codes address. The CPU executes instructions of the proced, and when it is complete the PC is returned to the location it was called from. 
 
-The assembly trap routines are a good simulation of what a physically constructed LC-3 computer would do, but it isn't the best fit for a VM. Instead of implementing rudimentary I/O routines from scratch, we want to expose the ones that are already available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability.
+> **Note:** This is why programs start at address `0x3000` instead of `0x0`. The lower addresses are left empty to leave space for the trap routine code.
 
-There is no specification for *how* trap routines must be implemented, just what they are supposed to do. So, we will write ours in C. When a trap code is called, a C function will be called, and when it is completed, execution will return to the program.
+There is no specification for *how* trap routines must be implemented, only what they are supposed to do. So in our VM we are going to do things slightly differently by writing them in C. When a trap code is invoked a C function will be called, and when it is completed, execution will return to the program.
+
+Even though the trap routines can be written in assembly and this is what a physical LC-3 computer would do, it isn't the best fit for a VM. Instead of writing our own primitive I/O routines, we can take advantage of the ones available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability.
+
+> **Note:** Getting input from the keyboard is one specific example of this. The assembly version uses a loop to continuously check the keyboard for input. This consumes a lot of CPU time for nothing! Using a proper OS input function allows the program to sleep until input is received.
 
 In the switch case form the `TRAP` opcode, add another switch:
 
@@ -583,7 +625,7 @@ switch (instr & 0xFF)
 }
 ---
 
-As with instructions, I will show you how to implement a single TRAP and leave the rest to you.
+As with instructions, I will show you how to implement a single trap routine and leave the rest to you.
 
 ### PUTS
 
@@ -594,7 +636,7 @@ To display a string, we must give the trap routine a string to display. This is 
 The specification says:
 
 > Write a string of ASCII characters to the console display. The characters are contained
-> in consecutive memory locations, one character per memory location, starting with the address specified in R0. Writing terminates with the occurrence of `x0000` in a memory location. (Pg. 543)
+> in consecutive memory locations, one character per memory location, starting with the address specified in `R0`. Writing terminates with the occurrence of `x0000` in a memory location. (Pg. 543)
 
 Notice that unlike C strings, characters are *not stored* in a single byte, but in a single memory location. Memory locations in LC-3 are 16 bits, so each character in the string is 16 bits wide. To display this with a C function, we will need to convert each value to a char and output them individually.
 
@@ -611,9 +653,9 @@ Notice that unlike C strings, characters are *not stored* in a single byte, but 
 }
 ---
 
-That's all for this routine. The trap routines are pretty straightforward. Go back to the specification and implement the others now. As with the instructions, the full code can be found at the end of the tutorial.
+That's all for this routine. The trap routines are pretty straightforward if you are familiar with C. Go back to the specification and implement the others now. As with the instructions, the full code can be found at the end of the tutorial.
 
-@s All Trap Routines
+@s Trap Routine Cheat Sheet
 
 This section contains the full implementations of the remaining trap routines.
 
@@ -663,11 +705,11 @@ running = 0;
 
 @s Loading Programs
 
-We have talked a lot about loading and executing instructions from memory, but how do instructions get into memory in the first place? When an assembly program is converted to machine code, the result is a file containing an array of instructions and data. This can be loaded by just copying the contents right into an address in memory.
+We have mentioned a lot about loading and executing instructions from memory, but how do instructions get into memory in the first place? When an assembly program is converted to machine code, the result is a file containing an array of instructions and data. This can be loaded by just copying the contents right into an address in memory.
 
 The first 16 bits of the program file specify the address in memory where the program should start. This address is called the **origin**. It must be read first, after which the rest of the data can be read from the file into memory starting at the origin address.
 
-Here is the code for reading an LC-3 program file:
+Here is the code for reading an LC-3 program into memory:
 
 --- Read Image File
 void read_image_file(FILE* file)
@@ -691,7 +733,7 @@ void read_image_file(FILE* file)
 }
 ---
 
-Notice that `swap16` is called on each of the values that are loaded. LC-3 programs are big-endian, but most of the modern computers we use are little endian. As a result, we need to swap each `uint16` that is loaded. (If you happen to be using an odd computer, like a PPC then you should not swap.)
+Notice that `swap16` is called on each loaded value. LC-3 programs are big-endian, but most of the modern computers we use are little endian. As a result, we need to swap each `uint16` that is loaded. (If you happen to be using a [strange computer](https://en.wikipedia.org/wiki/Power_Mac_G4_Cube), like a [PPC](https://en.wikipedia.org/wiki/PowerPC#Endian_modes) then you should not swap.)
 
 --- Swap
 uint16_t swap16(uint16_t x)
@@ -718,7 +760,7 @@ int read_image(const char* image_path)
 
 Some special registers are not accessible from the normal register table. Instead, a special address is reserved for them in memory. To read and write to these registers, you just read and write to their memory location. These are called **memory mapped registers**. They are commonly used to interact with special hardware devices.
 
-The LC-3 has two memory mapped registers that we will implement. They are the keyboard status register (`KBSR`) and keyboard data register (`KBDR`). The `KBSR` indicates whether a key has been pressed, and the `KBDR` indicates which specific key was pressed.
+The LC-3 has two memory mapped registers that need to be implemented. They are the keyboard status register (`KBSR`) and keyboard data register (`KBDR`). The `KBSR` indicates whether a key has been pressed, and the `KBDR` identifies which key was pressed.
 
 Although you can request keyboard input using `GETC`, this blocks execution until input is received. `KBSR` and `KBDR` allows you to [poll the state](https://en.wikipedia.org/wiki/Polling_(computer_science)) of the device and continue execution, so the program can stay responsive while waiting for input.
 
@@ -772,9 +814,9 @@ All that we have written should have been added to the C file.
 @{Main Loop}
 ---
 
-@s Platform Specific Details
+@s Platform Details
 
-This section contains some tedious details that we need to access the keyboard and behave nicely. These are not insightful or relevant to learning about VMs. Feel free to copy paste!
+This section contains some tedious details that are needed to access the keyboard and behave nicely. These are not insightful or relevant to learning about VMs. Feel free to copy paste!
 
 If you are trying to run the VM on a non-Unix operating system, such as Windows, these functions need to be replaced with Windows-specific versions.
 
@@ -792,11 +834,12 @@ uint16_t check_key()
 }
 ---
 
-These extract the program path from the program arguments.
+This extracts the program path from the program arguments and outputs a usage example if they are missing.
 
 --- Load Arguments
 if (argc < 2) 
 {
+    /* show usage string */
     printf("lc3 [image-file1] ...\n"); 
     exit(2);
 }
@@ -879,6 +922,8 @@ restore_input_buffering();
 ---
 
 @s Running the LC-3
+
+TODO: this example
 
 You should now be able to build and run the LC-3 VM.
 
@@ -1045,4 +1090,5 @@ int main(int argc, const char* argv[])
     @{Shutdown}
 }
 ---
+
 
