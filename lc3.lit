@@ -58,7 +58,7 @@ First, we need to simulate the essential hardware components of the machine. Try
 
 ### Memory
 
-The LC-3 has 65536 memory locations (the maximum that is addressable by a 16-bit unsigned integer $2^{16}$), each of which stores a 16-bit value. The total amount it can store is only 128kb which is a lot smaller than you may be used to! In our program, this memory can be simulated with a simple array:
+The LC-3 has 65536 memory locations (the maximum that is addressable by a 16-bit unsigned integer $2^{16}$), each of which stores a 16-bit value. This totals to only 128kb which is a lot smaller than you may be used to! In our program, this memory can be simulated with a simple array:
 
 --- Memory Storage
 /* 65536 locations */
@@ -167,26 +167,24 @@ LEA R0, HELLO_STR                  ; load the address of the HELLO_STR string in
 PUTs                               ; output the string pointed to by R0 to the console 
 HALT                               ; halt the program
 HELLO_STR .STRINGZ "Hello World!"  ; store this string here in the program 
+.END
 ---
 
-Just like in C, the program starts at the top and executes one statement at a time. However, unlike C, there are no nested scopes (`{}`) or control structures such as `if` or `while`; just a flat list of statements. This makes it much easer to execute. 
+Just like in C, the program starts at the top and executes one statement at a time. However, unlike C, there are no nested scopes `{}` or control structures such as `if` or `while`; just a flat list of statements. This makes it much easer to execute. 
 
 Notice that some of the statements have names which match the opcodes we defined earlier. Previously, we learned that every instruction was 16 bits, but each line looks like it is a different number of characters. That is because this code is written in **assembly** which is a human-readable and writable form. A tool called an **assembler** is used to transform each line of text, into a binary 16-bit instruction. This binary form, called **machine code** is what the VM actually runs. 
 
 The commands `.ORIG` and `.STRINGZ` look like instructions but they aren't. They are assembler directives which generate a piece of code or data. For example the `.STRINGZ` places a string into the program binary at the location it is written.
 
-TODO: PICTURE HERE
-
 Loops and conditions are done with a [goto](https://en.wikipedia.org/wiki/Goto)-like instruction. Here is another example which counts to 10.
 
-TODO: verify this
 --- Loop Assembly
-.ORIG x3000                        ; this is the address in memory where the program will be loaded
-AND R0, 0                          ; clear R0
+AND R0, R0, 0                      ; clear R0
 LOOP                               ; label at the top of our loop
 ADD R0, R0, 1                      ; add 1 to R0 and store back in R0
 ADD R1, R0, -10                    ; subtract 10 from R0 and store back in R1
-BRn R1 LOOP                        ; go back to LOOP if the result was negative
+BRn LOOP                           ; go back to LOOP if the result was negative
+... ; R0 is now 10!
 ---
 
 @s Executing Programs
@@ -195,8 +193,7 @@ Once again, these examples are just to give you an idea of what the VM does. To 
 
 If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that you never anticipated and may not understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works. Here is Turing's take on the subject:
 
-> "The view that machines cannot give rise to surprises is due, I believe, to a fallacy to which philosophers and mathematicians are particularly subject. This is the assumption that as soon as a fact is presented to a mind all consequences of that fact spring into the mind simultaneously with it. It is a very useful assumption under many circumstances, but one too easily forgets that it is false." — [Alan M. Turing](https://watermark.silverchair.com/433.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAAh4wggIaBgkqhkiG9w0BBwagggILMIICBwIBADCCAgAGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMiDpOQkKU7HE7rRrtAgEQgIIB0YetXEZpcE8mvSdDvkl0bjTwLcleUZ7si1mQeISyLC6oZWA-zHOq7IkWd-Iq1xQMJCoi0r1s0F2Y-XJ93Z7fJdAWRztiGgjBamgvLYcdcbxwgeVbIVGaJQTXic7zrRyzt3I0jeCKcVl0S2Y-_GDtNJCjcFWlWvAea_mkKGip6u0IHSQgj4Xdj8qBPV5MqFRyGUY-Zu3JLF8waxBaEEpDUmeoZYSB_LJn75IZgZDj7YEa_2bHe5G5SZVU1ln5jTyGeZ0drBoXIy3otEixAy18MbBC5pYGvgODnePCAdJj0UgWQC9hASfj3W0FP9KGGFjuPciuGgn-17_DNONphEXRxPGcmxUh-s2npl4emepIsMBpGgkDHKYb6LcsuWOuwlizUsl1FGm2ajRNi1d7hJOg6lDmy-pwEtTEDkGmcmqCR7anQgkuAJxuXqZOVvWrJlJsAWCEzbxdFBrcv2TUWC3Veo62sQyIWmMDCcZ-CspIkaPMo1RjLhVq89y3yoSE-uDJK-hQSTgOIASs3Zl1UrPdBr61NNC9zYAs5w_2oZLyX6CR6CN7Zg2lWNqVZvNPs0RDNURCgJsGrJLj9GwyVTXSgr7fsem2d1HsXl9VdwSmg2q6Jw)
-
+> "The view that machines cannot give rise to surprises is due, I believe, to a fallacy to which philosophers and mathematicians are particularly subject. This is the assumption that as soon as a fact is presented to a mind all consequences of that fact spring into the mind simultaneously with it. It is a very useful assumption under many circumstances, but one too easily forgets that it is false." — [Alan M. Turing](https://academic.oup.com/mind/article-pdf/LIX/236/433/9866119/433.pdf)
 Here is a precise description of the procedure we need to write:
 
 1. Load one instruction from memory at the address of the `PC` register. 
@@ -213,8 +210,8 @@ Let's start outlining this process in the main loop:
 
 int main(int argc, const char* argv[])
 {
-    @{Setup}
     @{Load Arguments}
+    @{Setup}
 
     /* set the PC to starting position */
     /* 0x3000 is the default */
@@ -907,13 +904,16 @@ restore_input_buffering();
 #include <sys/mman.h>
 ---
 
-@s Running the LC-3
+@s Running the VM
 
-TODO: this example
+You can now build and run the LC-3 VM!
+1. Compile your program with your favorite C compiler.
+2. Download the assembled version of [2048](bin/2048.obj).
+3. Run the the program with the 2048 file as an argument:
 
-You should now be able to build and run the LC-3 VM.
+    `lc3-vm path/to/2048.obj`
 
-`lc3-vm 2048.obj`
+4. Play 2048!
 
 --- 2048 Example
 Control the game using WASD keys.
@@ -1061,8 +1061,8 @@ int running = 1;
 
 int main(int argc, const char* argv[])
 {
-    @{Setup}
     @{Load Arguments}
+    @{Setup}
 
     enum { PC_START = 0x3000 };
     reg[R_PC] = PC_START;
