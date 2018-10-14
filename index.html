@@ -38,25 +38,62 @@ h={};g()}};typeof define==="function"&&define.amd&&define("google-code-prettify"
 <style>
 .pln{color:#1b181b}.str{color:#918b3b}.kwd{color:#7b59c0}.com{color:#9e8f9e}.typ{color:#516aec}.lit{color:#a65926}.clo,.opn,.pun{color:#1b181b}.tag{color:#ca402b}.atn{color:#a65926}.atv{color:#159393}.dec{color:#a65926}.var{color:#ca402b}.fun{color:#516aec}pre.prettyprint{background:#f7f3f7;color:#ab9bab;font-family:Menlo,Consolas,"Bitstream Vera Sans Mono","DejaVu Sans Mono",Monaco,monospace;font-size:12px;line-height:1.5;border:1px solid #d8cad8;padding:10px}ol.linenums{margin-top:0;margin-bottom:0}
 body{min-width:200px;max-width:850px;margin:0 auto;padding:30px;}.chapter-nav{font-size: 10pt;}a:link,a:visited{color:#00f}.codeblock_name,code,pre.prettyprint{font-family:Monaco,"Lucida Console",monospace}body{font-size:14pt}.codeblock_name,.math,.seealso,code{font-size:10pt}.codeblock{page-break-inside:avoid;padding-bottom:15px}.math{text-indent:0}pre.prettyprint{font-size:10pt;padding:10px;border-radius:10px;border:none;white-space:pre-wrap}.codeblock_name{margin-top:1.25em;display:block}a:link{text-decoration:none}a:link:not(.lit):hover{color:#00f;text-decoration:underline}a:link:active{color:red}h4{padding-right:1.25em}h4.noheading{margin-bottom:0}h1{text-align:center}code{padding:2px}pre{-moz-tab-size:4;-o-tab-size:4;tab-size:4}p:not(.notp){margin:0;text-indent:2em}.two-col{list-style-type:none}.two-col li:before{content:'-';padding:5px;margin-right:5px;color:orange;background-color:#fff;display:inline-block}@media print{body{font-size:10pt}pre.prettyprint{font-size:8pt}.seealso{font-size:9pt}.codeblock_name,.math,code{font-size:8pt}.math{text-indent:0}}
+img {
+    max-width: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
 </style>
 </head>
 <body onload="prettyPrint()">
 <section>
 <h1>Write your Own Virtual Machine</h1>
-<a name="1:1"><div class="section"><h4>1. Introduction</h4></a>
+<a name="1:1"><div class="section"><h4>1. Contents</h4></a>
+<ol>
+<li><a href="#1:2">Introduction</a>
+</li>
+<li><a href="#1:3">LC-3 Architecture</a>
+</li>
+<li><a href="#1:4">Assembly Examples</a>
+</li>
+<li><a href="#1:5">Executing Programs</a>
+</li>
+<li><a href="#1:6">Implementing Instructions</a>
+</li>
+<li><a href="#1:7">Instruction Cheat Sheet</a>
+</li>
+<li><a href="#1:8">Trap Routines</a>
+</li>
+<li><a href="#1:9">Trap Routine Cheat Sheet</a>
+</li>
+<li><a href="#1:10">Loading Programs</a>
+</li>
+<li><a href="#1:11">Memory Mapped Registers</a>
+</li>
+<li><a href="#1:12">Platform Details</a>
+</li>
+<li><a href="#1:13">Running the VM</a>
+</li>
+<li><a href="#1:14">Alternate C++ Technique</a>
+</li>
+</ol>
+
+</div>
+<a name="1:2"><div class="section"><h4>2. Introduction</h4></a>
 <p>In this tutorial, I will teach you how to write your own virtual machine (VM). If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer and better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be surprisingly simple and enlightening.
 </p>
 <p>The <a href="lc3.c">final code</a> is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do arithmetic with binary. A few parts of the code are written specifically for Unix systems (including macOS). They are necessary for running the program but are not important to the tutorial itself. By the end, your VM will be able to run programs such as my friend's <a href="https://github.com/rpendleton/lc3-2048">2048</a> or my <a href="https://github.com/justinmeiners/lc3-rogue">Roguelike</a>.
 </p>
-<blockquote><p> <strong>Note:</strong> This article is a <a href="https://en.wikipedia.org/wiki/Literate_programming">literate program</a>. This means you are reading the source code right now! I will explain each block of code, one at a time, and these will be "woven" together to make the final program. You can be sure that no detail will be left out.
+<blockquote><p> <strong>Note:</strong> This VM is a <a href="https://en.wikipedia.org/wiki/Literate_programming">literate program</a>. This means you are reading the source code right now! I will explain each block of code, one at a time, and these will be "woven" together to make the final program. You can be sure that no detail will be left out.
 </p>
 </blockquote>
 <h3> What is a virtual machine?</h3>
 <p>A VM is a program that acts like a computer. It simulates a CPU along with a few other hardware components, allowing it to perform arithmetic, read and write to memory, and interact with I/O devices, just like a physical computer. Most importantly, it has its own machine language which you can you can use to program it.
 </p>
-<p>Some VMs are designed to reproduce the behavior of some particular computer. You may have played video game emulators for platforms such as the NES. Most people don't have an NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program.
+<p>Some VMs are designed to reproduce the behavior of some particular computer, such as video game emulators. Most people don't have an NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program.
 </p>
-<p>Other VMs don't act like any real computer and are entirely made up! This is done to make software development easier. A VM is a standard platform which is portable across different hardware configurations. Instead of rewriting a program in different dialects of assembly for each CPU architecture, developers only need to write the small VM program in each assembly language. Each program is then written only once in the VM's assembly language. 
+<p>Other VMs don't act like any real computer and are entirely made up! This is useful for making software development easier. A VM is a standard platform which is portable across different hardware configurations. Instead of rewriting a program in different dialects of assembly for each CPU architecture, developers only need to write the small VM program in each assembly language. Each program is then written only once in the VM's assembly language. 
 </p>
 <p><img src="img/no_vm.gif" alt="architecture specific implementation">
 </p>
@@ -65,7 +102,7 @@ body{min-width:200px;max-width:850px;margin:0 auto;padding:30px;}.chapter-nav{fo
 <blockquote><p> <strong>Note:</strong> A compiler solves a similar problem by compiling a standard <em>high-level language</em> to several CPU architectures. A VM creates a standard <em>CPU architecture</em> which is simulated by a program. A compiler has no runtime component while a VM does. Even though compilers do a pretty good job, writing a new one that targets multiple platforms is very difficult, so VMs are still helpful here. In practice, VMs and compilers are mixed at various levels.
 </p>
 </blockquote>
-<p>The <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">Java Virtual Machine (JVM)</a> is a very successful example. The JVM itself is a moderately sized program that is small enough for one programmer to understand. This has made it possible to be written for thousands of devices including your phone. Once the JVM is implemented on a new device, any Java/Kotlin/Clojure program ever written can run it without modification. The only cost is the overhead of the VM itself and the <a href="https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/">further abstraction</a> from the machine. Most of the time, this is a pretty good tradeoff. 
+<p>The <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">Java Virtual Machine (JVM)</a> is a very successful example. The JVM itself is a moderately sized program that is small enough for one programmer to understand. This has made it possible to be written for thousands of devices including phones. Once the JVM is implemented on a new device, any Java/Kotlin/Clojure program ever written can run it without modification. The only cost is the overhead of the VM itself and the <a href="https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/">further abstraction</a> from the machine. Most of the time, this is a pretty good tradeoff. 
 </p>
 <p>Virtual machines are also useful for executing code in a secure or isolated way. One application of this is garbage collection. There <a href="https://www.lua.org/pil/24.2.html">is no trivial way</a> to implement automatic garbage collection on top of C or C++ since a program cannot see its own stack or variables. However, a VM is “outside” the program it is running and can observe all of the <a href="https://en.wikipedia.org/wiki/Tracing_garbage_collection">memory references</a> on the stack. 
 </p>
@@ -73,30 +110,30 @@ body{min-width:200px;max-width:850px;margin:0 auto;padding:30px;}.chapter-nav{fo
 </p>
 
 </div>
-<a name="1:2"><div class="section"><h4>2. LC-3 Architecture</h4></a>
-<p>For our project, we will be implementing a VM for a fictional computer called the <a href="https://en.wikipedia.org/wiki/LC-3">LC-3</a>. The LC-3 is popular for teaching university students assembly language. It has a simplified instruction set <a href="http://ref.x86asm.net/coder64.html">compared to x86</a> but contains all the main ideas used in modern CPUs.
+<a name="1:3"><div class="section"><h4>3. LC-3 Architecture</h4></a>
+<p>For our project, we will be implementing a VM for a fictional computer called the <a href="https://en.wikipedia.org/wiki/LC-3">LC-3</a>. The LC-3 is popular for teaching university students how to program in assembly language. It has a simplified instruction set <a href="http://ref.x86asm.net/coder64.html">compared to x86</a> but contains all the main ideas used in modern CPUs.
 </p>
-<blockquote><p> <strong>Note:</strong> This article will not teach you assembly. It is not at all necessary. However, if you are interested, you can write and assemble your own LC-3 programs using the <a href="http://highered.mheducation.com/sites/0072467509/student_view0/lc-3_simulator.html">LC-3 Tools</a>.
+<blockquote><p> <strong>Note:</strong> This tutorial will not teach you assembly, and it is not at all necessary. However, if you are interested, you can write and assemble your own LC-3 programs using the <a href="http://highered.mheducation.com/sites/0072467509/student_view0/lc-3_simulator.html">LC-3 Tools</a>.
 </p>
 </blockquote>
 <p>First, we need to simulate the essential hardware components of the machine. Try to understand what each component is, but don't worry right now if you are unsure of how it fits into the larger picture. This is explained in <a href="#Executing_Programs">Executing Programs</a>. Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.
 </p>
 <h3> Memory</h3>
-<p>The LC-3 has 65536 memory locations (the maximum that is addressable by a 16-bit unsigned integer <span class="math">2^{16}</span>), each of which stores a 16-bit value. It can store only 128kb which is a lot smaller than you may be used to! In our program this memory will be stored in an array:
+<p>The LC-3 has 65536 memory locations (the maximum that is addressable by a 16-bit unsigned integer <span class="math">2^{16}</span>), each of which stores a 16-bit value. This totals to only 128kb which is a lot smaller than you may be used to! In our program, this memory can be simulated with a simple array:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Memory Storage <a href="lc3.html#1:2">2</a>}</span>
+<span class="codeblock_name">{Memory Storage <a href="lc3.html#1:3">3</a>}</span>
 <pre class="prettyprint lang-c">
 /* 65536 locations */
 uint16_t memory[UINT16_MAX]; 
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:9">9</a> and <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in sections <a href="lc3.html#1:11">11</a> and <a href="lc3.html#1:14">14</a></p>
 </div>
 <h3> Registers</h3>
-<p>A register is a slot for storing a single value on the CPU. Registers are like the "workbench" of the CPU. For the CPU to work with a piece of data, it has to be in one of the registers. However, since there are only a few registers, only a minimal amount of data can be loaded at any given time. Programs work around this by loading values from memory into registers, calculating values into other registers, and then storing the final results back in memory.
+<p>A register is a slot for storing a single value on the CPU. Registers are like the "workbench" of the CPU. For the CPU to work with a piece of data, it has to be in one of the registers. However, since there just a few registers, only a minimal amount of data can be loaded at any given time. Programs work around this by loading values from memory into registers, calculating values into other registers, and then storing the final results back in memory.
 </p>
 <p>The LC-3 has 10 total registers, each of which is 16 bits. Most of them are general purpose, but a few have designated roles.
 </p>
@@ -112,7 +149,7 @@ uint16_t memory[UINT16_MAX];
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Registers <a href="lc3.html#1:2">2</a>}</span>
+<span class="codeblock_name">{Registers <a href="lc3.html#1:3">3</a>}</span>
 <pre class="prettyprint lang-c">
 enum
 {
@@ -131,26 +168,28 @@ enum
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:14">14</a></p>
 </div>
+<p>Just like the memory, we will store the registers in an array:
+</p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Register Storage <a href="lc3.html#1:2">2</a>}</span>
+<span class="codeblock_name">{Register Storage <a href="lc3.html#1:3">3</a>}</span>
 <pre class="prettyprint lang-c">
 uint16_t reg[R_COUNT];
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:9">9</a> and <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in sections <a href="lc3.html#1:11">11</a> and <a href="lc3.html#1:14">14</a></p>
 </div>
 <h3> Condition Flags</h3>
-<p>The <code>R_COND</code> register stores condition flags which give us information about the most recently executed calculation. This allows programs to check logical conditions such as <code>if (x &gt; 0) { ... }</code>. 
+<p>The <code>R_COND</code> register stores condition flags which provide information about the most recently executed calculation. This allows programs to check logical conditions such as <code>if (x &gt; 0) { ... }</code>. 
 </p>
 <p>Different CPUs have a variety of condition flags. The LC-3 uses only 3 condition flags which indicate the sign of the previous calculation. 
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Condition Flags <a href="lc3.html#1:2">2</a>}</span>
+<span class="codeblock_name">{Condition Flags <a href="lc3.html#1:3">3</a>}</span>
 <pre class="prettyprint lang-c">
 enum
 {
@@ -161,7 +200,7 @@ enum
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:14">14</a></p>
 </div>
 <blockquote><p> <strong>Note:</strong> (The <code>&lt;&lt;</code> symbol is called the <a href="https://msdn.microsoft.com/en-us/library/336xbhcz.aspx">left bitshift operator</a>. <code>(n &lt;&lt; k)</code> shifts the bits of <code>n</code> to the left <code>k</code> places. Read that link if you are not familiar. It will be important.)
 </p>
@@ -175,7 +214,7 @@ enum
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Opcodes <a href="lc3.html#1:2">2</a>}</span>
+<span class="codeblock_name">{Opcodes <a href="lc3.html#1:3">3</a>}</span>
 <pre class="prettyprint lang-c">
 enum 
 {
@@ -199,7 +238,7 @@ enum
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:14">14</a></p>
 </div>
 <blockquote><p> <strong>Note:</strong> The Intel x86 architecture has hundreds of instructions, while others such as ARM have very few like the LC-3. Small instruction sets are referred to as <a href="https://en.wikipedia.org/wiki/Reduced_instruction_set_computer">RISCs</a> while larger ones are called <a href="https://en.wikipedia.org/wiki/Complex_instruction_set_computer">CISCs</a>. Larger instruction sets are more convenient to write assembly for and require instructions to complete a task but are more complex and expensive for engineers to design and manufacture. There are many other tradeoffs which make the designs come into and out of style.
 </p>
@@ -208,57 +247,77 @@ enum
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{<strong>lc3.c</strong> <a href="lc3.html#1:2">2</a>}</span>
+<span class="codeblock_name">{<strong>lc3.c</strong> <a href="lc3.html#1:3">3</a>}</span>
 <pre class="prettyprint lang-c">
-<span class="nocode pln">{Includes, <a href="lc3.html#1:10">10</a>}</span>
+<span class="nocode pln">{Includes, <a href="lc3.html#1:12">12</a>}</span>
 
-<span class="nocode pln">{Registers, <a href="lc3.html#1:2">2</a>}</span>
-<span class="nocode pln">{Condition Flags, <a href="lc3.html#1:2">2</a>}</span>
-<span class="nocode pln">{Opcodes, <a href="lc3.html#1:2">2</a>}</span>
+<span class="nocode pln">{Registers, <a href="lc3.html#1:3">3</a>}</span>
+<span class="nocode pln">{Condition Flags, <a href="lc3.html#1:3">3</a>}</span>
+<span class="nocode pln">{Opcodes, <a href="lc3.html#1:3">3</a>}</span>
 </pre>
-<p class="seealso">Added to in section <a href="lc3.html#1:9">9</a></p>
+<p class="seealso">Added to in section <a href="lc3.html#1:11">11</a></p>
 
 
 </div>
 </div>
-<a name="1:3"><div class="section"><h4>3. Executing Programs</h4></a>
+<a name="1:4"><div class="section"><h4>4. Assembly Examples</h4></a>
 <p>Let's now look at an LC-3 assembly program to get an idea of what the VM actually runs. You don't need to understand everything, just have a general idea of what is going on. Here is a simple "Hello World":
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Hello World Assembly <a href="lc3.html#1:3">3</a>}</span>
+<span class="codeblock_name">{Hello World Assembly <a href="lc3.html#1:4">4</a>}</span>
 <pre class="prettyprint lang-c">
-.ORIG x3000                        ; instruct the computer to load program to this address 
+.ORIG x3000                        ; this is the address in memory where the program will be loaded
 LEA R0, HELLO_STR                  ; load the address of the HELLO_STR string into R0 
 PUTs                               ; output the string pointed to by R0 to the console 
 HALT                               ; halt the program
 HELLO_STR .STRINGZ "Hello World!"  ; store this string here in the program 
+.END
 </pre>
 
 
 
 </div>
-<p>Just like in C, the program starts at the top and executes one statement at a time. However, unlike in C, there are no scopes <code>{}</code> or control structures such as <code>if</code> or <code>while</code>; just a flat list of statements. Control flow is controlled in a <a href="https://en.wikipedia.org/wiki/Goto">goto</a> like way. 
+<p>Just like in C, the program starts at the top and executes one statement at a time. However, unlike C, there are no nested scopes <code>{}</code> or control structures such as <code>if</code> or <code>while</code>; just a flat list of statements. This makes it much easer to execute. 
 </p>
-<p>Notice that some of the statements correspond to the opcodes we defined earlier. Previously, we learned that every instruction was 16 bits, but each line looks like it is a different number of characters. That is because this code is written in <strong>assembly</strong> which is a human-readable and writable form. A tool called an <strong>assembler</strong> is used to transform each line of text, into a binary 16-bit instruction. This binary form is what the VM actually runs. 
+<p>Notice that some of the statements have names which match the opcodes we defined earlier. Previously, we learned that every instruction was 16 bits, but each line looks like it is a different number of characters. That is because this code is written in <strong>assembly</strong> which is a human-readable and writable form. A tool called an <strong>assembler</strong> is used to transform each line of text, into a binary 16-bit instruction. This binary form, called <strong>machine code</strong> is what the VM actually runs. 
 </p>
-<p>The commands <code>.ORIG</code> and <code>.STRINGZ</code> look like instructions but they aren't. They are assembler directives which generate some code or data. For example the <code>.STRINGZ</code> places a string into the program binary at the location it is written.
+<p>The commands <code>.ORIG</code> and <code>.STRINGZ</code> look like instructions but they aren't. They are assembler directives which generate a piece of code or data. For example the <code>.STRINGZ</code> places a string into the program binary at the location it is written.
 </p>
-<p>PICTURE HERE
+<p>Loops and conditions are done with a <a href="https://en.wikipedia.org/wiki/Goto">goto</a>-like instruction. Here is another example which counts to 10.
 </p>
-<p>To write the VM, you don't need to be fluent in assembly. As long as you follow the proper procedure for reading and executing instructions, <em>any</em> LC-3 program will run properly.
+
+<div class="codeblock">
+<span class="codeblock_name">{Loop Assembly <a href="lc3.html#1:4">4</a>}</span>
+<pre class="prettyprint lang-c">
+AND R0, R0, 0                      ; clear R0
+LOOP                               ; label at the top of our loop
+ADD R0, R0, 1                      ; add 1 to R0 and store back in R0
+ADD R1, R0, -10                    ; subtract 10 from R0 and store back in R1
+BRn LOOP                           ; go back to LOOP if the result was negative
+... ; R0 is now 10!
+</pre>
+
+
+
+</div>
+</div>
+<a name="1:5"><div class="section"><h4>5. Executing Programs</h4></a>
+<p>Once again, these examples are just to give you an idea of what the VM does. To write a VM, you don't need to be fluent in assembly. As long as you follow the proper procedure for reading and executing instructions, <em>any</em> LC-3 program will run properly, no matter how complicated it is.
 </p>
-<blockquote><p> <strong>Note:</strong> If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that you never anticipated and may not understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works.
+<p>If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that you never anticipated and may not understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works. Here is Turing's take on the subject:
+</p>
+<blockquote><p> "The view that machines cannot give rise to surprises is due, I believe, to a fallacy to which philosophers and mathematicians are particularly subject. This is the assumption that as soon as a fact is presented to a mind all consequences of that fact spring into the mind simultaneously with it. It is a very useful assumption under many circumstances, but one too easily forgets that it is false." — <a href="https://academic.oup.com/mind/article-pdf/LIX/236/433/9866119/433.pdf">Alan M. Turing</a>
 </p>
 </blockquote>
-<p>Here is the procedure we need to write:
+<p>Here is a precise description of the procedure we need to write:
 </p>
 <ol>
 <li>Load one instruction from memory at the address of the <code>PC</code> register. 
 </li>
 <li>Increment the <code>PC</code> register.
 </li>
-<li>Look at the opcode to determine which type of instruction it should perform. 
+<li>Look at the <em>opcode</em> to determine which type of instruction it should perform. 
 </li>
 <li>Perform the instruction using the parameters in the instruction.
 </li>
@@ -271,13 +330,13 @@ HELLO_STR .STRINGZ "Hello World!"  ; store this string here in the program
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Main Loop <a href="lc3.html#1:3">3</a>}</span>
+<span class="codeblock_name">{Main Loop <a href="lc3.html#1:5">5</a>}</span>
 <pre class="prettyprint lang-c">
 
 int main(int argc, const char* argv[])
 {
-<span class="nocode pln">    {Setup, <a href="lc3.html#1:10">10</a>}</span>
-<span class="nocode pln">    {Load Arguments, <a href="lc3.html#1:10">10</a>}</span>
+<span class="nocode pln">    {Load Arguments, <a href="lc3.html#1:12">12</a>}</span>
+<span class="nocode pln">    {Setup, <a href="lc3.html#1:12">12</a>}</span>
 
     /* set the PC to starting position */
     /* 0x3000 is the default */
@@ -294,86 +353,86 @@ int main(int argc, const char* argv[])
         switch (op)
         {
             case OP_ADD:
-<span class="nocode pln">                {ADD, <a href="lc3.html#1:4">4</a>}</span>
+<span class="nocode pln">                {ADD, <a href="lc3.html#1:6">6</a>}</span>
                 break;
             case OP_AND:
-<span class="nocode pln">                {AND, <a href="lc3.html#1:5">5</a>}</span>
+<span class="nocode pln">                {AND, <a href="lc3.html#1:7">7</a>}</span>
                 break;
             case OP_NOT:
-<span class="nocode pln">                {NOT, <a href="lc3.html#1:5">5</a>}</span>
+<span class="nocode pln">                {NOT, <a href="lc3.html#1:7">7</a>}</span>
                 break;
             case OP_BR:
-<span class="nocode pln">                {BR, <a href="lc3.html#1:5">5</a>}</span>
+<span class="nocode pln">                {BR, <a href="lc3.html#1:7">7</a>}</span>
                 break;
             case OP_JMP:
-<span class="nocode pln">                {JMP, <a href="lc3.html#1:5">5</a>}</span>
+<span class="nocode pln">                {JMP, <a href="lc3.html#1:7">7</a>}</span>
                 break;
             case OP_JSR:
-<span class="nocode pln">                {JSR, <a href="lc3.html#1:5">5</a>}</span>
+<span class="nocode pln">                {JSR, <a href="lc3.html#1:7">7</a>}</span>
                 break;
             case OP_LD:
-<span class="nocode pln">                {LD, <a href="lc3.html#1:5">5</a>}</span>
+<span class="nocode pln">                {LD, <a href="lc3.html#1:7">7</a>}</span>
                 break;
             case OP_LDR:
-<span class="nocode pln">                {LDR, <a href="lc3.html#1:5">5</a>}</span>
+<span class="nocode pln">                {LDR, <a href="lc3.html#1:7">7</a>}</span>
                 break;
             case OP_LEA:
-<span class="nocode pln">                {LEA, <a href="lc3.html#1:5">5</a>}</span>
+<span class="nocode pln">                {LEA, <a href="lc3.html#1:7">7</a>}</span>
                 break;
             case OP_ST:
-<span class="nocode pln">                {ST, <a href="lc3.html#1:5">5</a>}</span>
+<span class="nocode pln">                {ST, <a href="lc3.html#1:7">7</a>}</span>
                 break;
             case OP_STI:
-<span class="nocode pln">                {STI, <a href="lc3.html#1:5">5</a>}</span>
+<span class="nocode pln">                {STI, <a href="lc3.html#1:7">7</a>}</span>
                 break;
             case OP_STR:
-<span class="nocode pln">                {STR, <a href="lc3.html#1:5">5</a>}</span>
+<span class="nocode pln">                {STR, <a href="lc3.html#1:7">7</a>}</span>
                 break;
             case OP_TRAP:
-<span class="nocode pln">                {TRAP, <a href="lc3.html#1:6">6</a>}</span>
+<span class="nocode pln">                {TRAP, <a href="lc3.html#1:8">8</a>}</span>
                 break;
             case OP_RES:
             case OP_RTI:
             default:
-<span class="nocode pln">                {BAD OPCODE, <a href="lc3.html#1:4">4</a>}</span>
+<span class="nocode pln">                {BAD OPCODE, <a href="lc3.html#1:6">6</a>}</span>
                 break;      
         }
     }
-<span class="nocode pln">    {Shutdown, <a href="lc3.html#1:10">10</a>}</span>
+<span class="nocode pln">    {Shutdown, <a href="lc3.html#1:12">12</a>}</span>
 }
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:9">9</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:11">11</a></p>
 </div>
 </div>
-<a name="1:4"><div class="section"><h4>4. Implementing Instructions</h4></a>
+<a name="1:6"><div class="section"><h4>6. Implementing Instructions</h4></a>
 <p>Your task now is to fill in each opcode case with a proper implementation. A detailed specification for each instruction is included in the project <a href="docs/lc3-isa.pdf">documents</a>. You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will demonstrate how to implement two of them here. The code for the rest can be found in the next section.
 </p>
 <p>Two of the opcodes specified will not be needed in this project, they are <code>OP_RTI</code> and <code>OP_RES</code>. You can ignore these cases or throw an error if they are executed:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{BAD OPCODE <a href="lc3.html#1:4">4</a>}</span>
+<span class="codeblock_name">{BAD OPCODE <a href="lc3.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
 abort();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
 </div>
 <h3> ADD</h3>
 <p>The <code>ADD</code> instruction takes two numbers, adds them together, and stores the result in a register. The specification for it is found on page 526. Each <code>ADD</code> instruction looks like the following:
 </p>
-<p><img src="img/add_layout.gif" alt="Encoding">
+<p><img src="img/add_layout.gif" alt="Add Encoding">
 </p>
-<p>The encoding shows two rows because there are actually two different "modes" for this instruction. Before I explain modes, let's look at the parts that are the same. In both rows, we can see that we start with 4 bits, <code>0001</code>. This is the opcode value <code>OP_ADD</code>. The next 3 bits are marked <code>DR</code>. This stands for destination register. This register is where the added sum will be stored. The next 3 bits are <code>SR1</code>. This is the register containing the first number to add. 
+<p>The encoding shows two rows because there are two different "modes" for this instruction. Before I explain modes, let's just observe the similarites between them. In both rows, we can see that we start with 4 bits, <code>0001</code>. This is the opcode value for <code>OP_ADD</code>. The next 3 bits are marked <code>DR</code>. This stands for destination register. This register is where the added sum will be stored. The next 3 bits are <code>SR1</code>. This is the register containing the first number to add. 
 </p>
-<p>So we know where we want to store the result and we know the first number to add. Now we need to get the second number to add. However, here the two rows start to look different. Notice that on the top row the 5th bit is a <code>0</code> and in the second row it is <code>1</code>. This bit indicates whether it is <em>immediate mode</em> or <em>register mode</em>. In <em>register mode</em>, the second number is stored in a register just like the first. This is marked <code>SR2</code> and is contained in bits 2-0. Bits 3 and 4 are unused. In assembly this would be written as: 
+<p>So we know where we want to store the result and we know the first number to add. The last bit of information we need is the second number to add. Now the two rows start to look different. Notice that on the top row the 5th bit is a <code>0</code> and in the second row it is <code>1</code>. This bit indicates whether it is <em>immediate mode</em> or <em>register mode</em>. In <em>register mode</em>, the second number is stored in a register just like the first. This is marked <code>SR2</code> and is contained in bits 2-0. Bits 3 and 4 are unused. In assembly this would be written as: 
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Add Register Assembly <a href="lc3.html#1:4">4</a>}</span>
+<span class="codeblock_name">{Add Register Assembly <a href="lc3.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
 ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
 </pre>
@@ -385,7 +444,7 @@ ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Add Immediate Assembly <a href="lc3.html#1:4">4</a>}</span>
+<span class="codeblock_name">{Add Immediate Assembly <a href="lc3.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
 ADD R0 R0 1 ; add 1 to R0 and store back in R0
 </pre>
@@ -398,14 +457,11 @@ ADD R0 R0 1 ; add 1 to R0 and store back in R0
 <blockquote><p> If bit [5] is 0, the second source operand is obtained from <code>SR2</code>. If bit [5] is 1, the second source operand is obtained by sign-extending the <code>imm5</code> field to 16 bits. In either case, the second source operand and the contents of <code>SR1</code> are bitwise ANDed, and the result stored in DR. (Pg. 526)
 </p>
 </blockquote>
-<p>That sounds just like we discussed. But what is "sign-extending"? While the immediate mode value has only 5 bits, it needs to be added to a 16-bit number. For positive numbers, we can just use 0's for the additional bits and the value is the same. However, for negative numbers, this causes a problem. For example, -1 in 5 bits is <code>1 1111</code>. If we just add 0's, this is <code>0000 0000 0001 1111</code> which is 32. Sign extension prevents this problem by filling in 0's for positive numbers and 1's for negative numbers. 
+<p>That sounds just like what we discussed. But what is "sign-extending"? Although the immediate mode value has only 5 bits, it needs to be added to a 16-bit number. Those 5 bits need to be extended to 16 to match the other number. For positive numbers, we can fill in 0's for the additional bits and the value is the same. However, for negative numbers, this causes a problem. For example, -1 stored in 5 bits is <code>1 1111</code>. If we just extended it with 0's, this is <code>0000 0000 0001 1111</code> which is equal to 32! Sign extension prevents this problem by filling in 0's for positive numbers and 1's for negative numbers. 
 </p>
-<blockquote><p> <strong>Note:</strong> If you are interested in exactly how negative numbers can be represented in binary. You can read about <a href="https://en.wikipedia.org/wiki/Two%27s_complement">Two's Complement</a>. However, this is not essential. You can just copy the code below and use it when you need to sign extend numbers.
-</p>
-</blockquote>
 
 <div class="codeblock">
-<span class="codeblock_name">{Sign Extend <a href="lc3.html#1:4">4</a>}</span>
+<span class="codeblock_name">{Sign Extend <a href="lc3.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
 uint16_t sign_extend(uint16_t x, int bit_count)
 {
@@ -417,18 +473,21 @@ uint16_t sign_extend(uint16_t x, int bit_count)
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:10">10</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
 </div>
+<blockquote><p> <strong>Note:</strong> If you are interested in exactly how negative numbers can be represented in binary. You can read about <a href="https://en.wikipedia.org/wiki/Two%27s_complement">Two's Complement</a>. However, this is not essential. You can just copy the code above and use it when you need to sign extend numbers.
+</p>
+</blockquote>
 <p>There is one last sentence in the specification:
 </p>
 <blockquote><p> The condition codes are set based on whether the binary value produced, taken as a 2’s complement integer, is negative, zero, or positive. (Pg. 526)
 </p>
 </blockquote>
-<p>Earlier we defined a condition flags enum, and now it's time to put them to good use. <em>Any time</em> a value is written to a register, we need to update the flags to indicate its sign.
+<p>Earlier we defined a condition flags enum, and now it's time to use them. <em>Any time</em> a value is written to a register, we need to update the flags to indicate its sign. We will write a function so that this can be easily reused:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Update Flags <a href="lc3.html#1:4">4</a>}</span>
+<span class="codeblock_name">{Update Flags <a href="lc3.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
 void update_flags(uint16_t r0)
 {
@@ -448,27 +507,13 @@ void update_flags(uint16_t r0)
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:10">10</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
 </div>
-<p>This section contained a lot of information, so let's summarize.
-</p>
-<ul>
-<li>ADD takes two values and stores them in a register.
-</li>
-<li>In register mode, the second value to add is in a register.
-</li>
-<li>In immediate mode, the second value is embedded in the right-most 5 bits of the instruction.
-</li>
-<li>Values which are smaller than 16 bits need to be sign extended.
-</li>
-<li>Any time an instruction modifies a register, the condition flags need to be updated.
-</li>
-</ul>
 <p>Now we are ready to write the code for the <code>ADD</code> case:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{ADD <a href="lc3.html#1:4">4</a>}</span>
+<span class="codeblock_name">{ADD <a href="lc3.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
 {
     /* destination register (DR) */
@@ -494,56 +539,52 @@ void update_flags(uint16_t r0)
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
 </div>
-<p>You may be feeling overwhelmed about writing 15 more instructions. However, all of what you learned here will be reused. Most of the instructions use some combination of sign extension and different modes, and then update flags.
+<p>This section contained a lot of information, so let's summarize.
+</p>
+<ul>
+<li>ADD takes two values and stores them in a register.
+</li>
+<li>In register mode, the second value to add is in a register.
+</li>
+<li>In immediate mode, the second value is embedded in the right-most 5 bits of the instruction.
+</li>
+<li>Values which are shorter than 16 bits need to be sign extended.
+</li>
+<li>Any time an instruction modifies a register, the condition flags need to be updated.
+</li>
+</ul>
+<p>You may be feeling overwhelmed about writing 15 more instructions. However, all of what you learned here will be reused. Most of the instructions use some combination of sign extension, different modes, and updating flags.
 </p>
 <h3> LDI</h3>
 <p><code>LDI</code> stands for "load indirect." This instruction is used to load a value from a location in memory into a register. The specification is found on page 532.
 </p>
-<p>Here is what it looks like:
+<p>Here is what the binary layout looks like:
 </p>
-<p><img src="img/ldi_layout.gif" alt="Encoding">
+<p><img src="img/ldi_layout.gif" alt="LDI Encoding">
 </p>
-<p>In contrast to <code>ADD</code>, there are no modes and fewer parameters. This time, the opcode is <code>1010</code> which corresponds with the <code>OP_LDI</code> enum value. Just like in <code>ADD</code>, we have a 3-bit <code>DR</code> (the destination register) for storing the loaded value. The remaining bits are labeled <code>PCoffset9</code>. This is an immediate value embedded in the instruction (similar to <code>imm5</code>). Since this instruction loads from memory, we can guess that this number is some kind of address which tells us where to load from. The specification provides more detail:
+<p>In contrast to <code>ADD</code>, there are no modes and fewer parameters. This time, the opcode is <code>1010</code> which corresponds with the <code>OP_LDI</code> enum value. Just like <code>ADD</code>, it contains a 3-bit <code>DR</code> (the destination register) for storing the loaded value. The remaining bits are labeled <code>PCoffset9</code>. This is an immediate value embedded in the instruction (similar to <code>imm5</code>). Since this instruction loads from memory, we can guess that this number is some kind of address which tells us where to load from. The specification provides more detail:
 </p>
-<blockquote><p> An address is computed by sign-extending bits [8:0] to 16 bits and adding this value to the incremented <code>PC</code>. What is stored in memory at this address is the address of the data to be loaded into <code>DR</code>. (Pg. 532)
+<blockquote><p> An address is computed by sign-extending bits <code>[8:0]</code> to 16 bits and adding this value to the incremented <code>PC</code>. What is stored in memory at this address is the address of the data to be loaded into <code>DR</code>. (Pg. 532)
 </p>
 </blockquote>
 <p>Just like before, we need to sign extend this 9-bit value and then add it to the current <code>PC</code>. (If you look back at the execution loop, the <code>PC</code> was incremented right after this instruction was loaded.) The resulting sum is an address to a location in memory, and that address <em>contains, yet another</em> value which is the address of the value to load.
 </p>
-<p>Let's look at an example:
+<p>TODO: picture
 </p>
-<p>While the following may seem like a roundabout way to read from memory, it may be necessary at times. The <code>LD</code> instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. <code>LDI</code> is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable which is a pointer to some data.
+<p>This may seem like a roundabout way to read from memory, but it is very necessary.  The <code>LD</code> instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. <code>LDI</code> is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data (<code>char* far_data = ...;</code>).
 </p>
-
-<div class="codeblock">
-<span class="codeblock_name">{LDI Assembly <a href="lc3.html#1:4">4</a>}</span>
-<pre class="prettyprint lang-c">
-; char* far_data = ...; // local variable containing a pointer to some far away data
-
-LDI R0 DATA_ADDRESS
-; ...
-; near in memory...
-DATA_ADDRESS .FILL DATA
-; ...
-; far away in memory...
-DATA .STRINGZ "Hello World!"
-</pre>
-
-
-
-</div>
-<p>Same as before, we need to update flags after putting the value into <code>DR</code>:
+<p>Same as before, the flags need to be updated after putting the value into <code>DR</code>:
 </p>
 <blockquote><p> The condition codes are set based on whether the value loaded is negative, zero, or positive. (Pg. 532)
 </p>
 </blockquote>
-<p>Here is the code for this case:
+<p>Here is the code for this case: (<code>mem_read</code> will be discussed in a later section.)
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{LDI <a href="lc3.html#1:4">4</a>}</span>
+<span class="codeblock_name">{LDI <a href="lc3.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
 {
     /* destination register (DR) */
@@ -559,21 +600,19 @@ DATA .STRINGZ "Hello World!"
 
 
 </div>
-<p>(We discuss <code>mem_read</code> soon in a later section.)
-</p>
 <p>As I said, this instruction shared a lot of the code and knowledge learned from <code>ADD</code>. You will find this is the case with the remaining instructions.
 </p>
 <p>You now need to go back and implement the rest of the switch cases for the instructions. Follow the specification and use the code listed here to complete the others. The code for all instructions is listed at the end of the tutorial. After you are done, the bulk of your VM will be completed!
 </p>
 
 </div>
-<a name="1:5"><div class="section"><h4>5. Full Instructions</h4></a>
+<a name="1:7"><div class="section"><h4>7. Instruction Cheat Sheet</h4></a>
 <p>This section contains the full implementations of the remaining instructions.
 </p>
 <h3> <a href="https://en.wikipedia.org/wiki/Bitwise_operation#AND">Bitwise and</a></h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{AND <a href="lc3.html#1:5">5</a>}</span>
+<span class="codeblock_name">{AND <a href="lc3.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -595,12 +634,12 @@ DATA .STRINGZ "Hello World!"
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
 </div>
 <h3> <a href="https://en.wikipedia.org/wiki/Bitwise_operation#NOT">Bitwise not</a></h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{NOT <a href="lc3.html#1:5">5</a>}</span>
+<span class="codeblock_name">{NOT <a href="lc3.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -612,12 +651,12 @@ DATA .STRINGZ "Hello World!"
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
 </div>
 <h3> Branch</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{BR <a href="lc3.html#1:5">5</a>}</span>
+<span class="codeblock_name">{BR <a href="lc3.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t pc_offset = sign_extend((instr) &amp; 0x1ff, 9);
@@ -630,14 +669,14 @@ DATA .STRINGZ "Hello World!"
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
 </div>
 <h3> Jump</h3>
 <p><code>RET</code> is listed as a separate instruction in the specification, since it is a different keyword in assembly. However, it is actually a special case of <code>JMP</code>. <code>RET</code> happens whenever <code>R1</code> is 7.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{JMP <a href="lc3.html#1:5">5</a>}</span>
+<span class="codeblock_name">{JMP <a href="lc3.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     /* Also handles RET */
@@ -647,12 +686,12 @@ DATA .STRINGZ "Hello World!"
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
 </div>
 <h3> Jump Register</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{JSR <a href="lc3.html#1:5">5</a>}</span>
+<span class="codeblock_name">{JSR <a href="lc3.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r1 = (instr &gt;&gt; 6) &amp; 0x7;
@@ -673,12 +712,12 @@ DATA .STRINGZ "Hello World!"
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
 </div>
 <h3> Load</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{LD <a href="lc3.html#1:5">5</a>}</span>
+<span class="codeblock_name">{LD <a href="lc3.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -689,12 +728,12 @@ DATA .STRINGZ "Hello World!"
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
 </div>
 <h3> Load Register</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{LDR <a href="lc3.html#1:5">5</a>}</span>
+<span class="codeblock_name">{LDR <a href="lc3.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -706,12 +745,12 @@ DATA .STRINGZ "Hello World!"
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
 </div>
 <h3> Load Effective Address</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{LEA <a href="lc3.html#1:5">5</a>}</span>
+<span class="codeblock_name">{LEA <a href="lc3.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -722,12 +761,12 @@ DATA .STRINGZ "Hello World!"
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
 </div>
 <h3> Store</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{ST <a href="lc3.html#1:5">5</a>}</span>
+<span class="codeblock_name">{ST <a href="lc3.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -737,12 +776,12 @@ DATA .STRINGZ "Hello World!"
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
 </div>
 <h3> Store Indirect</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{STI <a href="lc3.html#1:5">5</a>}</span>
+<span class="codeblock_name">{STI <a href="lc3.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -752,12 +791,12 @@ DATA .STRINGZ "Hello World!"
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
 </div>
 <h3> Store Register</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{STR <a href="lc3.html#1:5">5</a>}</span>
+<span class="codeblock_name">{STR <a href="lc3.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -768,15 +807,19 @@ DATA .STRINGZ "Hello World!"
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:3">3</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
 </div>
 </div>
-<a name="1:6"><div class="section"><h4>6. Trap Routines</h4></a>
-<p>A trap code is a like an opcode for a routine that performs a special task such as interacting with an I/O device. These include getting input from the keyboard and displaying strings to the console. The trap routines are provided by the system and act like a very simple operating system for the LC-3.
+<a name="1:8"><div class="section"><h4>8. Trap Routines</h4></a>
+<p>The LC-3 provides a few predefined routines for performing common tasks, and interacting with I/O devices. For example, routines are provided for getting input from the keyboard and for displaying strings to the console. These are called <em>trap routines</em> which you can think of as the operating system for the LC-3. Each trap routine is assigned a <em>trap code</em> which identifies it (similar to an opcode). To execute one, the <code>TRAP</code> instruction is called with the trap code of the desired routine.
+</p>
+<p><img src="img/trap_layout.gif" alt="Trap Encoding">
+</p>
+<p>Define an enum for each trap code:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP Codes <a href="lc3.html#1:6">6</a>}</span>
+<span class="codeblock_name">{TRAP Codes <a href="lc3.html#1:8">8</a>}</span>
 <pre class="prettyprint lang-c">
 enum
 {
@@ -790,50 +833,53 @@ enum
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:9">9</a> and <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in sections <a href="lc3.html#1:11">11</a> and <a href="lc3.html#1:14">14</a></p>
 </div>
-<p>The trap codes are called like an instruction in assembly, but they are actually composed of other instructions. In the official LC-3 simulator trap routines are <a href="docs/os.asm">written in assembly</a>, just like a regular program. When a trap code is called the <code>PC</code> is moved to that codes address. The CPU executes instructions of the proced, and when it is complete the PC is returned to the location it was called from. 
+<p>You may be wondering why the trap codes are not included in the instructions. This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system functions in C). In the official LC-3 simulator trap routines are <a href="docs/os.asm">written in assembly</a>. When a trap code is called the <code>PC</code> is moved to that codes address. The CPU executes instructions of the proced, and when it is complete the PC is returned to the location it was called from. 
 </p>
-<blockquote><p> <strong>Note:</strong> This is why programs start at address <code>0x3000</code>. The lower addresses are left empty to leave space for the trap routines.
+<blockquote><p> <strong>Note:</strong> This is why programs start at address <code>0x3000</code> instead of <code>0x0</code>. The lower addresses are left empty to leave space for the trap routine code.
 </p>
 </blockquote>
-<p>The assembly trap routines are a good simulation of what a physically constructed LC-3 computer would do, but it isn't the best fit for a VM. Instead of implementing rudimentary I/O routines from scratch, we want to expose the ones that are already available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability.
+<p>There is no specification for <em>how</em> trap routines must be implemented, only what they are supposed to do. So in our VM we are going to do things slightly differently by writing them in C. When a trap code is invoked a C function will be called, and when it is completed, execution will return to the program.
 </p>
-<p>There is no specification for <em>how</em> trap routines must be implemented, just what they are supposed to do. So, we will write ours in C. When a trap code is called, a C function will be called, and when it is completed, execution will return to the program.
+<p>Even though the trap routines can be written in assembly and this is what a physical LC-3 computer would do, it isn't the best fit for a VM. Instead of writing our own primitive I/O routines, we can take advantage of the ones available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability.
 </p>
+<blockquote><p> <strong>Note:</strong> Getting input from the keyboard is one specific example of this. The assembly version uses a loop to continuously check the keyboard for input. This consumes a lot of CPU time for nothing! Using a proper OS input function allows the program to sleep until input is received.
+</p>
+</blockquote>
 <p>In the switch case form the <code>TRAP</code> opcode, add another switch:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP <a href="lc3.html#1:6">6</a>}</span>
+<span class="codeblock_name">{TRAP <a href="lc3.html#1:8">8</a>}</span>
 <pre class="prettyprint lang-c">
 switch (instr &amp; 0xFF)
 {
     case TRAP_GETC:
-<span class="nocode pln">        {TRAP GETC, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">        {TRAP GETC, <a href="lc3.html#1:9">9</a>}</span>
         break;
     case TRAP_OUT:
-<span class="nocode pln">        {TRAP OUT, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">        {TRAP OUT, <a href="lc3.html#1:9">9</a>}</span>
         break;
     case TRAP_PUTS:
-<span class="nocode pln">        {TRAP PUTS, <a href="lc3.html#1:6">6</a>}</span>
+<span class="nocode pln">        {TRAP PUTS, <a href="lc3.html#1:8">8</a>}</span>
         break;
     case TRAP_IN:
-<span class="nocode pln">        {TRAP IN, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">        {TRAP IN, <a href="lc3.html#1:9">9</a>}</span>
         break;
     case TRAP_PUTSP:
-<span class="nocode pln">        {TRAP PUTSP, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">        {TRAP PUTSP, <a href="lc3.html#1:9">9</a>}</span>
         break;
     case TRAP_HALT:
-<span class="nocode pln">        {TRAP HALT, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">        {TRAP HALT, <a href="lc3.html#1:9">9</a>}</span>
         break;
 }
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:3">3</a> and <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in sections <a href="lc3.html#1:5">5</a> and <a href="lc3.html#1:14">14</a></p>
 </div>
-<p>As with instructions, I will show you how to implement a single TRAP and leave the rest to you.
+<p>As with instructions, I will show you how to implement a single trap routine and leave the rest to you.
 </p>
 <h3> PUTS</h3>
 <p>The <code>PUTS</code> trap code is used to output a null-terminated string (similar to <code>printf</code> in C). The specification is found on page 543.
@@ -843,14 +889,14 @@ switch (instr &amp; 0xFF)
 <p>The specification says:
 </p>
 <blockquote><p> Write a string of ASCII characters to the console display. The characters are contained
- in consecutive memory locations, one character per memory location, starting with the address specified in R0. Writing terminates with the occurrence of <code>x0000</code> in a memory location. (Pg. 543)
+ in consecutive memory locations, one character per memory location, starting with the address specified in <code>R0</code>. Writing terminates with the occurrence of <code>x0000</code> in a memory location. (Pg. 543)
 </p>
 </blockquote>
 <p>Notice that unlike C strings, characters are <em>not stored</em> in a single byte, but in a single memory location. Memory locations in LC-3 are 16 bits, so each character in the string is 16 bits wide. To display this with a C function, we will need to convert each value to a char and output them individually.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP PUTS <a href="lc3.html#1:6">6</a>}</span>
+<span class="codeblock_name">{TRAP PUTS <a href="lc3.html#1:8">8</a>}</span>
 <pre class="prettyprint lang-c">
 {
     /* one char per word */
@@ -867,57 +913,57 @@ switch (instr &amp; 0xFF)
 
 
 </div>
-<p>That's all for this routine. The trap routines are pretty straightforward. Go back to the specification and implement the others now. As with the instructions, the full code can be found at the end of the tutorial.
+<p>That's all for this routine. The trap routines are pretty straightforward if you are familiar with C. Go back to the specification and implement the others now. As with the instructions, the full code can be found at the end of the tutorial.
 </p>
 
 </div>
-<a name="1:7"><div class="section"><h4>7. All Trap Routines</h4></a>
+<a name="1:9"><div class="section"><h4>9. Trap Routine Cheat Sheet</h4></a>
 <p>This section contains the full implementations of the remaining trap routines.
 </p>
 <p>Input Character
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP GETC <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{TRAP GETC <a href="lc3.html#1:9">9</a>}</span>
 <pre class="prettyprint lang-c">
 /* read a single ASCII char */
 reg[R_R0] = (uint16_t)getchar(); 
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:6">6</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:8">8</a></p>
 </div>
 <p>Output Character
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP OUT <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{TRAP OUT <a href="lc3.html#1:9">9</a>}</span>
 <pre class="prettyprint lang-c">
 putc((char)reg[R_R0], stdout);
 fflush(stdout);
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:6">6</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:8">8</a></p>
 </div>
 <p>Prompt for Input Character
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP IN <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{TRAP IN <a href="lc3.html#1:9">9</a>}</span>
 <pre class="prettyprint lang-c">
 printf("Enter a character: ");
 reg[R_R0] = (uint16_t)getchar();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:6">6</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:8">8</a></p>
 </div>
 <p>Output String
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP PUTSP <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{TRAP PUTSP <a href="lc3.html#1:9">9</a>}</span>
 <pre class="prettyprint lang-c">
 {
     /* one char per byte (two bytes per word)
@@ -937,13 +983,13 @@ reg[R_R0] = (uint16_t)getchar();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:6">6</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:8">8</a></p>
 </div>
 <p>Halt Program
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP HALT <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{TRAP HALT <a href="lc3.html#1:9">9</a>}</span>
 <pre class="prettyprint lang-c">
 puts("HALT");
 fflush(stdout);
@@ -951,19 +997,19 @@ running = 0;
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:6">6</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:8">8</a></p>
 </div>
 </div>
-<a name="1:8"><div class="section"><h4>8. Loading Programs</h4></a>
-<p>We have talked a lot about loading and executing instructions from memory, but how do instructions get into memory in the first place? When an assembly program is converted to machine code, the result is a file containing an array of instructions and data. This can be loaded by just copying the contents right into an address in memory.
+<a name="1:10"><div class="section"><h4>10. Loading Programs</h4></a>
+<p>We have mentioned a lot about loading and executing instructions from memory, but how do instructions get into memory in the first place? When an assembly program is converted to machine code, the result is a file containing an array of instructions and data. This can be loaded by just copying the contents right into an address in memory.
 </p>
 <p>The first 16 bits of the program file specify the address in memory where the program should start. This address is called the <strong>origin</strong>. It must be read first, after which the rest of the data can be read from the file into memory starting at the origin address.
 </p>
-<p>Here is the code for reading an LC-3 program file:
+<p>Here is the code for reading an LC-3 program into memory:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Read Image File <a href="lc3.html#1:8">8</a>}</span>
+<span class="codeblock_name">{Read Image File <a href="lc3.html#1:10">10</a>}</span>
 <pre class="prettyprint lang-c">
 void read_image_file(FILE* file)
 {
@@ -987,13 +1033,13 @@ void read_image_file(FILE* file)
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:10">10</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
 </div>
-<p>Notice that <code>swap16</code> is called on each of the values that are loaded. LC-3 programs are big-endian, but most of the modern computers we use are little endian. As a result, we need to swap each <code>uint16</code> that is loaded. (If you happen to be using an odd computer, like a PPC then you should not swap.)
+<p>Notice that <code>swap16</code> is called on each loaded value. LC-3 programs are big-endian, but most of the modern computers we use are little endian. As a result, we need to swap each <code>uint16</code> that is loaded. (If you happen to be using a <a href="https://en.wikipedia.org/wiki/Power_Mac_G4_Cube">strange computer</a>, like a <a href="https://en.wikipedia.org/wiki/PowerPC#Endian_modes">PPC</a> then you should not swap.)
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Swap <a href="lc3.html#1:8">8</a>}</span>
+<span class="codeblock_name">{Swap <a href="lc3.html#1:10">10</a>}</span>
 <pre class="prettyprint lang-c">
 uint16_t swap16(uint16_t x)
 {
@@ -1002,23 +1048,41 @@ uint16_t swap16(uint16_t x)
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:10">10</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
 </div>
 <blockquote><p> <strong>Note:</strong> <a href="https://en.wikipedia.org/wiki/Endianness">Endianness</a> refers to how bytes of an integer are interpreted. In little-endian, the first byte is the least significant digit, and in big-endian, it is reversed. As far as I know, the decision is <em>mostly</em> arbitrary. Different companies made different decisions, so now we are left with varying implementations. You do not need to know anything else about endianness for this project.
 </p>
 </blockquote>
+<p>Let's also add a convenience function for <code>read_image_file</code> which takes a path a string;
+</p>
 
+<div class="codeblock">
+<span class="codeblock_name">{Read Image <a href="lc3.html#1:10">10</a>}</span>
+<pre class="prettyprint lang-c">
+int read_image(const char* image_path)
+{
+    FILE* file = fopen(image_path, "rb");
+    if (!file) { return 0; };
+    read_image_file(file);
+    fclose(file);
+    return 1;
+}
+</pre>
+
+
+<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
 </div>
-<a name="1:9"><div class="section"><h4>9. Memory Mapped Registers</h4></a>
+</div>
+<a name="1:11"><div class="section"><h4>11. Memory Mapped Registers</h4></a>
 <p>Some special registers are not accessible from the normal register table. Instead, a special address is reserved for them in memory. To read and write to these registers, you just read and write to their memory location. These are called <strong>memory mapped registers</strong>. They are commonly used to interact with special hardware devices.
 </p>
-<p>The LC-3 has two memory mapped registers that we will implement. They are the keyboard status register (<code>KBSR</code>) and keyboard data register (<code>KBDR</code>). The <code>KBSR</code> indicates whether a key has been pressed, and the <code>KBDR</code> indicates which specific key was pressed.
+<p>The LC-3 has two memory mapped registers that need to be implemented. They are the keyboard status register (<code>KBSR</code>) and keyboard data register (<code>KBDR</code>). The <code>KBSR</code> indicates whether a key has been pressed, and the <code>KBDR</code> identifies which key was pressed.
 </p>
 <p>Although you can request keyboard input using <code>GETC</code>, this blocks execution until input is received. <code>KBSR</code> and <code>KBDR</code> allows you to <a href="https://en.wikipedia.org/wiki/Polling_(computer_science)">poll the state</a> of the device and continue execution, so the program can stay responsive while waiting for input.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Memory Mapped Registers <a href="lc3.html#1:9">9</a>}</span>
+<span class="codeblock_name">{Memory Mapped Registers <a href="lc3.html#1:11">11</a>}</span>
 <pre class="prettyprint lang-c">
 enum
 {
@@ -1028,13 +1092,13 @@ enum
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:14">14</a></p>
 </div>
 <p>Memory mapped registers make memory access a bit more complicated. We can't read and write to the memory array directly, but must instead call setter and getter functions. When memory is read from <code>KBSR</code>, it will check the keyboard and update both memory locations.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Memory Access <a href="lc3.html#1:9">9</a>}</span>
+<span class="codeblock_name">{Memory Access <a href="lc3.html#1:11">11</a>}</span>
 <pre class="prettyprint lang-c">
 void mem_write(uint16_t address, uint16_t val)
 {
@@ -1060,7 +1124,7 @@ uint16_t mem_read(uint16_t address)
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:10">10</a></p>
+<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
 </div>
 <p>That completes the last component of the VM! Provided that you implemented the rest of the trap routines and instructions, you are almost ready to try it out!
 </p>
@@ -1068,31 +1132,31 @@ uint16_t mem_read(uint16_t address)
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{<strong>lc3.c</strong> <a href="lc3.html#1:2">2</a>} +=</span>
+<span class="codeblock_name">{<strong>lc3.c</strong> <a href="lc3.html#1:3">3</a>} +=</span>
 <pre class="prettyprint lang-c">
-<span class="nocode pln">{Memory Mapped Registers, <a href="lc3.html#1:9">9</a>}</span>
-<span class="nocode pln">{TRAP Codes, <a href="lc3.html#1:6">6</a>}</span>
+<span class="nocode pln">{Memory Mapped Registers, <a href="lc3.html#1:11">11</a>}</span>
+<span class="nocode pln">{TRAP Codes, <a href="lc3.html#1:8">8</a>}</span>
 
-<span class="nocode pln">{Memory Storage, <a href="lc3.html#1:2">2</a>}</span>
-<span class="nocode pln">{Register Storage, <a href="lc3.html#1:2">2</a>}</span>
+<span class="nocode pln">{Memory Storage, <a href="lc3.html#1:3">3</a>}</span>
+<span class="nocode pln">{Register Storage, <a href="lc3.html#1:3">3</a>}</span>
 
-<span class="nocode pln">{Functions, <a href="lc3.html#1:10">10</a>}</span>
+<span class="nocode pln">{Functions, <a href="lc3.html#1:12">12</a>}</span>
 
-<span class="nocode pln">{Main Loop, <a href="lc3.html#1:3">3</a>}</span>
+<span class="nocode pln">{Main Loop, <a href="lc3.html#1:5">5</a>}</span>
 </pre>
 
 
 
 </div>
 </div>
-<a name="1:10"><div class="section"><h4>10. Platform Specific Details</h4></a>
-<p>This section contains some tedious details that we need to access the keyboard and behave nicely. These are not insightful or relevant to learning about VMs. Feel free to copy paste!
+<a name="1:12"><div class="section"><h4>12. Platform Details</h4></a>
+<p>This section contains some tedious details that are needed to access the keyboard and behave nicely. These are not insightful or relevant to learning about VMs. Feel free to copy paste!
 </p>
 <p>If you are trying to run the VM on a non-Unix operating system, such as Windows, these functions need to be replaced with Windows-specific versions.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Check Key <a href="lc3.html#1:10">10</a>}</span>
+<span class="codeblock_name">{Check Key <a href="lc3.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
 uint16_t check_key() 
 {
@@ -1110,14 +1174,15 @@ uint16_t check_key()
 
 
 </div>
-<p>These extract the program path from the program arguments.
+<p>This extracts the program path from the program arguments and outputs a usage example if they are missing.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Load Arguments <a href="lc3.html#1:10">10</a>}</span>
+<span class="codeblock_name">{Load Arguments <a href="lc3.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
 if (argc &lt; 2) 
 {
+    /* show usage string */
     printf("lc3 [image-file1] ...\n"); 
     exit(2);
 }
@@ -1133,13 +1198,13 @@ for (int j = 1; j &lt; argc; ++j)
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:3">3</a> and <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in sections <a href="lc3.html#1:5">5</a> and <a href="lc3.html#1:14">14</a></p>
 </div>
 <p>This is Unix specific code for setting up terminal input.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Input Buffering <a href="lc3.html#1:10">10</a>}</span>
+<span class="codeblock_name">{Input Buffering <a href="lc3.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
 struct termios original_tio;
 
@@ -1165,7 +1230,7 @@ settings back to normal.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Handle Interrupt <a href="lc3.html#1:10">10</a>}</span>
+<span class="codeblock_name">{Handle Interrupt <a href="lc3.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
 void handle_interrupt(int signal) 
 {
@@ -1180,65 +1245,46 @@ void handle_interrupt(int signal)
 </div>
 
 <div class="codeblock">
-<span class="codeblock_name">{Setup <a href="lc3.html#1:10">10</a>}</span>
+<span class="codeblock_name">{Setup <a href="lc3.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
 signal(SIGINT, handle_interrupt);
 disable_input_buffering();
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:3">3</a> and <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in sections <a href="lc3.html#1:5">5</a> and <a href="lc3.html#1:14">14</a></p>
 </div>
 
 <div class="codeblock">
-<span class="codeblock_name">{Shutdown <a href="lc3.html#1:10">10</a>}</span>
+<span class="codeblock_name">{Shutdown <a href="lc3.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
 restore_input_buffering();
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:3">3</a> and <a href="lc3.html#1:12">12</a></p>
-</div>
-<p>Convenience function for <code>read_image_file</code>;
-</p>
-
-<div class="codeblock">
-<span class="codeblock_name">{Read Image <a href="lc3.html#1:10">10</a>}</span>
-<pre class="prettyprint lang-c">
-int read_image(const char* image_path)
-{
-    FILE* file = fopen(image_path, "rb");
-    if (!file) { return 0; };
-    read_image_file(file);
-    fclose(file);
-    return 1;
-}
-</pre>
-
-
-
+<p class="seealso">Used in sections <a href="lc3.html#1:5">5</a> and <a href="lc3.html#1:14">14</a></p>
 </div>
 
 <div class="codeblock">
-<span class="codeblock_name">{Functions <a href="lc3.html#1:10">10</a>}</span>
+<span class="codeblock_name">{Functions <a href="lc3.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
-<span class="nocode pln">{Sign Extend, <a href="lc3.html#1:4">4</a>}</span>
-<span class="nocode pln">{Swap, <a href="lc3.html#1:8">8</a>}</span>
-<span class="nocode pln">{Update Flags, <a href="lc3.html#1:4">4</a>}</span>
-<span class="nocode pln">{Read Image File, <a href="lc3.html#1:8">8</a>}</span>
+<span class="nocode pln">{Sign Extend, <a href="lc3.html#1:6">6</a>}</span>
+<span class="nocode pln">{Swap, <a href="lc3.html#1:10">10</a>}</span>
+<span class="nocode pln">{Update Flags, <a href="lc3.html#1:6">6</a>}</span>
+<span class="nocode pln">{Read Image File, <a href="lc3.html#1:10">10</a>}</span>
 <span class="nocode pln">{Read Image, <a href="lc3.html#1:10">10</a>}</span>
-<span class="nocode pln">{Check Key, <a href="lc3.html#1:10">10</a>}</span>
-<span class="nocode pln">{Memory Access, <a href="lc3.html#1:9">9</a>}</span>
-<span class="nocode pln">{Input Buffering, <a href="lc3.html#1:10">10</a>}</span>
-<span class="nocode pln">{Handle Interrupt, <a href="lc3.html#1:10">10</a>}</span>
+<span class="nocode pln">{Check Key, <a href="lc3.html#1:12">12</a>}</span>
+<span class="nocode pln">{Memory Access, <a href="lc3.html#1:11">11</a>}</span>
+<span class="nocode pln">{Input Buffering, <a href="lc3.html#1:12">12</a>}</span>
+<span class="nocode pln">{Handle Interrupt, <a href="lc3.html#1:12">12</a>}</span>
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:9">9</a> and <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in sections <a href="lc3.html#1:11">11</a> and <a href="lc3.html#1:14">14</a></p>
 </div>
 
 <div class="codeblock">
-<span class="codeblock_name">{Includes <a href="lc3.html#1:10">10</a>}</span>
+<span class="codeblock_name">{Includes <a href="lc3.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
 #include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
@@ -1255,17 +1301,27 @@ int read_image(const char* image_path)
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:2">2</a> and <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in sections <a href="lc3.html#1:3">3</a> and <a href="lc3.html#1:14">14</a></p>
 </div>
 </div>
-<a name="1:11"><div class="section"><h4>11. Running the LC-3</h4></a>
-<p>You should now be able to build and run the LC-3 VM.
+<a name="1:13"><div class="section"><h4>13. Running the VM</h4></a>
+<p>You can now build and run the LC-3 VM!
 </p>
-<p><code>lc3-vm 2048.obj</code>
+<ol>
+<li>Compile your program with your favorite C compiler.
+</li>
+<li>Download the assembled version of <a href="bin/2048.obj">2048</a> or <a href="bin/rogue.obj">Rogue</a>.
+</li>
+<li>Run the the program with the obj file as an argument:
+<p><code>lc3-vm path/to/2048.obj</code>
 </p>
+</li>
+<li>Play 2048!
+</li>
+</ol>
 
 <div class="codeblock">
-<span class="codeblock_name">{2048 Example <a href="lc3.html#1:11">11</a>}</span>
+<span class="codeblock_name">{2048 Example <a href="lc3.html#1:13">13</a>}</span>
 <pre class="prettyprint lang-c">
 Control the game using WASD keys.
 Are you on an ANSI terminal (y/n)? y
@@ -1286,7 +1342,7 @@ Are you on an ANSI terminal (y/n)? y
 
 </div>
 </div>
-<a name="1:12"><div class="section"><h4>12. Alternate C++ Technique</h4></a>
+<a name="1:14"><div class="section"><h4>14. Alternate C++ Technique</h4></a>
 <p>This section shows a more advanced way of executing instructions. This section is entirely optional.
 </p>
 <p>Since C++ has powerful compile-time generics, there is an alternative way of implementing the instructions. This method reduces code duplication and is actually closer to how the computer would be wired in hardware.
@@ -1295,7 +1351,7 @@ Are you on an ANSI terminal (y/n)? y
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Instruction C++ <a href="lc3.html#1:12">12</a>}</span>
+<span class="codeblock_name">{Instruction C++ <a href="lc3.html#1:14">14</a>}</span>
 <pre class="prettyprint lang-c">
 template &lt;unsigned op&gt;
 void ins(uint16_t instr) 
@@ -1375,7 +1431,7 @@ void ins(uint16_t instr)
     if (0x0080 &amp; opbit) { mem_write(base_plus_off, reg[r0]); } // STR
     if (0x8000 &amp; opbit)  // TRAP
     {
-<span class="nocode pln">         {TRAP, <a href="lc3.html#1:6">6</a>}</span>
+<span class="nocode pln">         {TRAP, <a href="lc3.html#1:8">8</a>}</span>
     }
     //if (0x0100 &amp; opbit) { } // RTI
     if (0x4666 &amp; opbit) { update_flags(r0); }
@@ -1387,7 +1443,7 @@ void ins(uint16_t instr)
 </div>
 
 <div class="codeblock">
-<span class="codeblock_name">{Op Table <a href="lc3.html#1:12">12</a>}</span>
+<span class="codeblock_name">{Op Table <a href="lc3.html#1:14">14</a>}</span>
 <pre class="prettyprint lang-c">
 static void (*op_table[16])(uint16_t) = {
     ins&lt;0&gt;, ins&lt;1&gt;, ins&lt;2&gt;, ins&lt;3&gt;, 
@@ -1408,30 +1464,30 @@ static void (*op_table[16])(uint16_t) = {
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{<strong>lc3-alt.cpp</strong> <a href="lc3.html#1:12">12</a>}</span>
+<span class="codeblock_name">{<strong>lc3-alt.cpp</strong> <a href="lc3.html#1:14">14</a>}</span>
 <pre class="prettyprint lang-c">
-<span class="nocode pln">{Includes, <a href="lc3.html#1:10">10</a>}</span>
+<span class="nocode pln">{Includes, <a href="lc3.html#1:12">12</a>}</span>
 
-<span class="nocode pln">{Registers, <a href="lc3.html#1:2">2</a>}</span>
-<span class="nocode pln">{Condition Flags, <a href="lc3.html#1:2">2</a>}</span>
-<span class="nocode pln">{Opcodes, <a href="lc3.html#1:2">2</a>}</span>
+<span class="nocode pln">{Registers, <a href="lc3.html#1:3">3</a>}</span>
+<span class="nocode pln">{Condition Flags, <a href="lc3.html#1:3">3</a>}</span>
+<span class="nocode pln">{Opcodes, <a href="lc3.html#1:3">3</a>}</span>
 
-<span class="nocode pln">{Memory Mapped Registers, <a href="lc3.html#1:9">9</a>}</span>
-<span class="nocode pln">{TRAP Codes, <a href="lc3.html#1:6">6</a>}</span>
+<span class="nocode pln">{Memory Mapped Registers, <a href="lc3.html#1:11">11</a>}</span>
+<span class="nocode pln">{TRAP Codes, <a href="lc3.html#1:8">8</a>}</span>
 
-<span class="nocode pln">{Memory Storage, <a href="lc3.html#1:2">2</a>}</span>
-<span class="nocode pln">{Register Storage, <a href="lc3.html#1:2">2</a>}</span>
+<span class="nocode pln">{Memory Storage, <a href="lc3.html#1:3">3</a>}</span>
+<span class="nocode pln">{Register Storage, <a href="lc3.html#1:3">3</a>}</span>
 
-<span class="nocode pln">{Functions, <a href="lc3.html#1:10">10</a>}</span>
+<span class="nocode pln">{Functions, <a href="lc3.html#1:12">12</a>}</span>
 
 int running = 1;
-<span class="nocode pln">{Instruction C++, <a href="lc3.html#1:12">12</a>}</span>
-<span class="nocode pln">{Op Table, <a href="lc3.html#1:12">12</a>}</span>
+<span class="nocode pln">{Instruction C++, <a href="lc3.html#1:14">14</a>}</span>
+<span class="nocode pln">{Op Table, <a href="lc3.html#1:14">14</a>}</span>
 
 int main(int argc, const char* argv[])
 {
-<span class="nocode pln">    {Setup, <a href="lc3.html#1:10">10</a>}</span>
-<span class="nocode pln">    {Load Arguments, <a href="lc3.html#1:10">10</a>}</span>
+<span class="nocode pln">    {Load Arguments, <a href="lc3.html#1:12">12</a>}</span>
+<span class="nocode pln">    {Setup, <a href="lc3.html#1:12">12</a>}</span>
 
     enum { PC_START = 0x3000 };
     reg[R_PC] = PC_START;
@@ -1442,7 +1498,7 @@ int main(int argc, const char* argv[])
         uint16_t op = instr &gt;&gt; 12;
         op_table[op](instr);
     }
-<span class="nocode pln">    {Shutdown, <a href="lc3.html#1:10">10</a>}</span>
+<span class="nocode pln">    {Shutdown, <a href="lc3.html#1:12">12</a>}</span>
 }
 </pre>
 
