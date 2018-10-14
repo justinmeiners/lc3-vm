@@ -908,8 +908,8 @@ restore_input_buffering();
 
 You can now build and run the LC-3 VM!
 1. Compile your program with your favorite C compiler.
-2. Download the assembled version of [2048](bin/2048.obj).
-3. Run the the program with the 2048 file as an argument:
+2. Download the assembled version of [2048](bin/2048.obj) or [Rogue](bin/rogue.obj).
+3. Run the the program with the obj file as an argument:
 
     `lc3-vm path/to/2048.obj`
 
