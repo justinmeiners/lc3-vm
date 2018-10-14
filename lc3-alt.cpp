@@ -372,13 +372,10 @@ static void (*op_table[16])(uint16_t) = {
 
 int main(int argc, const char* argv[])
 {
-    /* Setup */
-    signal(SIGINT, handle_interrupt);
-    disable_input_buffering();
-
     /* Load Arguments */
     if (argc < 2) 
     {
+        /* show usage string */
         printf("lc3 [image-file1] ...\n"); 
         exit(2);
     }
@@ -391,6 +388,10 @@ int main(int argc, const char* argv[])
             exit(1);
         }  
     }
+
+    /* Setup */
+    signal(SIGINT, handle_interrupt);
+    disable_input_buffering();
 
 
     enum { PC_START = 0x3000 };
