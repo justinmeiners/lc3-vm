@@ -22,19 +22,19 @@
 
 @s Introduction
 
-In this tutorial, I will teach you how to write your own virtual machine (VM). If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer and better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be surprisingly simple and enlightening.
+In this tutorial, I will teach you how to write your own virtual machine (VM) that can run assembly language programs, such as my friend's [2048](https://github.com/rpendleton/lc3-2048) or my [Roguelike](https://github.com/justinmeiners/lc3-rogue). If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer and better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be surprisingly simple and enlightening.
 
-The [final code](lc3.c) is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do arithmetic with binary. A few parts of the code are written specifically for Unix systems (including macOS). They are necessary for running the program but are not important to the tutorial itself. By the end, your VM will be able to run programs such as my friend's [2048](https://github.com/rpendleton/lc3-2048) or my [Roguelike](https://github.com/justinmeiners/lc3-rogue).
-
+The [final code](lc3.c) is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do [binary arithmetic](https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html). A few parts of the code are written specifically for Unix systems (including macOS). They are necessary for running the program but are not important to the tutorial itself (Windows support contributions are welcome.).
+ 
 > **Note:** This VM is a [literate program](https://en.wikipedia.org/wiki/Literate_programming). This means you are reading the source code right now! I will explain each block of code, one at a time, and these will be "woven" together to make the final program. You can be sure that no detail will be left out.
 
 ### What is a virtual machine?
 
-A VM is a program that acts like a computer. It simulates a CPU along with a few other hardware components, allowing it to perform arithmetic, read and write to memory, and interact with I/O devices, just like a physical computer. Most importantly, it has its own machine language which you can you can use to program it.
+A VM is a program that acts like a computer. It simulates a CPU along with a few other hardware components, allowing it to perform arithmetic, read and write to memory, and interact with I/O devices, just like a physical computer. Most importantly, it can understand a machine language which you can you can use to program it.
 
-Some VMs are designed to reproduce the behavior of some particular computer, such as video game emulators. Most people don't have an NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program.
+The number of computer components the VM attempts to simulate depends on its purpose. Some VMs are designed to reproduce the behavior of some particular computer, such as video game emulators. Most people don't have an NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program. These emulators must [faithfully recreate]() the entire device.
 
-Other VMs don't act like any real computer and are entirely made up! This is useful for making software development easier. A VM is a standard platform which is portable across different hardware configurations. Instead of rewriting a program in different dialects of assembly for each CPU architecture, developers only need to write the small VM program in each assembly language. Each program is then written only once in the VM's assembly language. 
+Other VMs don't act like any real computer and are entirely made up! This is done to make software development easier. A VM is a standard platform which is portable across different hardware configurations. Instead of rewriting a program in different dialects of assembly for each CPU architecture, developers only need to write the small VM program in each assembly language. Each program is then written only once in the VM's assembly language. 
 
 ![architecture specific implementation](img/no_vm.gif)
 
@@ -46,13 +46,13 @@ The [Java Virtual Machine (JVM)](https://en.wikipedia.org/wiki/Java_virtual_mach
 
 Virtual machines are also useful for executing code in a secure or isolated way. One application of this is garbage collection. There [is no trivial way](https://www.lua.org/pil/24.2.html) to implement automatic garbage collection on top of C or C++ since a program cannot see its own stack or variables. However, a VM is “outside” the program it is running and can observe all of the [memory references](https://en.wikipedia.org/wiki/Tracing_garbage_collection) on the stack. 
 
-[Ethereum smart contracts](https://solidity.readthedocs.io/en/v0.4.24/introduction-to-smart-contracts.html) also take advantage of this behavior. Smart contracts are small programs which are executed by each validating node in the network. This requires the nodes to run programs on their machines that have been obtained from strangers. To prevent a contract from doing malicious things, contracts are run inside a [VM](http://ethdocs.org/en/latest/introduction/what-is-ethereum.html#ethereum-virtual-machine) which prevents the program from accessing the file system, network, disc, etc. Ethereum is also a good application of the portability features mentioned. While Ethereum nodes can be run on many kinds of computers, the use of a VM allows smart contracts to be written without any consideration of the specific platforms they run on.
+[Ethereum smart contracts](https://solidity.readthedocs.io/en/v0.4.24/introduction-to-smart-contracts.html) also take advantage of this behavior. Smart contracts are small programs which are executed by each validating node in the blockchain network. This requires the node operators to run programs on their machines that have been written by complete strangers, without any chance to scrutinize them first. To prevent a contract from doing malicious things they are run inside a [VM](http://ethdocs.org/en/latest/introduction/what-is-ethereum.html#ethereum-virtual-machine) which prevents the program from accessing the file system, network, disc, etc. Ethereum is also a good application of the portability features mentioned. Ethereum nodes can be run on many kinds of computers and operating systems. The use of a VM allows smart contracts to be written without any consideration of the many platforms they run on.
 
 @s LC-3 Architecture
 
 For our project, we will be implementing a VM for a fictional computer called the [LC-3](https://en.wikipedia.org/wiki/LC-3). The LC-3 is popular for teaching university students how to program in assembly language. It has a simplified instruction set [compared to x86](http://ref.x86asm.net/coder64.html) but contains all the main ideas used in modern CPUs.
 
-> **Note:** This tutorial will not teach you assembly, and it is not at all necessary. However, if you are interested, you can write and assemble your own LC-3 programs using the [LC-3 Tools](http://highered.mheducation.com/sites/0072467509/student_view0/lc-3_simulator.html).
+> **Note:** This tutorial will not teach you assembly, and it is not necessary. However, if you are interested, you can write and assemble your own LC-3 programs using the [LC-3 Tools](http://highered.mheducation.com/sites/0072467509/student_view0/lc-3_simulator.html).
 
 First, we need to simulate the essential hardware components of the machine. Try to understand what each component is, but don't worry right now if you are unsure of how it fits into the larger picture. This is explained in [Executing Programs](#Executing_Programs). Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.
 
@@ -99,27 +99,11 @@ Just like the memory, we will store the registers in an array:
 uint16_t reg[R_COUNT];
 ---
 
-### Condition Flags
-
-The `R_COND` register stores condition flags which provide information about the most recently executed calculation. This allows programs to check logical conditions such as `if (x > 0) { ... }`. 
-
-Different CPUs have a variety of condition flags. The LC-3 uses only 3 condition flags which indicate the sign of the previous calculation. 
---- Condition Flags
-enum
-{
-    FL_POS = 1 << 0, /* P */
-    FL_ZRO = 1 << 1, /* Z */
-    FL_NEG = 1 << 2, /* N */
-};
----
-
-> **Note:** (The `<<` symbol is called the [left bitshift operator](https://msdn.microsoft.com/en-us/library/336xbhcz.aspx). `(n << k)` shifts the bits of `n` to the left `k` places. Read that link if you are not familiar. It will be important.)
-
-### Instructions
+### Instruction Set
 
 An instruction is a command which tells the CPU to do some fundamental task, such as add two numbers. Instructions have both an **opcode** which indicates the kind of task to perform and a set of **parameters** which provide data to the task being performed.
 
-Each **opcode** represents one task that the CPU "knows" how to do. There are just 16 opcodes in LC-3. Everything the computer can calculate is just some sequence of these simple instructions. Each instruction is 16 bits long, with the left 4 bits storing the opcode. The rest of the bits are used to store the parameters.
+Each **opcode** represents one task that the CPU "knows" how to do. There are just 16 opcodes in LC-3. Everything the computer can calculate is some sequence of these simple instructions. Each instruction is 16 bits long, with the left 4 bits storing the opcode. The rest of the bits are used to store the parameters.
 
 We will discuss, in detail, what each instruction does later. For now, define the following opcodes. Make sure they stay in this order so that they are assigned the proper enum value:
 
@@ -145,7 +129,24 @@ enum
 };
 ---
 
-> **Note:** The Intel x86 architecture has hundreds of instructions, while others such as ARM have very few like the LC-3. Small instruction sets are referred to as [RISCs](https://en.wikipedia.org/wiki/Reduced_instruction_set_computer) while larger ones are called [CISCs](https://en.wikipedia.org/wiki/Complex_instruction_set_computer). Larger instruction sets are more convenient to write assembly for and require instructions to complete a task but are more complex and expensive for engineers to design and manufacture. There are many other tradeoffs which make the designs come into and out of style.
+> **Note:** The Intel x86 architecture has hundreds of instructions, while others such as ARM and LC-3 have very few. Small instruction sets are referred to as [RISCs](https://en.wikipedia.org/wiki/Reduced_instruction_set_computer) while larger ones are called [CISCs](https://en.wikipedia.org/wiki/Complex_instruction_set_computer). Larger instruction sets typically do not provide any more capabilities. But, they are more convenient to write assembly for since they provide  and require instructions to complete a task but are more complex and expensive for engineers to design and manufacture. There are many other tradeoffs which make the designs come into and out of style.
+
+
+### Condition Flags
+
+The `R_COND` register stores condition flags which provide information about the most recently executed calculation. This allows programs to check logical conditions such as `if (x > 0) { ... }`. 
+
+Each CPU has a variety of condition flags for various purposes. The LC-3 uses only 3 condition flags which indicate the sign of the previous calculation. 
+--- Condition Flags
+enum
+{
+    FL_POS = 1 << 0, /* P */
+    FL_ZRO = 1 << 1, /* Z */
+    FL_NEG = 1 << 2, /* N */
+};
+---
+
+> **Note:** (The `<<` symbol is called the [left bitshift operator](https://msdn.microsoft.com/en-us/library/336xbhcz.aspx). `(n << k)` shifts the bits of `n` to the left `k` places. Read that link if you are not familiar. It will be important.)
 
 We are finished setting up the hardware components of our VM! You will need to include some system headers (listed later). Your file should now look something like this:
 
@@ -153,13 +154,13 @@ We are finished setting up the hardware components of our VM! You will need to i
 @{Includes}
 
 @{Registers}
-@{Condition Flags}
 @{Opcodes}
+@{Condition Flags}
 ---
 
 @s Assembly Examples
 
-Let's now look at an LC-3 assembly program to get an idea of what the VM actually runs. You don't need to understand everything, just have a general idea of what is going on. Here is a simple "Hello World":
+Let's now look at an LC-3 assembly program to get an idea of what the VM actually runs. You don't need to understand everything, just get a general idea of what is going on. Here is a simple "Hello World":
 
 --- Hello World Assembly
 .ORIG x3000                        ; this is the address in memory where the program will be loaded
@@ -931,6 +932,9 @@ Are you on an ANSI terminal (y/n)? y
 +--------------------------+
 ---
 
+### Debugging
+
+If the program doens't work correctly, its likely because you programmed an instruction incorrectly. This can be tricky to debug. I recommend reading through the assembly source code to the LC-3 program, and use a debugger to step the VM one instruction at a time. As you read the assembly, make sure the VM goes to the instruction that you expect it to. If a descrapency occurs, you will then know which instruction caused it to fail.
 
 @s Alternate C++ Technique
 
