@@ -30,14 +30,6 @@ enum
     R_COUNT
 };
 
-/* Condition Flags */
-enum
-{
-    FL_POS = 1 << 0, /* P */
-    FL_ZRO = 1 << 1, /* Z */
-    FL_NEG = 1 << 2, /* N */
-};
-
 /* Opcodes */
 enum 
 {
@@ -57,6 +49,14 @@ enum
     OP_RES,    /* reserved (unused) */
     OP_LEA,    /* load effective address */
     OP_TRAP    /* execute trap */
+};
+
+/* Condition Flags */
+enum
+{
+    FL_POS = 1 << 0, /* P */
+    FL_ZRO = 1 << 1, /* Z */
+    FL_NEG = 1 << 2, /* N */
 };
 
 /* Memory Mapped Registers */
