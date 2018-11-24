@@ -2,7 +2,6 @@
 *.out
 *.obj
 *.html
-*.css
 lc3.c
 lc3-alt.cpp
 
