@@ -25,9 +25,9 @@
 
 In this tutorial, I will teach you how to write your own virtual machine (VM) that can run assembly language programs, such as my friend's [2048](https://github.com/rpendleton/lc3-2048) or my [Roguelike](https://github.com/justinmeiners/lc3-rogue). If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer and better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be surprisingly simple and enlightening.
 
-The [final code](lc3.c) is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do [binary arithmetic](https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html). To build and run the code, you will need to be on a unix system (including macOS). A few unix APIs are used for configuring the terminal input and display, but these are not essential to the main code. (Contributions for Windows support are welcome.).
+The [final code](lc3.c) is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do [binary arithmetic](https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html). To build and run the code, you will need to be on a Unix system (including macOS). A few Unix APIs are used for configuring the terminal input and display, but these are not essential to the main code. (Contributions for Windows support are welcome.)
 
-> **Note:** This VM is a [literate program](https://en.wikipedia.org/wiki/Literate_programming). This means you are reading the source code right now! Each piece of code from the project will be shown and explained throughly, so you can be sure nothing is left out. The final code was then created by ["weaving"](https://github.com/zyedidia/Literate) the code blocks together.
+> **Note:** This VM is a [literate program](https://en.wikipedia.org/wiki/Literate_programming). This means you are reading the source code right now! Each piece of code from the project will be shown and explained thoroughly, so you can be sure nothing is left out. The final code was then created by ["weaving"](https://github.com/zyedidia/Literate) the code blocks together.
 
 ### What is a virtual machine?
 
@@ -49,7 +49,7 @@ A VM doesn't have to be large or pervasive to provide a similar benefit. Often o
 
 VMs are also useful for executing code in a secure or isolated way. One application of this is garbage collection. There [is no trivial way](https://www.lua.org/pil/24.2.html) to implement automatic garbage collection on top of C or C++ since a program cannot see its own stack or variables. However, a VM is “outside” the program it is running and can observe all of the [memory references](https://en.wikipedia.org/wiki/Tracing_garbage_collection) on the stack.
 
-[Ethereum smart contracts](https://solidity.readthedocs.io/en/v0.4.24/introduction-to-smart-contracts.html) also take advantage of this behavior. Smart contracts are small programs which are executed by each validating node in the blockchain network. This requires the node operators to run programs on their machines that have been written by complete strangers, without any chance to scrutinize them beforehand. To prevent a contract from doing malicious things they are run inside a [VM](http://ethdocs.org/en/latest/introduction/what-is-ethereum.html#ethereum-virtual-machine) that has no access to the file system, network, disc, etc. Ethereum is also a good application of the portability features mentioned. Ethereum nodes can be run on many kinds of computers and operating systems. The use of a VM allows smart contracts to be written without any consideration of the many platforms they run on.
+Another example of this behavior is demonstrated by [Ethereum smart contracts](https://solidity.readthedocs.io/en/v0.4.24/introduction-to-smart-contracts.html). Smart contracts are small programs which are executed by each validating node in the blockchain network. This requires the node operators to run programs on their machines that have been written by complete strangers, without any chance to scrutinize them beforehand. To prevent a contract from doing malicious things, they are run inside a [VM](http://ethdocs.org/en/latest/introduction/what-is-ethereum.html#ethereum-virtual-machine) that has no access to the file system, network, disc, etc. Ethereum is also a good application of the portability features that result when using a VM. Since Ethereum nodes can be run on many kinds of computers and operating systems, the use of a VM allows smart contracts to be written without any consideration of the many platforms they run on.
 
 @s LC-3 Architecture
 
@@ -59,7 +59,7 @@ First, we need to simulate the essential hardware components of the machine. Try
 
 ### Memory
 
-The LC-3 has 65,536 memory locations (the maximum that is addressable by a 16-bit unsigned integer $2^{16}$), each of which stores a 16-bit value. This means it can store a total of only 128kb which is a lot smaller than you may be used to! In our program, this memory will be stored in a simple array:
+The LC-3 has 65,536 memory locations (the maximum that is addressable by a 16-bit unsigned integer $2^{16}$), each of which stores a 16-bit value. This means it can store a total of only 128kb, which is a lot smaller than you may be used to! In our program, this memory will be stored in a simple array:
 
 --- Memory Storage
 /* 65536 locations */
@@ -68,7 +68,7 @@ uint16_t memory[UINT16_MAX];
 
 ### Registers
 
-A register is a slot for storing a single value on the CPU. Registers are like the "workbench" of the CPU. For the CPU to work with a piece of data, it has to be in one of the registers. However, since there just a few registers, only a minimal amount of data can be loaded at any given time. Programs work around this by loading values from memory into registers, calculating values into other registers, and then storing the final results back in memory.
+A register is a slot for storing a single value on the CPU. Registers are like the "workbench" of the CPU. For the CPU to work with a piece of data, it has to be in one of the registers. However, since there are just a few registers, only a minimal amount of data can be loaded at any given time. Programs work around this by loading values from memory into registers, calculating values into other registers, and then storing the final results back in memory.
 
 The LC-3 has 10 total registers, each of which is 16 bits. Most of them are general purpose, but a few have designated roles.
 - 8 general purpose registers  (`R0`-`R7`)
@@ -130,7 +130,7 @@ enum
 };
 ---
 
-> **Note:** The Intel x86 architecture has hundreds of instructions, while others such as ARM and LC-3 have very few. Small instruction sets are referred to as [RISCs](https://en.wikipedia.org/wiki/Reduced_instruction_set_computer) while larger ones are called [CISCs](https://en.wikipedia.org/wiki/Complex_instruction_set_computer). Larger instruction sets typically do not provide any fundmantally new possibilities, but they often make it more convenient to write assembly for. A single instruction in CISC might take several in RISC. However, they tend to be more complex and expensive for engineers to design and manufacture. This and other tradeoffs make the designs come in and out of style.
+> **Note:** The Intel x86 architecture has hundreds of instructions, while others such as ARM and LC-3 have very few. Small instruction sets are referred to as [RISCs](https://en.wikipedia.org/wiki/Reduced_instruction_set_computer) while larger ones are called [CISCs](https://en.wikipedia.org/wiki/Complex_instruction_set_computer). Larger instruction sets typically do not provide any fundamentally new possibilities, but they often make it more convenient to write assembly for. A single instruction in CISC might take several in RISC. However, they tend to be more complex and expensive for engineers to design and manufacture. This and other tradeoffs make the designs come in and out of style.
 
 
 ### Condition Flags
@@ -161,7 +161,7 @@ We are finished setting up the hardware components of our VM! You will need to i
 
 @s Assembly Examples
 
-Let's now look at an LC-3 assembly program to get an idea of what the VM actually runs. You don't need to know how to program assembly, or understanding everything that is going on, just get a general idea of what is going on. Here is a simple "Hello World":
+Let's now look at an LC-3 assembly program to get an idea of what the VM actually runs. You don't need to know how to program assembly or understand everything that is going on. Just try to get a general idea of what is going on. Here is a simple "Hello World":
 
 --- Hello World Assembly
 .ORIG x3000                        ; this is the address in memory where the program will be loaded
@@ -174,9 +174,9 @@ HELLO_STR .STRINGZ "Hello World!"  ; store this string here in the program
 
 Just like in C, the program starts at the top and executes one statement at a time. However, unlike C, there are no nested scopes `{}` or control structures such as `if` or `while`; just a flat list of statements. This makes it much easier to execute.
 
-Notice that some of the statements have names which match the opcodes we defined earlier. Previously, we learned that every instruction was 16 bits, but each line looks like it is a different number of characters. How is this inconsitency possible?
+Notice that some of the statements have names which match the opcodes we defined earlier. Previously, we learned that every instruction was 16 bits, but each line looks like it is a different number of characters. How is this inconsistency possible?
 
-This is because the code we are reading is written in **assembly** which is a human-readable and writable form, encoded in plain text. A tool called an **assembler** is used to transform each line of text, into a binary 16-bit instruction the VM. This binary form, which is essentially in array of 16-bit instructions is called **machine code** and is what the VM actually runs.
+This is because the code we are reading is written in **assembly** which is a human-readable and writable form, encoded in plain text. A tool called an **assembler** is used to transform each line of text into a 16-bit binary instruction the VM can understand. This binary form, which is essentially an array of 16-bit instructions, is called **machine code** and is what the VM actually runs.
 
 MORE WRITING OR EXAMPLE
 
@@ -197,11 +197,11 @@ BRn LOOP                           ; go back to LOOP if the result was negative
 
 @s Executing Programs
 
-Once again, the previous examples are just to give you an idea of what the VM does. To write a VM, you don't need to be fluent in assembly. As long as you follow the proper procedure for reading and executing instructions, *any* LC-3 program will run properly, no matter how complicated it is. In theory it could even run a web browser, or its own copy of linux!
+Once again, the previous examples are just to give you an idea of what the VM does. To write a VM, you don't need to be fluent in assembly. As long as you follow the proper procedure for reading and executing instructions, *any* LC-3 program will run correctly, no matter how complicated it is. In theory, it could even run a web browser or its own copy of Linux!
 
 If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that we never anticipated and may not be able to understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works.
 
-Turing has a thought about this idea:
+Turing has thought about this idea:
 > "The view that machines cannot give rise to surprises is due, I believe, to a fallacy to which philosophers and mathematicians are particularly subject. This is the assumption that as soon as a fact is presented to a mind all consequences of that fact spring into the mind simultaneously with it. It is a very useful assumption under many circumstances, but one too easily forgets that it is false." — [Alan M. Turing](https://academic.oup.com/mind/article-pdf/LIX/236/433/9866119/433.pdf)
 
 Here is a precise description of the procedure we need to write:
@@ -303,7 +303,7 @@ The `ADD` instruction takes two numbers, adds them together, and stores the resu
 
 ![Add Encoding](img/add_layout.gif)
 
-The encoding shows two rows because there are two different "modes" for this instruction. Before I explain modes, let's try to find the similarites between them. In both rows, we can see that we start with 4 bits, `0001`. This is the opcode value for `OP_ADD`. The next 3 bits are marked `DR`. This stands for destination register. The destination register is where the added sum will be stored. The next 3 bits are `SR1`. This is the register containing the first number to add.
+The encoding shows two rows because there are two different "modes" for this instruction. Before I explain modes, let's try to find the similarities between them. In both rows, we can see that we start with 4 bits, `0001`. This is the opcode value for `OP_ADD`. The next 3 bits are marked `DR`. This stands for destination register. The destination register is where the added sum will be stored. The next 3 bits are `SR1`. This is the register containing the first number to add.
 
 So we know where we want to store the result and we know the first number to add. The last bit of information we need is the second number to add. At this point, the two rows start to look different. Notice that on the top row the 5th bit is a `0` and in the second row it is `1`. This bit indicates whether it is *immediate mode* or *register mode*. In *register mode*, the second number is stored in a register just like the first. This is marked `SR2` and is contained in bits 2-0. Bits 3 and 4 are unused. In assembly this would be written as:
 
@@ -333,7 +333,7 @@ uint16_t sign_extend(uint16_t x, int bit_count)
 }
 ---
 
-> **Note:** If you are interested in exactly how negative numbers can be represented in binary. You can read about [Two's Complement](https://en.wikipedia.org/wiki/Two%27s_complement). However, this is not essential. You can just copy the code above and use it whenever the specification says to sign extend numbers.
+> **Note:** If you are interested in exactly how negative numbers can be represented in binary, you can read about [Two's Complement](https://en.wikipedia.org/wiki/Two%27s_complement). However, this is not essential. You can just copy the code above and use it whenever the specification says to sign extend numbers.
 
 There is one last sentence in the specification:
 
@@ -410,7 +410,7 @@ Just like before, we need to sign extend this 9-bit value, but this time add it 
 
 TODO: picture
 
-This may seem like a roundabout way to read from memory, but it is very necessary.  The `LD` instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. `LDI` is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data (`char* far_data = ...;`).
+This may seem like a roundabout way to read from memory, but it is indispensable. The `LD` instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. `LDI` is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data (`char* far_data = ...;`).
 
 Same as before, the flags need to be updated after putting the value into `DR`:
 
@@ -435,7 +435,7 @@ You now need to go back and implement the rest of the switch cases for the instr
 
 @s Instruction Cheat Sheet
 
-This section contains the full implementations of the remaining instructions, if you get stuck.
+This section contains the full implementations of the remaining instructions if you get stuck.
 
 ### [Bitwise and](https://en.wikipedia.org/wiki/Bitwise_operation#AND)
 --- AND
@@ -564,7 +564,7 @@ This section contains the full implementations of the remaining instructions, if
 
 @s Trap Routines
 
-The LC-3 provides a few predefined routines for performing common tasks, and interacting with I/O devices. For example, there are routines for getting input from the keyboard and for displaying strings to the console. These are called *trap routines* which you can think of as the operating system or API for the LC-3. Each trap routine is assigned a *trap code* which identifies it (similar to an opcode). To execute one, the `TRAP` instruction is called with the trap code of the desired routine.
+The LC-3 provides a few predefined routines for performing common tasks and interacting with I/O devices. For example, there are routines for getting input from the keyboard and for displaying strings to the console. These are called *trap routines* which you can think of as the operating system or API for the LC-3. Each trap routine is assigned a *trap code* which identifies it (similar to an opcode). To execute one, the `TRAP` instruction is called with the trap code of the desired routine.
 
 ![Trap Encoding](img/trap_layout.gif)
 
@@ -582,11 +582,11 @@ enum
 };
 ---
 
-You may be wondering why the trap codes are not included in the instructions. This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system functions in C). In the official LC-3 simulator trap routines are [written in assembly](docs/os.asm). When a trap code is called the `PC` is moved to that codes address. The CPU executes instructions of the proced, and when it is complete the PC is returned to the location it was called from.
+You may be wondering why the trap codes are not included in the instructions. This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system functions in C). In the official LC-3 simulator, trap routines are [written in assembly](docs/os.asm). When a trap code is called, the `PC` is moved to that code's address. The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location the trap was called from.
 
 > **Note:** This is why programs start at address `0x3000` instead of `0x0`. The lower addresses are left empty to leave space for the trap routine code.
 
-There is no specification for *how* trap routines must be implemented, only what they are supposed to do. So in our VM we are going to do things slightly differently by writing them in C. When a trap code is invoked a C function will be called, and when it is completed, execution will return to the instructions.
+There is no specification for *how* trap routines must be implemented, only what they are supposed to do. In our VM, we are going to do things slightly differently by writing them in C. When a trap code is invoked, a C function will be called. When it is completed, execution will return to the instructions.
 
 Even though the trap routines can be written in assembly and this is what a physical LC-3 computer would do, it isn't the best fit for a VM. Instead of writing our own primitive I/O routines, we can take advantage of the ones available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability.
 
@@ -919,7 +919,7 @@ restore_input_buffering();
 You can now build and run the LC-3 VM!
 1. Compile your program with your favorite C compiler.
 2. Download the assembled version of [2048](bin/2048.obj) or [Rogue](bin/rogue.obj).
-3. Run the the program with the obj file as an argument:
+3. Run the program with the obj file as an argument:
 
     `lc3-vm path/to/2048.obj`
 
@@ -943,7 +943,7 @@ Are you on an ANSI terminal (y/n)? y
 
 ### Debugging
 
-If the program doens't work correctly, its likely because you programmed an instruction incorrectly. This can be tricky to debug. I recommend reading through the assembly source code to the LC-3 program, and use a debugger to step the VM one instruction at a time. As you read the assembly, make sure the VM goes to the instruction that you expect it to. If a descrapency occurs, you will then know which instruction caused it to fail.
+If the program doesn't work correctly, it is likely because you programmed an instruction incorrectly. This can be tricky to debug. I recommend reading through the assembly source code to the LC-3 program and using a debugger to step the VM through instructions one at a time. As you read the assembly, make sure the VM goes to the instruction that you expect it to. If a discrepancy occurs, you will then know which instruction caused the issue.
 
 @s Alternate C++ Technique
 
