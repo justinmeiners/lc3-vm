@@ -95,7 +95,7 @@ img {
 </p>
 <p>The amount of computer hardware the VM attempts to simulate depends on its purpose. Some VMs are designed to reproduce the behavior of some particular computer, such as video game emulators. Most people don't have an NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program. These emulators must <a href="http://wiki.nesdev.com/w/index.php/Tricky-to-emulate_games">faithfully recreate</a> every <a href="http://wiki.nesdev.com/w/index.php/Emulator_tests">detail</a> and major hardware component of the original device.
 </p>
-<p>Other VMs don't act like any real computer and are entirely made up! This is primarily done to make software development easier. Imagine you wanted to create a program that ran on multiple computer architectures. A VM could offer a standard platform which provided portability for all of them. Instead of rewriting a program in different dialects of assembly for each CPU architecture, you would only need to write the small VM program in each assembly language. Each program would then written be written only once in the VM's assembly language.
+<p>Other VMs don't act like any real computer and are entirely made up! This is primarily done to make software development easier. Imagine you wanted to create a program that ran on multiple computer architectures. A VM could offer a standard platform which provided portability for all of them. Instead of rewriting a program in different dialects of assembly for each CPU architecture, you would only need to write the small VM program in each assembly language. Each program would then be written only once in the VM's assembly language.
 </p>
 <p><img src="img/no_vm.gif" alt="architecture specific implementation">
 </p>
@@ -104,9 +104,9 @@ img {
 <blockquote><p> <strong>Note:</strong> A compiler solves a similar problem by compiling a standard <em>high-level language</em> to several CPU architectures. A VM creates one standard <em>CPU architecture</em> which is simulated on various hardware devices. One advantage of a compiler is that it has no runtime overhead while a VM does. Even though compilers do a pretty good job, writing a new one that targets multiple platforms is very difficult, so VMs are still helpful here. In practice, VMs and compilers are mixed at various levels.
 </p>
 </blockquote>
-<p>The <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">Java Virtual Machine (JVM)</a> is a very successful example. The JVM itself is a moderately sized program that is small enough for one programmer to understand. This has made it possible to be written for thousands of devices including phones. Once the JVM is implemented on a new device, any Java/Kotlin/Clojure program ever written can run it without modification. The only cost is the overhead of the VM itself and the <a href="https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/">further abstraction</a> from the machine. Most of the time, this is a pretty good tradeoff.
+<p>The <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">Java Virtual Machine (JVM)</a> is a very successful example. The JVM itself is a moderately sized program that is small enough for one programmer to understand. This has made it possible to be written for thousands of devices including phones. Once the JVM is implemented on a new device, any Java, Kotlin, or Clojure program ever written can run on it without modification. The only cost is the overhead of the VM itself and the <a href="https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/">further abstraction</a> from the machine. Most of the time, this is a pretty good tradeoff.
 </p>
-<p>A VM doesn't have to be large or pervasive to provide a similar benefit. Often old <a href="https://fabiensanglard.net/anotherWorld_code_review/">video games</a> used small VMs to provide simple <a href="https://sf2platinum.wordpress.com/page/1/">scripting systems</a>.
+<p>A VM doesn't have to be large or pervasive to provide a similar benefit. Old <a href="https://fabiensanglard.net/anotherWorld_code_review/">video games</a> often used small VMs to provide simple <a href="https://sf2platinum.wordpress.com/page/1/">scripting systems</a>.
 </p>
 <p>VMs are also useful for executing code in a secure or isolated way. One application of this is garbage collection. There <a href="https://www.lua.org/pil/24.2.html">is no trivial way</a> to implement automatic garbage collection on top of C or C++ since a program cannot see its own stack or variables. However, a VM is “outside” the program it is running and can observe all of the <a href="https://en.wikipedia.org/wiki/Tracing_garbage_collection">memory references</a> on the stack.
 </p>
@@ -115,7 +115,7 @@ img {
 
 </div>
 <a name="1:3"><div class="section"><h4>3. LC-3 Architecture</h4></a>
-<p>Our VM will simulate a fictional computer called the <a href="https://en.wikipedia.org/wiki/LC-3">LC-3</a>. The LC-3 is popular for teaching university students how to program in assembly language. It has a simplified instruction set <a href="http://ref.x86asm.net/coder64.html">compared to x86</a> but contains all the main ideas used in modern CPUs.
+<p>Our VM will simulate a fictional computer called the <a href="https://en.wikipedia.org/wiki/LC-3">LC-3</a>. The LC-3 is popular for teaching university students how to program in assembly language. It has a simplified instruction set <a href="http://ref.x86asm.net/coder64.html">compared to x86</a>, but contains all the main ideas used in modern CPUs.
 </p>
 <p>First, we need to simulate the essential hardware components of the machine. Try to understand what each component is, but don't worry right now if you are unsure of how it fits into the larger picture. Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.
 </p>
@@ -244,7 +244,7 @@ enum
 <blockquote><p> <strong>Note:</strong> (The <code>&lt;&lt;</code> symbol is called the <a href="https://msdn.microsoft.com/en-us/library/336xbhcz.aspx">left bitshift operator</a>. <code>(n &lt;&lt; k)</code> shifts the bits of <code>n</code> to the left <code>k</code> places. Thus <code>1 &lt;&lt; 2</code> will equal <code>4</code>. Read that link if you are not familiar. It will be important.)
 </p>
 </blockquote>
-<p>We are finished setting up the hardware components of our VM! After adding standard includes (see reference) your file should now look something like this:
+<p>We are finished setting up the hardware components of our VM! After adding standard includes (see reference), your file should look something like this:
 </p>
 
 <div class="codeblock">
@@ -262,7 +262,7 @@ enum
 </div>
 </div>
 <a name="1:4"><div class="section"><h4>4. Assembly Examples</h4></a>
-<p>Let's now look at an LC-3 assembly program to get an idea of what the VM actually runs. You don't need to know how to program assembly or understand everything that is going on. Just try to get a general idea of what is going on. Here is a simple "Hello World":
+<p>Now let's look at an LC-3 assembly program to get an idea of what the VM actually runs. You don't need to know how to program assembly or understand everything that is going on. Just try to get a general idea of what is going on. Here is a simple "Hello World":
 </p>
 
 <div class="codeblock">
@@ -287,10 +287,10 @@ HELLO_STR .STRINGZ "Hello World!"  ; store this string here in the program
 </p>
 <p><img src="img/assembler.gif" alt="assembler diagram">
 </p>
-<blockquote><p> <strong>Note:</strong> Although a compiler and an assembler play a similar role in development they are not the same. An assembler simply encodes what the programmer has written in text into binary, replacing symbols with their binary representation and packing them into instructions.
+<blockquote><p> <strong>Note:</strong> Although a compiler and an assembler play a similar role in development, they are not the same. An assembler simply encodes what the programmer has written in text into binary, replacing symbols with their binary representation and packing them into instructions.
 </p>
 </blockquote>
-<p>The commands <code>.ORIG</code> and <code>.STRINGZ</code> look like instructions but they aren't. They are assembler directives which generate a piece of code or data. For example the <code>.STRINGZ</code> inserts a string of characters into the program binary at the location it is written.
+<p>The commands <code>.ORIG</code> and <code>.STRINGZ</code> look like instructions but they aren't. They are assembler directives which generate a piece of code or data. For example, the <code>.STRINGZ</code> inserts a string of characters into the program binary at the location it is written.
 </p>
 <p>Loops and conditions are done with a <a href="https://en.wikipedia.org/wiki/Goto">goto</a>-like instruction. Here is another example which counts to 10.
 </p>
@@ -490,13 +490,13 @@ uint16_t sign_extend(uint16_t x, int bit_count)
 <div class="codeblock">
 <span class="codeblock_name">{Update Flags <a href="index.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
-void update_flags(uint16_t r0)
+void update_flags(uint16_t r)
 {
-    if (reg[r0] == 0)
+    if (reg[r] == 0)
     {
         reg[R_COND] = FL_ZRO;
     }
-    else if (reg[r0] &gt;&gt; 15) /* a 1 in the left-most bit indicates negative */
+    else if (reg[r] &gt;&gt; 15) /* a 1 in the left-most bit indicates negative */
     {
         reg[R_COND] = FL_NEG;
     }
