@@ -124,14 +124,14 @@ img {
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Memory Storage <a href="lc3.html#1:3">3</a>}</span>
+<span class="codeblock_name">{Memory Storage <a href="index.html#1:3">3</a>}</span>
 <pre class="prettyprint lang-c">
 /* 65536 locations */
 uint16_t memory[UINT16_MAX];
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:11">11</a> and <a href="lc3.html#1:14">14</a></p>
+<p class="seealso">Used in sections <a href="index.html#1:11">11</a> and <a href="index.html#1:14">14</a></p>
 </div>
 <h3> Registers</h3>
 <p>A register is a slot for storing a single value on the CPU. Registers are like the "workbench" of the CPU. For the CPU to work with a piece of data, it has to be in one of the registers. However, since there are just a few registers, only a minimal amount of data can be loaded at any given time. Programs work around this by loading values from memory into registers, calculating values into other registers, and then storing the final results back in memory.
@@ -150,7 +150,7 @@ uint16_t memory[UINT16_MAX];
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Registers <a href="lc3.html#1:3">3</a>}</span>
+<span class="codeblock_name">{Registers <a href="index.html#1:3">3</a>}</span>
 <pre class="prettyprint lang-c">
 enum
 {
@@ -169,19 +169,19 @@ enum
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:14">14</a></p>
+<p class="seealso">Used in section <a href="index.html#1:14">14</a></p>
 </div>
 <p>Just like the memory, we will store the registers in an array:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Register Storage <a href="lc3.html#1:3">3</a>}</span>
+<span class="codeblock_name">{Register Storage <a href="index.html#1:3">3</a>}</span>
 <pre class="prettyprint lang-c">
 uint16_t reg[R_COUNT];
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:11">11</a> and <a href="lc3.html#1:14">14</a></p>
+<p class="seealso">Used in sections <a href="index.html#1:11">11</a> and <a href="index.html#1:14">14</a></p>
 </div>
 <h3> Instruction Set</h3>
 <p>An instruction is a command which tells the CPU to do some fundamental task, such as add two numbers. Instructions have both an <strong>opcode</strong> which indicates the kind of task to perform and a set of <strong>parameters</strong> which provide inputs to the task being performed.
@@ -192,7 +192,7 @@ uint16_t reg[R_COUNT];
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Opcodes <a href="lc3.html#1:3">3</a>}</span>
+<span class="codeblock_name">{Opcodes <a href="index.html#1:3">3</a>}</span>
 <pre class="prettyprint lang-c">
 enum
 {
@@ -216,7 +216,7 @@ enum
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:14">14</a></p>
+<p class="seealso">Used in section <a href="index.html#1:14">14</a></p>
 </div>
 <blockquote><p> <strong>Note:</strong> The Intel x86 architecture has hundreds of instructions, while others such as ARM and LC-3 have very few. Small instruction sets are referred to as <a href="https://en.wikipedia.org/wiki/Reduced_instruction_set_computer">RISCs</a> while larger ones are called <a href="https://en.wikipedia.org/wiki/Complex_instruction_set_computer">CISCs</a>. Larger instruction sets typically do not provide any fundamentally new possibilities, but they <a href="https://cs.stanford.edu/people/eroberts/courses/soco/projects/risc/risccisc/">often make it more convenient</a> to write assembly for. A single instruction in CISC might take the place of several in RISC. However, they tend to be more complex and expensive for engineers to design and manufacture. This and other tradeoffs cause the designs to come <a href="https://cs.stackexchange.com/questions/269/why-would-anyone-want-cisc">in and out of style</a>.
 </p>
@@ -228,7 +228,7 @@ enum
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Condition Flags <a href="lc3.html#1:3">3</a>}</span>
+<span class="codeblock_name">{Condition Flags <a href="index.html#1:3">3</a>}</span>
 <pre class="prettyprint lang-c">
 enum
 {
@@ -239,7 +239,7 @@ enum
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:14">14</a></p>
+<p class="seealso">Used in section <a href="index.html#1:14">14</a></p>
 </div>
 <blockquote><p> <strong>Note:</strong> (The <code>&lt;&lt;</code> symbol is called the <a href="https://msdn.microsoft.com/en-us/library/336xbhcz.aspx">left bitshift operator</a>. <code>(n &lt;&lt; k)</code> shifts the bits of <code>n</code> to the left <code>k</code> places. Thus <code>1 &lt;&lt; 2</code> will equal <code>4</code>. Read that link if you are not familiar. It will be important.)
 </p>
@@ -248,15 +248,15 @@ enum
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{<strong>lc3.c</strong> <a href="lc3.html#1:3">3</a>}</span>
+<span class="codeblock_name">{<strong>lc3.c</strong> <a href="index.html#1:3">3</a>}</span>
 <pre class="prettyprint lang-c">
-<span class="nocode pln">{Includes, <a href="lc3.html#1:12">12</a>}</span>
+<span class="nocode pln">{Includes, <a href="index.html#1:12">12</a>}</span>
 
-<span class="nocode pln">{Registers, <a href="lc3.html#1:3">3</a>}</span>
-<span class="nocode pln">{Opcodes, <a href="lc3.html#1:3">3</a>}</span>
-<span class="nocode pln">{Condition Flags, <a href="lc3.html#1:3">3</a>}</span>
+<span class="nocode pln">{Registers, <a href="index.html#1:3">3</a>}</span>
+<span class="nocode pln">{Opcodes, <a href="index.html#1:3">3</a>}</span>
+<span class="nocode pln">{Condition Flags, <a href="index.html#1:3">3</a>}</span>
 </pre>
-<p class="seealso">Added to in section <a href="lc3.html#1:11">11</a></p>
+<p class="seealso">Added to in section <a href="index.html#1:11">11</a></p>
 
 
 </div>
@@ -266,7 +266,7 @@ enum
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Hello World Assembly <a href="lc3.html#1:4">4</a>}</span>
+<span class="codeblock_name">{Hello World Assembly <a href="index.html#1:4">4</a>}</span>
 <pre class="prettyprint lang-c">
 .ORIG x3000                        ; this is the address in memory where the program will be loaded
 LEA R0, HELLO_STR                  ; load the address of the HELLO_STR string into R0
@@ -296,7 +296,7 @@ HELLO_STR .STRINGZ "Hello World!"  ; store this string here in the program
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Loop Assembly <a href="lc3.html#1:4">4</a>}</span>
+<span class="codeblock_name">{Loop Assembly <a href="index.html#1:4">4</a>}</span>
 <pre class="prettyprint lang-c">
 AND R0, R0, 0                      ; clear R0
 LOOP                               ; label at the top of our loop
@@ -343,13 +343,13 @@ BRn LOOP                           ; go back to LOOP if the result was negative
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Main Loop <a href="lc3.html#1:5">5</a>}</span>
+<span class="codeblock_name">{Main Loop <a href="index.html#1:5">5</a>}</span>
 <pre class="prettyprint lang-c">
 
 int main(int argc, const char* argv[])
 {
-<span class="nocode pln">    {Load Arguments, <a href="lc3.html#1:12">12</a>}</span>
-<span class="nocode pln">    {Setup, <a href="lc3.html#1:12">12</a>}</span>
+<span class="nocode pln">    {Load Arguments, <a href="index.html#1:12">12</a>}</span>
+<span class="nocode pln">    {Setup, <a href="index.html#1:12">12</a>}</span>
 
     /* set the PC to starting position */
     /* 0x3000 is the default */
@@ -366,57 +366,57 @@ int main(int argc, const char* argv[])
         switch (op)
         {
             case OP_ADD:
-<span class="nocode pln">                {ADD, <a href="lc3.html#1:6">6</a>}</span>
+<span class="nocode pln">                {ADD, <a href="index.html#1:6">6</a>}</span>
                 break;
             case OP_AND:
-<span class="nocode pln">                {AND, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">                {AND, <a href="index.html#1:7">7</a>}</span>
                 break;
             case OP_NOT:
-<span class="nocode pln">                {NOT, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">                {NOT, <a href="index.html#1:7">7</a>}</span>
                 break;
             case OP_BR:
-<span class="nocode pln">                {BR, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">                {BR, <a href="index.html#1:7">7</a>}</span>
                 break;
             case OP_JMP:
-<span class="nocode pln">                {JMP, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">                {JMP, <a href="index.html#1:7">7</a>}</span>
                 break;
             case OP_JSR:
-<span class="nocode pln">                {JSR, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">                {JSR, <a href="index.html#1:7">7</a>}</span>
                 break;
             case OP_LD:
-<span class="nocode pln">                {LD, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">                {LD, <a href="index.html#1:7">7</a>}</span>
                 break;
             case OP_LDR:
-<span class="nocode pln">                {LDR, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">                {LDR, <a href="index.html#1:7">7</a>}</span>
                 break;
             case OP_LEA:
-<span class="nocode pln">                {LEA, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">                {LEA, <a href="index.html#1:7">7</a>}</span>
                 break;
             case OP_ST:
-<span class="nocode pln">                {ST, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">                {ST, <a href="index.html#1:7">7</a>}</span>
                 break;
             case OP_STI:
-<span class="nocode pln">                {STI, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">                {STI, <a href="index.html#1:7">7</a>}</span>
                 break;
             case OP_STR:
-<span class="nocode pln">                {STR, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">                {STR, <a href="index.html#1:7">7</a>}</span>
                 break;
             case OP_TRAP:
-<span class="nocode pln">                {TRAP, <a href="lc3.html#1:8">8</a>}</span>
+<span class="nocode pln">                {TRAP, <a href="index.html#1:8">8</a>}</span>
                 break;
             case OP_RES:
             case OP_RTI:
             default:
-<span class="nocode pln">                {BAD OPCODE, <a href="lc3.html#1:7">7</a>}</span>
+<span class="nocode pln">                {BAD OPCODE, <a href="index.html#1:7">7</a>}</span>
                 break;
         }
     }
-<span class="nocode pln">    {Shutdown, <a href="lc3.html#1:12">12</a>}</span>
+<span class="nocode pln">    {Shutdown, <a href="index.html#1:12">12</a>}</span>
 }
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:11">11</a></p>
+<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
 </div>
 <a name="1:6"><div class="section"><h4>6. Implementing Instructions</h4></a>
@@ -433,7 +433,7 @@ int main(int argc, const char* argv[])
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Add Register Assembly <a href="lc3.html#1:6">6</a>}</span>
+<span class="codeblock_name">{Add Register Assembly <a href="index.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
 ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
 </pre>
@@ -445,7 +445,7 @@ ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Add Immediate Assembly <a href="lc3.html#1:6">6</a>}</span>
+<span class="codeblock_name">{Add Immediate Assembly <a href="index.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
 ADD R0 R0 1 ; add 1 to R0 and store back in R0
 </pre>
@@ -462,7 +462,7 @@ ADD R0 R0 1 ; add 1 to R0 and store back in R0
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Sign Extend <a href="lc3.html#1:6">6</a>}</span>
+<span class="codeblock_name">{Sign Extend <a href="index.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
 uint16_t sign_extend(uint16_t x, int bit_count)
 {
@@ -474,7 +474,7 @@ uint16_t sign_extend(uint16_t x, int bit_count)
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="index.html#1:12">12</a></p>
 </div>
 <blockquote><p> <strong>Note:</strong> If you are interested in exactly how negative numbers can be represented in binary, you can read about <a href="https://en.wikipedia.org/wiki/Two%27s_complement">Two's Complement</a>. However, this is not essential. You can just copy the code above and use it whenever the specification says to sign extend numbers.
 </p>
@@ -488,7 +488,7 @@ uint16_t sign_extend(uint16_t x, int bit_count)
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Update Flags <a href="lc3.html#1:6">6</a>}</span>
+<span class="codeblock_name">{Update Flags <a href="index.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
 void update_flags(uint16_t r0)
 {
@@ -508,13 +508,13 @@ void update_flags(uint16_t r0)
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="index.html#1:12">12</a></p>
 </div>
 <p>Now we are ready to write the code for the <code>ADD</code> case:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{ADD <a href="lc3.html#1:6">6</a>}</span>
+<span class="codeblock_name">{ADD <a href="index.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
 {
     /* destination register (DR) */
@@ -540,7 +540,7 @@ void update_flags(uint16_t r0)
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
 <p>This section contained a lot of information, so let's summarize.
 </p>
@@ -576,7 +576,7 @@ void update_flags(uint16_t r0)
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{C LDI Sample <a href="lc3.html#1:6">6</a>}</span>
+<span class="codeblock_name">{C LDI Sample <a href="index.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
 // the value of far_data is an address
 // of course far_data itself (the location in memory containing the address) has an address
@@ -606,7 +606,7 @@ char* far_data = "apple";
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{LDI <a href="lc3.html#1:6">6</a>}</span>
+<span class="codeblock_name">{LDI <a href="index.html#1:6">6</a>}</span>
 <pre class="prettyprint lang-c">
 {
     /* destination register (DR) */
@@ -636,18 +636,18 @@ char* far_data = "apple";
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{BAD OPCODE <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{BAD OPCODE <a href="index.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 abort();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
 <h3> <a href="https://en.wikipedia.org/wiki/Bitwise_operation#AND">Bitwise and</a></h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{AND <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{AND <a href="index.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -669,12 +669,12 @@ abort();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
 <h3> <a href="https://en.wikipedia.org/wiki/Bitwise_operation#NOT">Bitwise not</a></h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{NOT <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{NOT <a href="index.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -686,12 +686,12 @@ abort();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
 <h3> Branch</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{BR <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{BR <a href="index.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t pc_offset = sign_extend((instr) &amp; 0x1ff, 9);
@@ -704,14 +704,14 @@ abort();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
 <h3> Jump</h3>
 <p><code>RET</code> is listed as a separate instruction in the specification, since it is a different keyword in assembly. However, it is actually a special case of <code>JMP</code>. <code>RET</code> happens whenever <code>R1</code> is 7.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{JMP <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{JMP <a href="index.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     /* Also handles RET */
@@ -721,12 +721,12 @@ abort();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
 <h3> Jump Register</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{JSR <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{JSR <a href="index.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r1 = (instr &gt;&gt; 6) &amp; 0x7;
@@ -747,12 +747,12 @@ abort();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
 <h3> Load</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{LD <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{LD <a href="index.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -763,12 +763,12 @@ abort();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
 <h3> Load Register</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{LDR <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{LDR <a href="index.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -780,12 +780,12 @@ abort();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
 <h3> Load Effective Address</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{LEA <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{LEA <a href="index.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -796,12 +796,12 @@ abort();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
 <h3> Store</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{ST <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{ST <a href="index.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -811,12 +811,12 @@ abort();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
 <h3> Store Indirect</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{STI <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{STI <a href="index.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -826,12 +826,12 @@ abort();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
 <h3> Store Register</h3>
 
 <div class="codeblock">
-<span class="codeblock_name">{STR <a href="lc3.html#1:7">7</a>}</span>
+<span class="codeblock_name">{STR <a href="index.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -842,7 +842,7 @@ abort();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:5">5</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
 </div>
 <a name="1:8"><div class="section"><h4>8. Trap Routines</h4></a>
@@ -854,7 +854,7 @@ abort();
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP Codes <a href="lc3.html#1:8">8</a>}</span>
+<span class="codeblock_name">{TRAP Codes <a href="index.html#1:8">8</a>}</span>
 <pre class="prettyprint lang-c">
 enum
 {
@@ -868,7 +868,7 @@ enum
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:11">11</a> and <a href="lc3.html#1:14">14</a></p>
+<p class="seealso">Used in sections <a href="index.html#1:11">11</a> and <a href="index.html#1:14">14</a></p>
 </div>
 <p>You may be wondering why the trap codes are not included in the instructions. This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system functions in C). In the official LC-3 simulator, trap routines are <a href="docs/os.asm">written in assembly</a>. When a trap code is called, the <code>PC</code> is moved to that code's address. The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location the trap was called from.
 </p>
@@ -886,33 +886,33 @@ enum
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP <a href="lc3.html#1:8">8</a>}</span>
+<span class="codeblock_name">{TRAP <a href="index.html#1:8">8</a>}</span>
 <pre class="prettyprint lang-c">
 switch (instr &amp; 0xFF)
 {
     case TRAP_GETC:
-<span class="nocode pln">        {TRAP GETC, <a href="lc3.html#1:9">9</a>}</span>
+<span class="nocode pln">        {TRAP GETC, <a href="index.html#1:9">9</a>}</span>
         break;
     case TRAP_OUT:
-<span class="nocode pln">        {TRAP OUT, <a href="lc3.html#1:9">9</a>}</span>
+<span class="nocode pln">        {TRAP OUT, <a href="index.html#1:9">9</a>}</span>
         break;
     case TRAP_PUTS:
-<span class="nocode pln">        {TRAP PUTS, <a href="lc3.html#1:8">8</a>}</span>
+<span class="nocode pln">        {TRAP PUTS, <a href="index.html#1:8">8</a>}</span>
         break;
     case TRAP_IN:
-<span class="nocode pln">        {TRAP IN, <a href="lc3.html#1:9">9</a>}</span>
+<span class="nocode pln">        {TRAP IN, <a href="index.html#1:9">9</a>}</span>
         break;
     case TRAP_PUTSP:
-<span class="nocode pln">        {TRAP PUTSP, <a href="lc3.html#1:9">9</a>}</span>
+<span class="nocode pln">        {TRAP PUTSP, <a href="index.html#1:9">9</a>}</span>
         break;
     case TRAP_HALT:
-<span class="nocode pln">        {TRAP HALT, <a href="lc3.html#1:9">9</a>}</span>
+<span class="nocode pln">        {TRAP HALT, <a href="index.html#1:9">9</a>}</span>
         break;
 }
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:5">5</a> and <a href="lc3.html#1:14">14</a></p>
+<p class="seealso">Used in sections <a href="index.html#1:5">5</a> and <a href="index.html#1:14">14</a></p>
 </div>
 <p>As with instructions, I will show you how to implement a single trap routine and leave the rest to you.
 </p>
@@ -931,7 +931,7 @@ switch (instr &amp; 0xFF)
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP PUTS <a href="lc3.html#1:8">8</a>}</span>
+<span class="codeblock_name">{TRAP PUTS <a href="index.html#1:8">8</a>}</span>
 <pre class="prettyprint lang-c">
 {
     /* one char per word */
@@ -959,46 +959,46 @@ switch (instr &amp; 0xFF)
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP GETC <a href="lc3.html#1:9">9</a>}</span>
+<span class="codeblock_name">{TRAP GETC <a href="index.html#1:9">9</a>}</span>
 <pre class="prettyprint lang-c">
 /* read a single ASCII char */
 reg[R_R0] = (uint16_t)getchar();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:8">8</a></p>
+<p class="seealso">Used in section <a href="index.html#1:8">8</a></p>
 </div>
 <p>Output Character
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP OUT <a href="lc3.html#1:9">9</a>}</span>
+<span class="codeblock_name">{TRAP OUT <a href="index.html#1:9">9</a>}</span>
 <pre class="prettyprint lang-c">
 putc((char)reg[R_R0], stdout);
 fflush(stdout);
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:8">8</a></p>
+<p class="seealso">Used in section <a href="index.html#1:8">8</a></p>
 </div>
 <p>Prompt for Input Character
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP IN <a href="lc3.html#1:9">9</a>}</span>
+<span class="codeblock_name">{TRAP IN <a href="index.html#1:9">9</a>}</span>
 <pre class="prettyprint lang-c">
 printf("Enter a character: ");
 reg[R_R0] = (uint16_t)getchar();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:8">8</a></p>
+<p class="seealso">Used in section <a href="index.html#1:8">8</a></p>
 </div>
 <p>Output String
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP PUTSP <a href="lc3.html#1:9">9</a>}</span>
+<span class="codeblock_name">{TRAP PUTSP <a href="index.html#1:9">9</a>}</span>
 <pre class="prettyprint lang-c">
 {
     /* one char per byte (two bytes per word)
@@ -1018,13 +1018,13 @@ reg[R_R0] = (uint16_t)getchar();
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:8">8</a></p>
+<p class="seealso">Used in section <a href="index.html#1:8">8</a></p>
 </div>
 <p>Halt Program
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{TRAP HALT <a href="lc3.html#1:9">9</a>}</span>
+<span class="codeblock_name">{TRAP HALT <a href="index.html#1:9">9</a>}</span>
 <pre class="prettyprint lang-c">
 puts("HALT");
 fflush(stdout);
@@ -1032,7 +1032,7 @@ running = 0;
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:8">8</a></p>
+<p class="seealso">Used in section <a href="index.html#1:8">8</a></p>
 </div>
 </div>
 <a name="1:10"><div class="section"><h4>10. Loading Programs</h4></a>
@@ -1044,7 +1044,7 @@ running = 0;
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Read Image File <a href="lc3.html#1:10">10</a>}</span>
+<span class="codeblock_name">{Read Image File <a href="index.html#1:10">10</a>}</span>
 <pre class="prettyprint lang-c">
 void read_image_file(FILE* file)
 {
@@ -1068,13 +1068,13 @@ void read_image_file(FILE* file)
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="index.html#1:12">12</a></p>
 </div>
 <p>Notice that <code>swap16</code> is called on each loaded value. LC-3 programs are big-endian, but most of the modern computers we use are little endian. As a result, we need to swap each <code>uint16</code> that is loaded. (If you happen to be using a <a href="https://en.wikipedia.org/wiki/Power_Mac_G4_Cube">strange computer</a>, like a <a href="https://en.wikipedia.org/wiki/PowerPC#Endian_modes">PPC</a> then you should not swap.)
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Swap <a href="lc3.html#1:10">10</a>}</span>
+<span class="codeblock_name">{Swap <a href="index.html#1:10">10</a>}</span>
 <pre class="prettyprint lang-c">
 uint16_t swap16(uint16_t x)
 {
@@ -1083,7 +1083,7 @@ uint16_t swap16(uint16_t x)
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="index.html#1:12">12</a></p>
 </div>
 <blockquote><p> <strong>Note:</strong> <a href="https://en.wikipedia.org/wiki/Endianness">Endianness</a> refers to how bytes of an integer are interpreted. In little-endian, the first byte is the least significant digit, and in big-endian, it is reversed. As far as I know, the decision is <em>mostly</em> arbitrary. Different companies made different decisions, so now we are left with varying implementations. You do not need to know anything else about endianness for this project.
 </p>
@@ -1092,7 +1092,7 @@ uint16_t swap16(uint16_t x)
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Read Image <a href="lc3.html#1:10">10</a>}</span>
+<span class="codeblock_name">{Read Image <a href="index.html#1:10">10</a>}</span>
 <pre class="prettyprint lang-c">
 int read_image(const char* image_path)
 {
@@ -1105,7 +1105,7 @@ int read_image(const char* image_path)
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="index.html#1:12">12</a></p>
 </div>
 </div>
 <a name="1:11"><div class="section"><h4>11. Memory Mapped Registers</h4></a>
@@ -1117,7 +1117,7 @@ int read_image(const char* image_path)
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Memory Mapped Registers <a href="lc3.html#1:11">11</a>}</span>
+<span class="codeblock_name">{Memory Mapped Registers <a href="index.html#1:11">11</a>}</span>
 <pre class="prettyprint lang-c">
 enum
 {
@@ -1127,13 +1127,13 @@ enum
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:14">14</a></p>
+<p class="seealso">Used in section <a href="index.html#1:14">14</a></p>
 </div>
 <p>Memory mapped registers make memory access a bit more complicated. We can't read and write to the memory array directly, but must instead call setter and getter functions. When memory is read from <code>KBSR</code>, the getter will check the keyboard and update both memory locations.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Memory Access <a href="lc3.html#1:11">11</a>}</span>
+<span class="codeblock_name">{Memory Access <a href="index.html#1:11">11</a>}</span>
 <pre class="prettyprint lang-c">
 void mem_write(uint16_t address, uint16_t val)
 {
@@ -1159,7 +1159,7 @@ uint16_t mem_read(uint16_t address)
 </pre>
 
 
-<p class="seealso">Used in section <a href="lc3.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="index.html#1:12">12</a></p>
 </div>
 <p>That completes the last component of the VM! Provided that you implemented the rest of the trap routines and instructions, you are almost ready to try it out!
 </p>
@@ -1167,17 +1167,17 @@ uint16_t mem_read(uint16_t address)
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{<strong>lc3.c</strong> <a href="lc3.html#1:3">3</a>} +=</span>
+<span class="codeblock_name">{<strong>lc3.c</strong> <a href="index.html#1:3">3</a>} +=</span>
 <pre class="prettyprint lang-c">
-<span class="nocode pln">{Memory Mapped Registers, <a href="lc3.html#1:11">11</a>}</span>
-<span class="nocode pln">{TRAP Codes, <a href="lc3.html#1:8">8</a>}</span>
+<span class="nocode pln">{Memory Mapped Registers, <a href="index.html#1:11">11</a>}</span>
+<span class="nocode pln">{TRAP Codes, <a href="index.html#1:8">8</a>}</span>
 
-<span class="nocode pln">{Memory Storage, <a href="lc3.html#1:3">3</a>}</span>
-<span class="nocode pln">{Register Storage, <a href="lc3.html#1:3">3</a>}</span>
+<span class="nocode pln">{Memory Storage, <a href="index.html#1:3">3</a>}</span>
+<span class="nocode pln">{Register Storage, <a href="index.html#1:3">3</a>}</span>
 
-<span class="nocode pln">{Functions, <a href="lc3.html#1:12">12</a>}</span>
+<span class="nocode pln">{Functions, <a href="index.html#1:12">12</a>}</span>
 
-<span class="nocode pln">{Main Loop, <a href="lc3.html#1:5">5</a>}</span>
+<span class="nocode pln">{Main Loop, <a href="index.html#1:5">5</a>}</span>
 </pre>
 
 
@@ -1191,7 +1191,7 @@ uint16_t mem_read(uint16_t address)
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Check Key <a href="lc3.html#1:12">12</a>}</span>
+<span class="codeblock_name">{Check Key <a href="index.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
 uint16_t check_key()
 {
@@ -1213,7 +1213,7 @@ uint16_t check_key()
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Load Arguments <a href="lc3.html#1:12">12</a>}</span>
+<span class="codeblock_name">{Load Arguments <a href="index.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
 if (argc &lt; 2)
 {
@@ -1233,13 +1233,13 @@ for (int j = 1; j &lt; argc; ++j)
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:5">5</a> and <a href="lc3.html#1:14">14</a></p>
+<p class="seealso">Used in sections <a href="index.html#1:5">5</a> and <a href="index.html#1:14">14</a></p>
 </div>
 <p>This is Unix specific code for setting up terminal input.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Input Buffering <a href="lc3.html#1:12">12</a>}</span>
+<span class="codeblock_name">{Input Buffering <a href="index.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
 struct termios original_tio;
 
@@ -1265,7 +1265,7 @@ settings back to normal.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Handle Interrupt <a href="lc3.html#1:12">12</a>}</span>
+<span class="codeblock_name">{Handle Interrupt <a href="index.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
 void handle_interrupt(int signal)
 {
@@ -1280,46 +1280,46 @@ void handle_interrupt(int signal)
 </div>
 
 <div class="codeblock">
-<span class="codeblock_name">{Setup <a href="lc3.html#1:12">12</a>}</span>
+<span class="codeblock_name">{Setup <a href="index.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
 signal(SIGINT, handle_interrupt);
 disable_input_buffering();
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:5">5</a> and <a href="lc3.html#1:14">14</a></p>
+<p class="seealso">Used in sections <a href="index.html#1:5">5</a> and <a href="index.html#1:14">14</a></p>
 </div>
 
 <div class="codeblock">
-<span class="codeblock_name">{Shutdown <a href="lc3.html#1:12">12</a>}</span>
+<span class="codeblock_name">{Shutdown <a href="index.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
 restore_input_buffering();
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:5">5</a> and <a href="lc3.html#1:14">14</a></p>
+<p class="seealso">Used in sections <a href="index.html#1:5">5</a> and <a href="index.html#1:14">14</a></p>
 </div>
 
 <div class="codeblock">
-<span class="codeblock_name">{Functions <a href="lc3.html#1:12">12</a>}</span>
+<span class="codeblock_name">{Functions <a href="index.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
-<span class="nocode pln">{Sign Extend, <a href="lc3.html#1:6">6</a>}</span>
-<span class="nocode pln">{Swap, <a href="lc3.html#1:10">10</a>}</span>
-<span class="nocode pln">{Update Flags, <a href="lc3.html#1:6">6</a>}</span>
-<span class="nocode pln">{Read Image File, <a href="lc3.html#1:10">10</a>}</span>
-<span class="nocode pln">{Read Image, <a href="lc3.html#1:10">10</a>}</span>
-<span class="nocode pln">{Check Key, <a href="lc3.html#1:12">12</a>}</span>
-<span class="nocode pln">{Memory Access, <a href="lc3.html#1:11">11</a>}</span>
-<span class="nocode pln">{Input Buffering, <a href="lc3.html#1:12">12</a>}</span>
-<span class="nocode pln">{Handle Interrupt, <a href="lc3.html#1:12">12</a>}</span>
+<span class="nocode pln">{Sign Extend, <a href="index.html#1:6">6</a>}</span>
+<span class="nocode pln">{Swap, <a href="index.html#1:10">10</a>}</span>
+<span class="nocode pln">{Update Flags, <a href="index.html#1:6">6</a>}</span>
+<span class="nocode pln">{Read Image File, <a href="index.html#1:10">10</a>}</span>
+<span class="nocode pln">{Read Image, <a href="index.html#1:10">10</a>}</span>
+<span class="nocode pln">{Check Key, <a href="index.html#1:12">12</a>}</span>
+<span class="nocode pln">{Memory Access, <a href="index.html#1:11">11</a>}</span>
+<span class="nocode pln">{Input Buffering, <a href="index.html#1:12">12</a>}</span>
+<span class="nocode pln">{Handle Interrupt, <a href="index.html#1:12">12</a>}</span>
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:11">11</a> and <a href="lc3.html#1:14">14</a></p>
+<p class="seealso">Used in sections <a href="index.html#1:11">11</a> and <a href="index.html#1:14">14</a></p>
 </div>
 
 <div class="codeblock">
-<span class="codeblock_name">{Includes <a href="lc3.html#1:12">12</a>}</span>
+<span class="codeblock_name">{Includes <a href="index.html#1:12">12</a>}</span>
 <pre class="prettyprint lang-c">
 #include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
@@ -1336,7 +1336,7 @@ restore_input_buffering();
 </pre>
 
 
-<p class="seealso">Used in sections <a href="lc3.html#1:3">3</a> and <a href="lc3.html#1:14">14</a></p>
+<p class="seealso">Used in sections <a href="index.html#1:3">3</a> and <a href="index.html#1:14">14</a></p>
 </div>
 </div>
 <a name="1:13"><div class="section"><h4>13. Running the VM</h4></a>
@@ -1356,7 +1356,7 @@ restore_input_buffering();
 </ol>
 
 <div class="codeblock">
-<span class="codeblock_name">{2048 Example <a href="lc3.html#1:13">13</a>}</span>
+<span class="codeblock_name">{2048 Example <a href="index.html#1:13">13</a>}</span>
 <pre class="prettyprint lang-c">
 Control the game using WASD keys.
 Are you on an ANSI terminal (y/n)? y
@@ -1392,7 +1392,7 @@ Are you on an ANSI terminal (y/n)? y
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Instruction C++ <a href="lc3.html#1:14">14</a>}</span>
+<span class="codeblock_name">{Instruction C++ <a href="index.html#1:14">14</a>}</span>
 <pre class="prettyprint lang-c">
 template &lt;unsigned op&gt;
 void ins(uint16_t instr)
@@ -1472,7 +1472,7 @@ void ins(uint16_t instr)
     if (0x0080 &amp; opbit) { mem_write(base_plus_off, reg[r0]); } // STR
     if (0x8000 &amp; opbit)  // TRAP
     {
-<span class="nocode pln">         {TRAP, <a href="lc3.html#1:8">8</a>}</span>
+<span class="nocode pln">         {TRAP, <a href="index.html#1:8">8</a>}</span>
     }
     //if (0x0100 &amp; opbit) { } // RTI
     if (0x4666 &amp; opbit) { update_flags(r0); }
@@ -1484,7 +1484,7 @@ void ins(uint16_t instr)
 </div>
 
 <div class="codeblock">
-<span class="codeblock_name">{Op Table <a href="lc3.html#1:14">14</a>}</span>
+<span class="codeblock_name">{Op Table <a href="index.html#1:14">14</a>}</span>
 <pre class="prettyprint lang-c">
 static void (*op_table[16])(uint16_t) = {
     ins&lt;0&gt;, ins&lt;1&gt;, ins&lt;2&gt;, ins&lt;3&gt;,
@@ -1505,30 +1505,30 @@ static void (*op_table[16])(uint16_t) = {
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{<strong>lc3-alt.cpp</strong> <a href="lc3.html#1:14">14</a>}</span>
+<span class="codeblock_name">{<strong>lc3-alt.cpp</strong> <a href="index.html#1:14">14</a>}</span>
 <pre class="prettyprint lang-c">
-<span class="nocode pln">{Includes, <a href="lc3.html#1:12">12</a>}</span>
+<span class="nocode pln">{Includes, <a href="index.html#1:12">12</a>}</span>
 
-<span class="nocode pln">{Registers, <a href="lc3.html#1:3">3</a>}</span>
-<span class="nocode pln">{Condition Flags, <a href="lc3.html#1:3">3</a>}</span>
-<span class="nocode pln">{Opcodes, <a href="lc3.html#1:3">3</a>}</span>
+<span class="nocode pln">{Registers, <a href="index.html#1:3">3</a>}</span>
+<span class="nocode pln">{Condition Flags, <a href="index.html#1:3">3</a>}</span>
+<span class="nocode pln">{Opcodes, <a href="index.html#1:3">3</a>}</span>
 
-<span class="nocode pln">{Memory Mapped Registers, <a href="lc3.html#1:11">11</a>}</span>
-<span class="nocode pln">{TRAP Codes, <a href="lc3.html#1:8">8</a>}</span>
+<span class="nocode pln">{Memory Mapped Registers, <a href="index.html#1:11">11</a>}</span>
+<span class="nocode pln">{TRAP Codes, <a href="index.html#1:8">8</a>}</span>
 
-<span class="nocode pln">{Memory Storage, <a href="lc3.html#1:3">3</a>}</span>
-<span class="nocode pln">{Register Storage, <a href="lc3.html#1:3">3</a>}</span>
+<span class="nocode pln">{Memory Storage, <a href="index.html#1:3">3</a>}</span>
+<span class="nocode pln">{Register Storage, <a href="index.html#1:3">3</a>}</span>
 
-<span class="nocode pln">{Functions, <a href="lc3.html#1:12">12</a>}</span>
+<span class="nocode pln">{Functions, <a href="index.html#1:12">12</a>}</span>
 
 int running = 1;
-<span class="nocode pln">{Instruction C++, <a href="lc3.html#1:14">14</a>}</span>
-<span class="nocode pln">{Op Table, <a href="lc3.html#1:14">14</a>}</span>
+<span class="nocode pln">{Instruction C++, <a href="index.html#1:14">14</a>}</span>
+<span class="nocode pln">{Op Table, <a href="index.html#1:14">14</a>}</span>
 
 int main(int argc, const char* argv[])
 {
-<span class="nocode pln">    {Load Arguments, <a href="lc3.html#1:12">12</a>}</span>
-<span class="nocode pln">    {Setup, <a href="lc3.html#1:12">12</a>}</span>
+<span class="nocode pln">    {Load Arguments, <a href="index.html#1:12">12</a>}</span>
+<span class="nocode pln">    {Setup, <a href="index.html#1:12">12</a>}</span>
 
     enum { PC_START = 0x3000 };
     reg[R_PC] = PC_START;
@@ -1539,7 +1539,7 @@ int main(int argc, const char* argv[])
         uint16_t op = instr &gt;&gt; 12;
         op_table[op](instr);
     }
-<span class="nocode pln">    {Shutdown, <a href="lc3.html#1:12">12</a>}</span>
+<span class="nocode pln">    {Shutdown, <a href="index.html#1:12">12</a>}</span>
 }
 </pre>
 
