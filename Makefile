@@ -5,12 +5,11 @@ CPP-FLAGS=-std=c++14 -O3
 
 all: lc3 lc3-alt index.html
 
-lc3.c lc3-alt.cpp: lc3.lit main.css
+lc3.c lc3-alt.cpp: index.lit main.css
 	lit --tangle $<
 
-index.html: lc3.lit
+index.html: index.lit
 	lit --weave $<
-	mv lc3.html index.html
 
 lc3-alt: lc3-alt.cpp
 	${CPP} ${CPP-FLAGS} $^ -o $@
