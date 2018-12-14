@@ -31,7 +31,7 @@ enum
 };
 
 /* Opcodes */
-enum 
+enum
 {
     OP_BR = 0, /* branch */
     OP_ADD,    /* add  */
@@ -80,7 +80,7 @@ enum
 
 /* Memory Storage */
 /* 65536 locations */
-uint16_t memory[UINT16_MAX]; 
+uint16_t memory[UINT16_MAX];
 
 /* Register Storage */
 uint16_t reg[R_COUNT];
@@ -116,7 +116,7 @@ void update_flags(uint16_t r0)
     else
     {
         reg[R_COND] = FL_POS;
-    }  
+    }
 }
 
 /* Read Image File */
@@ -135,7 +135,7 @@ void read_image_file(FILE* file)
     /* swap to little endian */
     while (read-- > 0)
     {
-        *p = swap16(*p); 
+        *p = swap16(*p);
         ++p;
     }
 }
@@ -151,7 +151,7 @@ int read_image(const char* image_path)
 }
 
 /* Check Key */
-uint16_t check_key() 
+uint16_t check_key()
 {
     fd_set readfds;
     FD_ZERO(&readfds);
@@ -172,8 +172,8 @@ void mem_write(uint16_t address, uint16_t val)
 uint16_t mem_read(uint16_t address)
 {
     if (address == MR_KBSR)
-    { 
-        if (check_key()) 
+    {
+        if (check_key())
         {
             memory[MR_KBSR] = (1 << 15);
             memory[MR_KBDR] = getchar();
@@ -189,7 +189,7 @@ uint16_t mem_read(uint16_t address)
 /* Input Buffering */
 struct termios original_tio;
 
-void disable_input_buffering() 
+void disable_input_buffering()
 {
     tcgetattr(STDIN_FILENO, &original_tio);
     struct termios new_tio = original_tio;
@@ -197,13 +197,13 @@ void disable_input_buffering()
     tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
 }
 
-void restore_input_buffering() 
+void restore_input_buffering()
 {
     tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
 }
 
 /* Handle Interrupt */
-void handle_interrupt(int signal) 
+void handle_interrupt(int signal)
 {
     restore_input_buffering();
     printf("\n");
@@ -217,10 +217,10 @@ void handle_interrupt(int signal)
 int main(int argc, const char* argv[])
 {
     /* Load Arguments */
-    if (argc < 2) 
+    if (argc < 2)
     {
         /* show usage string */
-        printf("lc3 [image-file1] ...\n"); 
+        printf("lc3 [image-file1] ...\n");
         exit(2);
     }
     
@@ -230,7 +230,7 @@ int main(int argc, const char* argv[])
         {
             printf("failed to load image: %s\n", argv[j]);
             exit(1);
-        }  
+        }
     }
 
     /* Setup */
@@ -244,7 +244,7 @@ int main(int argc, const char* argv[])
     reg[R_PC] = PC_START;
 
     int running = 1;
-    while (running) 
+    while (running)
     {
         /* FETCH */
         uint16_t instr = mem_read(reg[R_PC]++);
@@ -268,7 +268,7 @@ int main(int argc, const char* argv[])
                         reg[r0] = reg[r1] + imm5;
                     }
                     else
-                    { 
+                    {
                         uint16_t r2 = instr & 0x7;
                         reg[r0] = reg[r1] + reg[r2];
                     }
@@ -416,7 +416,7 @@ int main(int argc, const char* argv[])
                     case TRAP_GETC:
                         /* TRAP GETC */
                         /* read a single ASCII char */
-                        reg[R_R0] = (uint16_t)getchar(); 
+                        reg[R_R0] = (uint16_t)getchar();
 
                         break;
                     case TRAP_OUT:
@@ -449,7 +449,7 @@ int main(int argc, const char* argv[])
                         /* TRAP PUTSP */
                         {
                             /* one char per byte (two bytes per word)
-                               here we need to swap back to 
+                               here we need to swap back to
                                big endian format */
                             uint16_t* c = memory + reg[R_R0];
                             while (*c)
@@ -468,7 +468,7 @@ int main(int argc, const char* argv[])
                         /* TRAP HALT */
                         puts("HALT");
                         fflush(stdout);
-                        running = 0; 
+                        running = 0;
 
                         break;
                 }
@@ -480,7 +480,7 @@ int main(int argc, const char* argv[])
                 /* BAD OPCODE */
                 abort();
 
-                break;      
+                break;
         }
     }
     /* Shutdown */

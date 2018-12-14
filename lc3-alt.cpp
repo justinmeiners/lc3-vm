@@ -39,7 +39,7 @@ enum
 };
 
 /* Opcodes */
-enum 
+enum
 {
     OP_BR = 0, /* branch */
     OP_ADD,    /* add  */
@@ -81,7 +81,7 @@ enum
 
 /* Memory Storage */
 /* 65536 locations */
-uint16_t memory[UINT16_MAX]; 
+uint16_t memory[UINT16_MAX];
 
 /* Register Storage */
 uint16_t reg[R_COUNT];
@@ -117,7 +117,7 @@ void update_flags(uint16_t r0)
     else
     {
         reg[R_COND] = FL_POS;
-    }  
+    }
 }
 
 /* Read Image File */
@@ -136,7 +136,7 @@ void read_image_file(FILE* file)
     /* swap to little endian */
     while (read-- > 0)
     {
-        *p = swap16(*p); 
+        *p = swap16(*p);
         ++p;
     }
 }
@@ -152,7 +152,7 @@ int read_image(const char* image_path)
 }
 
 /* Check Key */
-uint16_t check_key() 
+uint16_t check_key()
 {
     fd_set readfds;
     FD_ZERO(&readfds);
@@ -173,8 +173,8 @@ void mem_write(uint16_t address, uint16_t val)
 uint16_t mem_read(uint16_t address)
 {
     if (address == MR_KBSR)
-    { 
-        if (check_key()) 
+    {
+        if (check_key())
         {
             memory[MR_KBSR] = (1 << 15);
             memory[MR_KBDR] = getchar();
@@ -190,7 +190,7 @@ uint16_t mem_read(uint16_t address)
 /* Input Buffering */
 struct termios original_tio;
 
-void disable_input_buffering() 
+void disable_input_buffering()
 {
     tcgetattr(STDIN_FILENO, &original_tio);
     struct termios new_tio = original_tio;
@@ -198,13 +198,13 @@ void disable_input_buffering()
     tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
 }
 
-void restore_input_buffering() 
+void restore_input_buffering()
 {
     tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
 }
 
 /* Handle Interrupt */
-void handle_interrupt(int signal) 
+void handle_interrupt(int signal)
 {
     restore_input_buffering();
     printf("\n");
@@ -216,7 +216,7 @@ void handle_interrupt(int signal)
 int running = 1;
 /* Instruction C++ */
 template <unsigned op>
-void ins(uint16_t instr) 
+void ins(uint16_t instr)
 {
     uint16_t r0, r1, r2, imm5, imm_flag;
     uint16_t pc_plus_off, base_plus_off;
@@ -224,61 +224,61 @@ void ins(uint16_t instr)
     uint16_t opbit = (1 << op);
     if (0x4EEE & opbit) { r0 = (instr >> 9) & 0x7; }
     if (0x12E3 & opbit) { r1 = (instr >> 6) & 0x7; }
-    if (0x0022 & opbit) 
-    { 
-        r2 = instr & 0x7; 
+    if (0x0022 & opbit)
+    {
+        r2 = instr & 0x7;
         imm_flag = (instr >> 5) & 0x1;
         imm5 = sign_extend((instr) & 0x1F, 5);
     }
-    if (0x00C0 & opbit) 
+    if (0x00C0 & opbit)
     {   // Base + offset
-        base_plus_off = reg[r1] + sign_extend(instr & 0x3f, 6); 
+        base_plus_off = reg[r1] + sign_extend(instr & 0x3f, 6);
     }
-    if (0x4C0D & opbit) 
-    { 
+    if (0x4C0D & opbit)
+    {
         // Indirect address
-        pc_plus_off = reg[R_PC] + sign_extend(instr & 0x1ff, 9); 
+        pc_plus_off = reg[R_PC] + sign_extend(instr & 0x1ff, 9);
     }
-    if (0x0001 & opbit) 
-    {  
+    if (0x0001 & opbit)
+    {
         // BR
-        uint16_t cond = (instr >> 9) & 0x7; 
+        uint16_t cond = (instr >> 9) & 0x7;
         if (cond & reg[R_COND]) { reg[R_PC] = pc_plus_off; }
-    } 
+    }
     if (0x0002 & opbit)  // ADD
-    {  
-        if (imm_flag) 
+    {
+        if (imm_flag)
         {
             reg[r0] = reg[r1] + imm5;
-        } 
-        else 
+        }
+        else
         {
-            reg[r0] = reg[r1] + reg[r2]; 
+            reg[r0] = reg[r1] + reg[r2];
         }
     }
     if (0x0020 & opbit)  // AND
-    {  
-        if (imm_flag) 
+    {
+        if (imm_flag)
         {
             reg[r0] = reg[r1] & imm5;
-        } 
-        else 
+        }
+        else
         {
             reg[r0] = reg[r1] & reg[r2];
         }
     }
     if (0x0200 & opbit) { reg[r0] = ~reg[r1]; } // NOT
-    if (0x1000 & opbit) { reg[R_PC] = reg[r1]; } // JMP    
+    if (0x1000 & opbit) { reg[R_PC] = reg[r1]; } // JMP
     if (0x0010 & opbit)  // JSR
-    { 
-        uint16_t long_flag = (instr >> 11) & 1; 
+    {
+        uint16_t long_flag = (instr >> 11) & 1;
         pc_plus_off = reg[R_PC] +  sign_extend(instr & 0x7ff, 11);
-        reg[R_R7] = reg[R_PC]; 
-        if (long_flag) 
+        reg[R_R7] = reg[R_PC];
+        if (long_flag)
         {
             reg[R_PC] = pc_plus_off;
-        } 
-        else 
+        }
+        else
         {
             reg[R_PC] = reg[r1];
         }
@@ -299,7 +299,7 @@ void ins(uint16_t instr)
              case TRAP_GETC:
                  /* TRAP GETC */
                  /* read a single ASCII char */
-                 reg[R_R0] = (uint16_t)getchar(); 
+                 reg[R_R0] = (uint16_t)getchar();
 
                  break;
              case TRAP_OUT:
@@ -332,7 +332,7 @@ void ins(uint16_t instr)
                  /* TRAP PUTSP */
                  {
                      /* one char per byte (two bytes per word)
-                        here we need to swap back to 
+                        here we need to swap back to
                         big endian format */
                      uint16_t* c = memory + reg[R_R0];
                      while (*c)
@@ -351,7 +351,7 @@ void ins(uint16_t instr)
                  /* TRAP HALT */
                  puts("HALT");
                  fflush(stdout);
-                 running = 0; 
+                 running = 0;
 
                  break;
          }
@@ -363,20 +363,20 @@ void ins(uint16_t instr)
 
 /* Op Table */
 static void (*op_table[16])(uint16_t) = {
-    ins<0>, ins<1>, ins<2>, ins<3>, 
-    ins<4>, ins<5>, ins<6>, ins<7>, 
-    NULL, ins<9>, ins<10>, ins<11>, 
-    ins<12>, NULL, ins<14>, ins<15>  
+    ins<0>, ins<1>, ins<2>, ins<3>,
+    ins<4>, ins<5>, ins<6>, ins<7>,
+    NULL, ins<9>, ins<10>, ins<11>,
+    ins<12>, NULL, ins<14>, ins<15>
 };
 
 
 int main(int argc, const char* argv[])
 {
     /* Load Arguments */
-    if (argc < 2) 
+    if (argc < 2)
     {
         /* show usage string */
-        printf("lc3 [image-file1] ...\n"); 
+        printf("lc3 [image-file1] ...\n");
         exit(2);
     }
     
@@ -386,7 +386,7 @@ int main(int argc, const char* argv[])
         {
             printf("failed to load image: %s\n", argv[j]);
             exit(1);
-        }  
+        }
     }
 
     /* Setup */
@@ -397,7 +397,7 @@ int main(int argc, const char* argv[])
     enum { PC_START = 0x3000 };
     reg[R_PC] = PC_START;
 
-    while (running) 
+    while (running)
     {
         uint16_t instr = mem_read(reg[R_PC]++);
         uint16_t op = instr >> 12;
