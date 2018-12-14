@@ -6,6 +6,8 @@
 
 @s Contents
 
+By: [**Justin Meiners**](https://justinmeiners.github.io) & [**Ryan Pendleton**](https://github.com/rpendleton)
+
 1. [Introduction](#1:2)
 2. [LC-3 Architecture](#1:3)
 3. [Assembly Examples](#1:4)
@@ -33,7 +35,7 @@ The [final code](lc3.c) is about 250 lines of C. All you need to know is how to 
 
 A VM is a program that acts like a computer. It simulates a CPU along with a few other hardware components, allowing it to perform arithmetic, read and write to memory, and interact with I/O devices, just like a physical computer. Most importantly, it can understand a machine language which you can you can use to program it.
 
-The amount of computer hardware the VM attempts to simulate depends on its purpose. Some VMs are designed to reproduce the behavior of some particular computer, such as video game emulators. Most people don't have an NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program. These emulators must [faithfully recreate](http://wiki.nesdev.com/w/index.php/Tricky-to-emulate_games) every [detail](http://wiki.nesdev.com/w/index.php/Tricky-to-emulate_games) and major hardware component of the original device.
+The amount of computer hardware the VM attempts to simulate depends on its purpose. Some VMs are designed to reproduce the behavior of some particular computer, such as video game emulators. Most people don't have an NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program. These emulators must [faithfully recreate](http://wiki.nesdev.com/w/index.php/Tricky-to-emulate_games) every [detail](http://wiki.nesdev.com/w/index.php/Emulator_tests) and major hardware component of the original device.
 
 Other VMs don't act like any real computer and are entirely made up! This is primarily done to make software development easier. Imagine you wanted to create a program that ran on multiple computer architectures. A VM could offer a standard platform which provided portability for all of them. Instead of rewriting a program in different dialects of assembly for each CPU architecture, you would only need to write the small VM program in each assembly language. Each program would then written be written only once in the VM's assembly language.
 
@@ -41,7 +43,7 @@ Other VMs don't act like any real computer and are entirely made up! This is pri
 
 ![vm for each architecture](img/vm.gif)
 
-> **Note:** A compiler solves a similar problem by compiling a standard *high-level language* to several CPU architectures. A VM creates a standard *CPU architecture* which is simulated by a program. A compiler has no runtime component while a VM does. Even though compilers do a pretty good job, writing a new one that targets multiple platforms is very difficult, so VMs are still helpful here. In practice, VMs and compilers are mixed at various levels.
+> **Note:** A compiler solves a similar problem by compiling a standard *high-level language* to several CPU architectures. A VM creates one standard *CPU architecture* which is simulated on various hardware devices. One advantage of a compiler is that it has no runtime overhead while a VM does. Even though compilers do a pretty good job, writing a new one that targets multiple platforms is very difficult, so VMs are still helpful here. In practice, VMs and compilers are mixed at various levels.
 
 The [Java Virtual Machine (JVM)](https://en.wikipedia.org/wiki/Java_virtual_machine) is a very successful example. The JVM itself is a moderately sized program that is small enough for one programmer to understand. This has made it possible to be written for thousands of devices including phones. Once the JVM is implemented on a new device, any Java/Kotlin/Clojure program ever written can run it without modification. The only cost is the overhead of the VM itself and the [further abstraction](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/) from the machine. Most of the time, this is a pretty good tradeoff.
 
@@ -49,7 +51,7 @@ A VM doesn't have to be large or pervasive to provide a similar benefit. Often o
 
 VMs are also useful for executing code in a secure or isolated way. One application of this is garbage collection. There [is no trivial way](https://www.lua.org/pil/24.2.html) to implement automatic garbage collection on top of C or C++ since a program cannot see its own stack or variables. However, a VM is “outside” the program it is running and can observe all of the [memory references](https://en.wikipedia.org/wiki/Tracing_garbage_collection) on the stack.
 
-Another example of this behavior is demonstrated by [Ethereum smart contracts](https://solidity.readthedocs.io/en/v0.4.24/introduction-to-smart-contracts.html). Smart contracts are small programs which are executed by each validating node in the blockchain network. This requires the node operators to run programs on their machines that have been written by complete strangers, without any chance to scrutinize them beforehand. To prevent a contract from doing malicious things, they are run inside a [VM](http://ethdocs.org/en/latest/introduction/what-is-ethereum.html#ethereum-virtual-machine) that has no access to the file system, network, disc, etc. Ethereum is also a good application of the portability features that result when using a VM. Since Ethereum nodes can be run on many kinds of computers and operating systems, the use of a VM allows smart contracts to be written without any consideration of the many platforms they run on.
+Another example of this behavior is demonstrated by [Ethereum smart contracts](https://solidity.readthedocs.io/en/v0.4.24/introduction-to-smart-contracts.html). Smart contracts are small programs which are executed by each validating node in the blockchain network. This requires the node operators to run programs on their machines that have been written by complete strangers, without any opprotunity to scrutinize them beforehand. To prevent a contract from doing malicious things, they are run inside a [VM](http://ethdocs.org/en/latest/introduction/what-is-ethereum.html#ethereum-virtual-machine) that has no access to the file system, network, disc, etc. Ethereum is also a good application of the portability features that result when using a VM. Since Ethereum nodes can be run on many kinds of computers and operating systems, the use of a VM allows smart contracts to be written without any consideration of the many platforms they run on.
 
 @s LC-3 Architecture
 
@@ -130,7 +132,7 @@ enum
 };
 ---
 
-> **Note:** The Intel x86 architecture has hundreds of instructions, while others such as ARM and LC-3 have very few. Small instruction sets are referred to as [RISCs](https://en.wikipedia.org/wiki/Reduced_instruction_set_computer) while larger ones are called [CISCs](https://en.wikipedia.org/wiki/Complex_instruction_set_computer). Larger instruction sets typically do not provide any fundamentally new possibilities, but they often make it more convenient to write assembly for. A single instruction in CISC might take several in RISC. However, they tend to be more complex and expensive for engineers to design and manufacture. This and other tradeoffs make the designs come in and out of style.
+> **Note:** The Intel x86 architecture has hundreds of instructions, while others such as ARM and LC-3 have very few. Small instruction sets are referred to as [RISCs](https://en.wikipedia.org/wiki/Reduced_instruction_set_computer) while larger ones are called [CISCs](https://en.wikipedia.org/wiki/Complex_instruction_set_computer). Larger instruction sets typically do not provide any fundamentally new possibilities, but they [often make it more convenient](https://cs.stanford.edu/people/eroberts/courses/soco/projects/risc/risccisc/) to write assembly for. A single instruction in CISC might take the place of several in RISC. However, they tend to be more complex and expensive for engineers to design and manufacture. This and other tradeoffs cause the designs to come [in and out of style](https://cs.stackexchange.com/questions/269/why-would-anyone-want-cisc).
 
 
 ### Condition Flags
@@ -149,7 +151,7 @@ enum
 
 > **Note:** (The `<<` symbol is called the [left bitshift operator](https://msdn.microsoft.com/en-us/library/336xbhcz.aspx). `(n << k)` shifts the bits of `n` to the left `k` places. Thus `1 << 2` will equal `4`. Read that link if you are not familiar. It will be important.)
 
-We are finished setting up the hardware components of our VM! You will need to include some system headers (listed later). Your file should now look something like this:
+We are finished setting up the hardware components of our VM! After adding standard includes (see reference) your file should now look something like this:
 
 --- lc3.c
 @{Includes}
@@ -178,7 +180,9 @@ Notice that some of the statements have names which match the opcodes we defined
 
 This is because the code we are reading is written in **assembly** which is a human-readable and writable form, encoded in plain text. A tool called an **assembler** is used to transform each line of text into a 16-bit binary instruction the VM can understand. This binary form, which is essentially an array of 16-bit instructions, is called **machine code** and is what the VM actually runs.
 
-MORE WRITING OR EXAMPLE
+![assembler diagram](img/assembler.gif)
+
+> **Note:** Although a compiler and an assembler play a similar role in development they are not the same. An assembler simply encodes what the programmer has written in text into binary, replacing symbols with their binary representation and packing them into instructions.
 
 The commands `.ORIG` and `.STRINGZ` look like instructions but they aren't. They are assembler directives which generate a piece of code or data. For example the `.STRINGZ` inserts a string of characters into the program binary at the location it is written.
 
@@ -197,12 +201,13 @@ BRn LOOP                           ; go back to LOOP if the result was negative
 
 @s Executing Programs
 
-Once again, the previous examples are just to give you an idea of what the VM does. To write a VM, you don't need to be fluent in assembly. As long as you follow the proper procedure for reading and executing instructions, *any* LC-3 program will run correctly, no matter how complicated it is. In theory, it could even run a web browser or its own copy of Linux!
+Once again, the previous examples are just to give you an idea of what the VM does. To write a VM, you don't need to be fluent in assembly. As long as you follow the proper procedure for reading and executing instructions, *any* LC-3 program will run correctly, no matter how complicated it is. In theory, it could even run a web browser or an operating system like Linux!
 
-If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that we never anticipated and may not be able to understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works.
+If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that we never anticipated and may not be able to understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works. Turing discussed this marvelous idea idea:
 
-Turing has thought about this idea:
 > "The view that machines cannot give rise to surprises is due, I believe, to a fallacy to which philosophers and mathematicians are particularly subject. This is the assumption that as soon as a fact is presented to a mind all consequences of that fact spring into the mind simultaneously with it. It is a very useful assumption under many circumstances, but one too easily forgets that it is false." — [Alan M. Turing](https://academic.oup.com/mind/article-pdf/LIX/236/433/9866119/433.pdf)
+
+### Procedure
 
 Here is a precise description of the procedure we need to write:
 
@@ -290,12 +295,6 @@ int main(int argc, const char* argv[])
 @s Implementing Instructions
 
 Your task now is to fill in each opcode case with a correct implementation. A detailed specification for each instruction is included in the project [documents](docs/lc3-isa.pdf). You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will demonstrate how to implement two of them here. The code for the rest can be found in the next section.
-
-Two of the opcodes specified will not be needed in this project, they are `OP_RTI` and `OP_RES`. You can ignore these cases or throw an error if they are executed:
-
---- BAD OPCODE
-abort();
----
 
 ### ADD
 
@@ -408,9 +407,25 @@ In contrast to `ADD`, there are no modes and fewer parameters. This time, the op
 
 Just like before, we need to sign extend this 9-bit value, but this time add it to the current `PC`. (If you look back at the execution loop, the `PC` was incremented right after this instruction was loaded.) The resulting sum is an address to a location in memory, and that address *contains, yet another* value which is the address of the value to load.
 
-TODO: picture
+This may seem like a roundabout way to read from memory, but it is indispensable. The `LD` instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. `LDI` is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data: 
 
-This may seem like a roundabout way to read from memory, but it is indispensable. The `LD` instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. `LDI` is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data (`char* far_data = ...;`).
+--- C LDI Sample
+// the value of far_data is an address
+// of course far_data itself (the location in memory containing the address) has an address
+char* far_data = "apple"; 
+
+// In memory it may be layed out like this:
+
+// Address Label      Value
+// 0x123:  far_data = 0x456
+// ...
+// 0x456:  string   = 'a'
+
+// if PC was at 0x100
+// LDI R0 0x023
+// would load 'a' into R0
+---
+
 
 Same as before, the flags need to be updated after putting the value into `DR`:
 
@@ -431,11 +446,19 @@ Here is the code for this case: (`mem_read` will be discussed in a later section
 
 As I said, this instruction shared a lot of the code and knowledge learned from `ADD`. You will find this is the case with the remaining instructions.
 
-You now need to go back and implement the rest of the switch cases for the instructions. Follow the specification and use the code listed here to complete the others. The code for all instructions is listed at the end of the tutorial. After you are done, the bulk of your VM will be completed!
+You now need to go back and implement the rest of the switch cases for the instructions. Follow the specification and use the code listed here to complete the others. The code for all instructions is listed at the end of the tutorial. Two of the opcodes specified before will not be used, they are `OP_RTI` and `OP_RES`. You can ignore these cases or throw an error if they are executed. After you are done, the bulk of your VM will be completed!
 
 @s Instruction Cheat Sheet
 
 This section contains the full implementations of the remaining instructions if you get stuck.
+
+### RTI & RES
+
+(these are unused)
+
+--- BAD OPCODE
+abort();
+---
 
 ### [Bitwise and](https://en.wikipedia.org/wiki/Bitwise_operation#AND)
 --- AND
@@ -943,15 +966,17 @@ Are you on an ANSI terminal (y/n)? y
 
 ### Debugging
 
-If the program doesn't work correctly, it is likely because you programmed an instruction incorrectly. This can be tricky to debug. I recommend reading through the assembly source code to the LC-3 program and using a debugger to step the VM through instructions one at a time. As you read the assembly, make sure the VM goes to the instruction that you expect it to. If a discrepancy occurs, you will then know which instruction caused the issue.
+If the program doesn't work correctly, it is likely because you programmed an instruction incorrectly. This can be tricky to debug. I recommend reading through the assembly source code of an LC-3 program while simultaneously using a debugger to step through the VM instructions one at a time. As you read the assembly, make sure the VM goes to the instruction that you expect it to. If a discrepancy occurs, you will then know which instruction caused the issue. Reread its specification and double check your code.
 
 @s Alternate C++ Technique
 
-This section shows a more advanced way of executing instructions. This section is entirely optional.
+This section shows an advanced way of executing instructions that makes the code a whole lot smaller. This section is entirely optional.
 
-Since C++ has powerful compile-time generics, there is an alternative way of implementing the instructions. This method reduces code duplication and is actually closer to how the computer would be wired in hardware.
+Since C++ has powerful compile-time generics, we can use the compiler to generate parts of the instructions for us. This method reduces code duplication and is actually closer to how the computer would be wired in hardware.
 
-The idea here is to reuse the steps common to each instruction. For example, several of the instructions use indirect addressing or sign extend a value and add it to the current PC value. Wouldn't it be nice if we could write this code once for all instructions?
+The idea here is to reuse the steps common to each instruction. For example, several of the instructions use indirect addressing or sign extend a value and add it to the current PC value. Wouldn't it be nice if we could write this code once for all instructions? 
+
+By thinking of the instruction as a pipeline of steps we can see that each instruction is just a permuation of several of the smaller steps. We will use bitwise flags to mark which steps to perform for each instruction. A `1` in the bit corresponding to the instruction number indicates the compiler should include this section of code for that instruction.
 
 --- Instruction C++
 template <unsigned op>
@@ -1051,7 +1076,7 @@ static void (*op_table[16])(uint16_t) = {
 > **Note:** I learned about this technique from [Bisqwit's NES emulator](https://www.youtube.com/watch?v=QIUVSD3yqqE).
 > If you are interested in emulation, or the NES, I highly recommend his videos.
 
-The rest of the program can use the code we already wrote. The full code is [here](lc3-alt.cpp).
+The rest of the C++ version uses the code we already wrote. The full code is [here](lc3-alt.cpp).
 
 --- lc3-alt.cpp
 @{Includes}
