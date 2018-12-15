@@ -262,6 +262,9 @@ int main(int argc, const char* argv[])
             case OP_LD:
                 @{LD}
                 break;
+            case OP_LDI:
+                @{LDI}
+                break;
             case OP_LDR:
                 @{LDR}
                 break;
@@ -539,6 +542,7 @@ abort();
     update_flags(r0);
 }
 ---
+
 ### Load Register
 --- LDR
 {
