@@ -317,7 +317,7 @@ ADD R0 R0 1 ; add 1 to R0 and store back in R0
 
 Here is a summary from the specification:
 
-> If bit [5] is 0, the second source operand is obtained from `SR2`. If bit [5] is 1, the second source operand is obtained by sign-extending the `imm5` field to 16 bits. In either case, the second source operand and the contents of `SR1` are bitwise ANDed, and the result stored in DR. (Pg. 526)
+> If bit [5] is 0, the second source operand is obtained from SR2. If bit [5] is 1, the second source operand is obtained by sign-extending the imm5 field to 16 bits. In both cases, the second source operand is added to the contents of SR1 and the result stored in DR. (Pg. 526)
 
 That sounds just like what we discussed. But what is "sign-extending"? Although the immediate mode value has only 5 bits, it needs to be added to a 16-bit number. Those 5 bits need to be extended to 16 to match the other number. For positive numbers, we can fill in 0's for the additional bits and the value is the same. However, for negative numbers, this causes a problem. For example, -1 stored in 5 bits is `1 1111`. If we just extended it with 0's, this is `0000 0000 0001 1111` which is equal to 32! Sign extension prevents this problem by filling in 0's for positive numbers and 1's for negative numbers.
 
@@ -335,7 +335,7 @@ uint16_t sign_extend(uint16_t x, int bit_count)
 
 There is one last sentence in the specification:
 
-> The condition codes are set based on whether the binary value produced, taken as a 2’s complement integer, is negative, zero, or positive. (Pg. 526)
+> The condition codes are set, based on whether the result is negative, zero, or positive. (Pg. 526)
 
 Earlier we defined a condition flags enum, and now it's time to use them. *Any time* a value is written to a register, we need to update the flags to indicate its sign. We will write a function so that this can be reused:
 
