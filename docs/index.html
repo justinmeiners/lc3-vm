@@ -577,7 +577,7 @@ void update_flags(uint16_t r)
 </blockquote>
 <p>Just like before, we need to sign extend this 9-bit value, but this time add it to the current <code>PC</code>. (If you look back at the execution loop, the <code>PC</code> was incremented right after this instruction was loaded.) The resulting sum is an address to a location in memory, and that address <em>contains, yet another</em> value which is the address of the value to load.
 </p>
-<p>This may seem like a roundabout way to read from memory, but it is indispensable. The <code>LD</code> instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. <code>LDI</code> is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data: 
+<p>This may seem like a roundabout way to read from memory, but it is indispensable. The <code>LD</code> instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. <code>LDI</code> is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data:
 </p>
 
 <div class="codeblock">
@@ -585,7 +585,7 @@ void update_flags(uint16_t r)
 <pre class="prettyprint lang-c">
 // the value of far_data is an address
 // of course far_data itself (the location in memory containing the address) has an address
-char* far_data = "apple"; 
+char* far_data = "apple";
 
 // In memory it may be layed out like this:
 
@@ -1391,7 +1391,7 @@ Are you on an ANSI terminal (y/n)? y
 </p>
 <p>Since C++ has powerful compile-time generics, we can use the compiler to generate parts of the instructions for us. This method reduces code duplication and is actually closer to how the computer would be wired in hardware.
 </p>
-<p>The idea here is to reuse the steps common to each instruction. For example, several of the instructions use indirect addressing or sign extend a value and add it to the current PC value. Wouldn't it be nice if we could write this code once for all instructions? 
+<p>The idea here is to reuse the steps common to each instruction. For example, several of the instructions use indirect addressing or sign extend a value and add it to the current PC value. Wouldn't it be nice if we could write this code once for all instructions?
 </p>
 <p>By thinking of the instruction as a pipeline of steps we can see that each instruction is just a permutation of several of the smaller steps. We will use bitwise flags to mark which steps to perform for each instruction. A <code>1</code> in the bit corresponding to the instruction number indicates the compiler should include this section of code for that instruction.
 </p>
