@@ -1,27 +1,18 @@
-CC=gcc
-C-FLAGS=-O3
-CPP=g++
-CPP-FLAGS=-std=c++14 -O3
+all: docs/src/lc3.c docs/src/lc3-alt.cpp docs/index.html
 
-all: lc3 lc3-alt index.html
-
-lc3.c lc3-alt.cpp: index.lit main.css
+docs/src/lc3.c docs/src/lc3-alt.cpp: index.lit main.css
 	lit --tangle $<
+	mv lc3.c docs/src/
+	mv lc3-alt.cpp docs/src/
 
-index.html: index.lit
+docs/index.html: index.lit
 	lit --weave $<
-
-lc3-alt: lc3-alt.cpp
-	${CPP} ${CPP-FLAGS} $^ -o $@
-
-lc3: lc3.c
-	${CC} ${C-FLAGS} $^ -o $@
+	mv index.html docs/
+	cp main.css docs/main.css
 
 clean:
-	rm -f *.c
-	rm -f *.cpp
-	rm -f *.html
-	rm -f lc3
-	rm -f lc3-alt
-
+	rm -f docs/src/lc3.c
+	rm -f docs/src/lc3-alt.cpp
+	rm -f docs/index.html
+	rm -f docs/main.css
 

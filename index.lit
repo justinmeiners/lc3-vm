@@ -6,7 +6,9 @@
 
 @s Contents
 
-By: [**Justin Meiners**](https://justinmeiners.github.io) & [**Ryan Pendleton**](https://github.com/rpendleton)
+By: [**Justin Meiners**](https://github.com/justinmeiners) & [**Ryan Pendleton**](https://github.com/rpendleton)
+
+[GitHub Repo](https://github.com/justinmeiners/lc3-vm)
 
 1. [Introduction](#1:2)
 2. [LC-3 Architecture](#1:3)
@@ -26,7 +28,7 @@ By: [**Justin Meiners**](https://justinmeiners.github.io) & [**Ryan Pendleton**]
 
 In this tutorial, I will teach you how to write your own virtual machine (VM) that can run assembly language programs, such as my friend's [2048](https://github.com/rpendleton/lc3-2048) or my [Roguelike](https://github.com/justinmeiners/lc3-rogue). If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer and better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be surprisingly simple and enlightening.
 
-The [final code](lc3.c) is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do [binary arithmetic](https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html). To build and run the code, you will need to be on a Unix system (including macOS). A few Unix APIs are used for configuring the terminal input and display, but these are not essential to the main code. (Contributions for Windows support are welcome.)
+The [final code](src/lc3.c) is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do [binary arithmetic](https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html). To build and run the code, you will need to be on a Unix system (including macOS). A few Unix APIs are used for configuring the terminal input and display, but these are not essential to the main code. (Contributions for Windows support are welcome.)
 
 > **Note:** This VM is a [literate program](https://en.wikipedia.org/wiki/Literate_programming). This means you are reading the source code right now! Each piece of code from the project will be shown and explained thoroughly, so you can be sure nothing is left out. The final code was then created by ["weaving"](https://github.com/zyedidia/Literate) the code blocks together. The repo for this project is [found here](https://github.com/justinmeiners/lc3-vm).
 
@@ -296,7 +298,7 @@ int main(int argc, const char* argv[])
 
 @s Implementing Instructions
 
-Your task now is to fill in each opcode case with a correct implementation. A detailed specification for each instruction is included in the [project documents](docs/lc3-isa.pdf). You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will demonstrate how to implement two of them here. The code for the rest can be found in the next section.
+Your task now is to fill in each opcode case with a correct implementation. A detailed specification for each instruction is included in the [project documents](supplies/lc3-isa.pdf). You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will demonstrate how to implement two of them here. The code for the rest can be found in the next section.
 
 ### ADD
 
@@ -448,7 +450,7 @@ Here is the code for this case: (`mem_read` will be discussed in a later section
 
 As I said, this instruction shared a lot of the code and knowledge learned from `ADD`. You will find this is the case with the remaining instructions.
 
-You now need to go back and implement the rest of the switch cases for the instructions. Follow [the specification](docs/lc3-isa.pdf) and use the code listed here to complete the others. The code for all instructions is listed at the end of the tutorial. Two of the opcodes specified before will not be used, they are `OP_RTI` and `OP_RES`. You can ignore these cases or throw an error if they are executed. After you are done, the bulk of your VM will be completed!
+You now need to go back and implement the rest of the switch cases for the instructions. Follow [the specification](supplies/lc3-isa.pdf) and use the code listed here to complete the others. The code for all instructions is listed at the end of the tutorial. Two of the opcodes specified before will not be used, they are `OP_RTI` and `OP_RES`. You can ignore these cases or throw an error if they are executed. After you are done, the bulk of your VM will be completed!
 
 @s Instruction Cheat Sheet
 
@@ -608,7 +610,7 @@ enum
 };
 ---
 
-You may be wondering why the trap codes are not included in the instructions. This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system functions in C). In the official LC-3 simulator, trap routines are [written in assembly](docs/os.asm). When a trap code is called, the `PC` is moved to that code's address. The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location the trap was called from.
+You may be wondering why the trap codes are not included in the instructions. This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system functions in C). In the official LC-3 simulator, trap routines are [written in assembly](supplies/os.asm). When a trap code is called, the `PC` is moved to that code's address. The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location the trap was called from.
 
 > **Note:** This is why programs start at address `0x3000` instead of `0x0`. The lower addresses are left empty to leave space for the trap routine code.
 
@@ -943,8 +945,8 @@ restore_input_buffering();
 @s Running the VM
 
 You can now build and run the LC-3 VM!
-1. Compile your program with your favorite C compiler.
-2. Download the assembled version of [2048](bin/2048.obj) or [Rogue](bin/rogue.obj).
+1. Compile [your program](src/lc3.c) with your favorite C compiler.
+2. Download the assembled version of [2048](supplies/2048.obj) or [Rogue](supplies/rogue.obj).
 3. Run the program with the obj file as an argument:
 
     `lc3-vm path/to/2048.obj`
@@ -1079,7 +1081,7 @@ static void (*op_table[16])(uint16_t) = {
 > **Note:** I learned about this technique from [Bisqwit's NES emulator](https://www.youtube.com/watch?v=QIUVSD3yqqE).
 > If you are interested in emulation, or the NES, I highly recommend his videos.
 
-The rest of the C++ version uses the code we already wrote. The full code is [here](lc3-alt.cpp).
+The rest of the C++ version uses the code we already wrote. The full code is [here](src/lc3-alt.cpp).
 
 --- lc3-alt.cpp
 @{Includes}
@@ -1117,3 +1119,5 @@ int main(int argc, const char* argv[])
     @{Shutdown}
 }
 ---
+
+
