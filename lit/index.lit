@@ -448,7 +448,7 @@ Here is the code for this case: (`mem_read` will be discussed in a later section
 
 As I said, this instruction shared a lot of the code and knowledge learned from `ADD`. You will find this is the case with the remaining instructions.
 
-You now need to go back and implement the rest of the switch cases for the instructions. Follow [the specification](docs/lc3-isa.pdf) and use the code listed here to complete the others. The code for all instructions is listed at the end of the tutorial. Two of the opcodes specified before will not be used, they are `OP_RTI` and `OP_RES`. You can ignore these cases or throw an error if they are executed. After you are done, the bulk of your VM will be completed!
+You now need to go back and implement the rest of the switch cases for the instructions. Follow [the specification](supplies/lc3-isa.pdf) and use the code listed here to complete the others. The code for all instructions is listed at the end of the tutorial. Two of the opcodes specified before will not be used, they are `OP_RTI` and `OP_RES`. You can ignore these cases or throw an error if they are executed. After you are done, the bulk of your VM will be completed!
 
 @s Instruction Cheat Sheet
 
@@ -608,7 +608,7 @@ enum
 };
 ---
 
-You may be wondering why the trap codes are not included in the instructions. This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system functions in C). In the official LC-3 simulator, trap routines are [written in assembly](docs/os.asm). When a trap code is called, the `PC` is moved to that code's address. The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location the trap was called from.
+You may be wondering why the trap codes are not included in the instructions. This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system functions in C). In the official LC-3 simulator, trap routines are [written in assembly](supplies/os.asm). When a trap code is called, the `PC` is moved to that code's address. The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location the trap was called from.
 
 > **Note:** This is why programs start at address `0x3000` instead of `0x0`. The lower addresses are left empty to leave space for the trap routine code.
 
@@ -944,7 +944,7 @@ restore_input_buffering();
 
 You can now build and run the LC-3 VM!
 1. Compile your program with your favorite C compiler.
-2. Download the assembled version of [2048](bin/2048.obj) or [Rogue](bin/rogue.obj).
+2. Download the assembled version of [2048](supplies/2048.obj) or [Rogue](supplies/rogue.obj).
 3. Run the program with the obj file as an argument:
 
     `lc3-vm path/to/2048.obj`
