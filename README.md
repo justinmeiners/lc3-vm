@@ -10,11 +10,19 @@ Ideally, it will run any LC-3 assembly program.
 
 My game [LC3 Rogue](https://github.com/justinmeiners/lc3-rogue)
 
-My friend's game [LC3 2048](https://github.com/rpendleton/lc3-2048)
+Ryan's game [LC3 2048](https://github.com/rpendleton/lc3-2048)
 
-My friend's [alternate VM](https://github.com/rpendleton/c-lc3sim)
+Ryan's [alternate VM](https://github.com/rpendleton/c-lc3sim)
 
-## Project License
+## Tutorial License
+
+This applied to the instructional text of the tutorial and the figures.
+
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+
+## Code License
+
+This applies to all code snippets and the generated lc3.c and lc3.cpp.
 
 MIT License
 
