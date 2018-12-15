@@ -6,7 +6,9 @@
 
 @s Contents
 
-By: [**Justin Meiners**](https://justinmeiners.github.io) & [**Ryan Pendleton**](https://github.com/rpendleton)
+By: [**Justin Meiners**](https://github.com/justinmeiners) & [**Ryan Pendleton**](https://github.com/rpendleton)
+
+[Github Repo](https://github.com/justinmeiners/lc3-vm)
 
 1. [Introduction](#1:2)
 2. [LC-3 Architecture](#1:3)
@@ -21,12 +23,13 @@ By: [**Justin Meiners**](https://justinmeiners.github.io) & [**Ryan Pendleton**]
 11. [Platform Details](#1:12)
 12. [Running the VM](#1:13)
 13. [Alternate C++ Technique](#1:14)
+14. [Links](#1:15)
 
 @s Introduction
 
 In this tutorial, I will teach you how to write your own virtual machine (VM) that can run assembly language programs, such as my friend's [2048](https://github.com/rpendleton/lc3-2048) or my [Roguelike](https://github.com/justinmeiners/lc3-rogue). If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer and better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be surprisingly simple and enlightening.
 
-The [final code](lc3.c) is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do [binary arithmetic](https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html). To build and run the code, you will need to be on a Unix system (including macOS). A few Unix APIs are used for configuring the terminal input and display, but these are not essential to the main code. (Contributions for Windows support are welcome.)
+The [final code](src/lc3.c) is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do [binary arithmetic](https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html). To build and run the code, you will need to be on a Unix system (including macOS). A few Unix APIs are used for configuring the terminal input and display, but these are not essential to the main code. (Contributions for Windows support are welcome.)
 
 > **Note:** This VM is a [literate program](https://en.wikipedia.org/wiki/Literate_programming). This means you are reading the source code right now! Each piece of code from the project will be shown and explained thoroughly, so you can be sure nothing is left out. The final code was then created by ["weaving"](https://github.com/zyedidia/Literate) the code blocks together. The repo for this project is [found here](https://github.com/justinmeiners/lc3-vm).
 
@@ -296,7 +299,7 @@ int main(int argc, const char* argv[])
 
 @s Implementing Instructions
 
-Your task now is to fill in each opcode case with a correct implementation. A detailed specification for each instruction is included in the [project documents](docs/lc3-isa.pdf). You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will demonstrate how to implement two of them here. The code for the rest can be found in the next section.
+Your task now is to fill in each opcode case with a correct implementation. A detailed specification for each instruction is included in the [project documents](supplies/lc3-isa.pdf). You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will demonstrate how to implement two of them here. The code for the rest can be found in the next section.
 
 ### ADD
 
@@ -943,7 +946,7 @@ restore_input_buffering();
 @s Running the VM
 
 You can now build and run the LC-3 VM!
-1. Compile your program with your favorite C compiler.
+1. Compile [your program](src/lc3.c) with your favorite C compiler.
 2. Download the assembled version of [2048](supplies/2048.obj) or [Rogue](supplies/rogue.obj).
 3. Run the program with the obj file as an argument:
 
@@ -1079,7 +1082,7 @@ static void (*op_table[16])(uint16_t) = {
 > **Note:** I learned about this technique from [Bisqwit's NES emulator](https://www.youtube.com/watch?v=QIUVSD3yqqE).
 > If you are interested in emulation, or the NES, I highly recommend his videos.
 
-The rest of the C++ version uses the code we already wrote. The full code is [here](lc3-alt.cpp).
+The rest of the C++ version uses the code we already wrote. The full code is [here](src/lc3-alt.cpp).
 
 --- lc3-alt.cpp
 @{Includes}
@@ -1117,3 +1120,5 @@ int main(int argc, const char* argv[])
     @{Shutdown}
 }
 ---
+
+

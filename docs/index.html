@@ -50,7 +50,9 @@ img {
 <section>
 <h1>Write your Own Virtual Machine</h1>
 <a name="1:1"><div class="section"><h4>1. Contents</h4></a>
-<p>By: <a href="https://justinmeiners.github.io"><strong>Justin Meiners</strong></a> & <a href="https://github.com/rpendleton"><strong>Ryan Pendleton</strong></a>
+<p>By: <a href="https://github.com/justinmeiners"><strong>Justin Meiners</strong></a> & <a href="https://github.com/rpendleton"><strong>Ryan Pendleton</strong></a>
+</p>
+<p><a href="https://github.com/justinmeiners/lc3-vm">Github Repo</a>
 </p>
 <ol>
 <li><a href="#1:2">Introduction</a>
@@ -79,13 +81,15 @@ img {
 </li>
 <li><a href="#1:14">Alternate C++ Technique</a>
 </li>
+<li><a href="#1:15">Links</a>
+</li>
 </ol>
 
 </div>
 <a name="1:2"><div class="section"><h4>2. Introduction</h4></a>
 <p>In this tutorial, I will teach you how to write your own virtual machine (VM) that can run assembly language programs, such as my friend's <a href="https://github.com/rpendleton/lc3-2048">2048</a> or my <a href="https://github.com/justinmeiners/lc3-rogue">Roguelike</a>. If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer and better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be surprisingly simple and enlightening.
 </p>
-<p>The <a href="lc3.c">final code</a> is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do <a href="https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html">binary arithmetic</a>. To build and run the code, you will need to be on a Unix system (including macOS). A few Unix APIs are used for configuring the terminal input and display, but these are not essential to the main code. (Contributions for Windows support are welcome.)
+<p>The <a href="src/lc3.c">final code</a> is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do <a href="https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html">binary arithmetic</a>. To build and run the code, you will need to be on a Unix system (including macOS). A few Unix APIs are used for configuring the terminal input and display, but these are not essential to the main code. (Contributions for Windows support are welcome.)
 </p>
 <blockquote><p> <strong>Note:</strong> This VM is a <a href="https://en.wikipedia.org/wiki/Literate_programming">literate program</a>. This means you are reading the source code right now! Each piece of code from the project will be shown and explained thoroughly, so you can be sure nothing is left out. The final code was then created by <a href="https://github.com/zyedidia/Literate">"weaving"</a> the code blocks together. The repo for this project is <a href="https://github.com/justinmeiners/lc3-vm">found here</a>.
 </p>
@@ -1346,7 +1350,7 @@ restore_input_buffering();
 <p>You can now build and run the LC-3 VM!
 </p>
 <ol>
-<li>Compile your program with your favorite C compiler.
+<li>Compile <a href="src/lc3.c">your program</a> with your favorite C compiler.
 </li>
 <li>Download the assembled version of <a href="supplies/2048.obj">2048</a> or <a href="supplies/rogue.obj">Rogue</a>.
 </li>
@@ -1504,7 +1508,7 @@ static void (*op_table[16])(uint16_t) = {
  If you are interested in emulation, or the NES, I highly recommend his videos.
 </p>
 </blockquote>
-<p>The rest of the C++ version uses the code we already wrote. The full code is <a href="lc3-alt.cpp">here</a>.
+<p>The rest of the C++ version uses the code we already wrote. The full code is <a href="src/lc3-alt.cpp">here</a>.
 </p>
 
 <div class="codeblock">
