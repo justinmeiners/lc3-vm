@@ -38,6 +38,8 @@ h={};g()}};typeof define==="function"&&define.amd&&define("google-code-prettify"
 <style>
 .pln{color:#1b181b}.str{color:#918b3b}.kwd{color:#7b59c0}.com{color:#9e8f9e}.typ{color:#516aec}.lit{color:#a65926}.clo,.opn,.pun{color:#1b181b}.tag{color:#ca402b}.atn{color:#a65926}.atv{color:#159393}.dec{color:#a65926}.var{color:#ca402b}.fun{color:#516aec}pre.prettyprint{background:#f7f3f7;color:#ab9bab;font-family:Menlo,Consolas,"Bitstream Vera Sans Mono","DejaVu Sans Mono",Monaco,monospace;font-size:12px;line-height:1.5;border:1px solid #d8cad8;padding:10px}ol.linenums{margin-top:0;margin-bottom:0}
 body{min-width:200px;max-width:850px;margin:0 auto;padding:30px;}.chapter-nav{font-size: 10pt;}a:link,a:visited{color:#00f}.codeblock_name,code,pre.prettyprint{font-family:Monaco,"Lucida Console",monospace}body{font-size:14pt}.codeblock_name,.math,.seealso,code{font-size:10pt}.codeblock{page-break-inside:avoid;padding-bottom:15px}.math{text-indent:0}pre.prettyprint{font-size:10pt;padding:10px;border-radius:10px;border:none;white-space:pre-wrap}.codeblock_name{margin-top:1.25em;display:block}a:link{text-decoration:none}a:link:not(.lit):hover{color:#00f;text-decoration:underline}a:link:active{color:red}h4{padding-right:1.25em}h4.noheading{margin-bottom:0}h1{text-align:center}code{padding:2px}pre{-moz-tab-size:4;-o-tab-size:4;tab-size:4}p:not(.notp){margin:0;text-indent:2em}.two-col{list-style-type:none}.two-col li:before{content:'-';padding:5px;margin-right:5px;color:orange;background-color:#fff;display:inline-block}@media print{body{font-size:10pt}pre.prettyprint{font-size:8pt}.seealso{font-size:9pt}.codeblock_name,.math,code{font-size:8pt}.math{text-indent:0}}
+/* Element Styles */
+
 img {
     max-width: 100%;
     display: block;
@@ -57,17 +59,31 @@ p {
 li {
     margin-bottom: 0.3rem;
 }
+
+/* Header Style */
+
+h4.noheading {
+    display: none;
+}
+
+.section:first-of-type > p {
+    margin-bottom: 0.25rem;
+    text-align: center;
+}
 </style>
 </head>
 <body onload="prettyPrint()">
 <section>
 <h1>Write your Own Virtual Machine</h1>
-<a name="1:1"><div class="section"><h4>1. Contents</h4></a>
-<p>By: <a href="https://github.com/justinmeiners"><strong>Justin Meiners</strong></a> & <a href="https://github.com/rpendleton"><strong>Ryan Pendleton</strong></a>
+<a name="1:1"><div class="section"><h4 class="noheading">1. </h4></a>
+<p>By: <a href="https://github.com/justinmeiners"><strong>Justin Meiners</strong></a> and <a href="https://github.com/rpendleton"><strong>Ryan Pendleton</strong></a>
 </p>
-<p><a href="https://github.com/justinmeiners/lc3-vm">GitHub Repo</a>
+<p>View the final code and other resources in the <a href="https://github.com/justinmeiners/lc3-vm">GitHub repo</a>.
 </p>
+<h4> 1. Contents</h4>
 <ol>
+<li><a href="#1:1">Contents</a>
+</li>
 <li><a href="#1:2">Introduction</a>
 </li>
 <li><a href="#1:3">LC-3 Architecture</a>
