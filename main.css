@@ -20,6 +20,10 @@ li {
     margin-bottom: 0.3rem;
 }
 
+pre {
+    -webkit-text-size-adjust: 100%;
+}
+
 /* Header Style */
 
 h4.noheading {
