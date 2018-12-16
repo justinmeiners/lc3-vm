@@ -11,8 +11,7 @@ lc3-alt: lc3-alt.cpp
 lc3: lc3.c
 	${CC} ${C-FLAGS} $^ -o $@
 
+.PHONY:
 clean:
 	rm -f lc3
 	rm -f lc3-alt
-
-
