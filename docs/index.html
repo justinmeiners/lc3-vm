@@ -38,23 +38,52 @@ h={};g()}};typeof define==="function"&&define.amd&&define("google-code-prettify"
 <style>
 .pln{color:#1b181b}.str{color:#918b3b}.kwd{color:#7b59c0}.com{color:#9e8f9e}.typ{color:#516aec}.lit{color:#a65926}.clo,.opn,.pun{color:#1b181b}.tag{color:#ca402b}.atn{color:#a65926}.atv{color:#159393}.dec{color:#a65926}.var{color:#ca402b}.fun{color:#516aec}pre.prettyprint{background:#f7f3f7;color:#ab9bab;font-family:Menlo,Consolas,"Bitstream Vera Sans Mono","DejaVu Sans Mono",Monaco,monospace;font-size:12px;line-height:1.5;border:1px solid #d8cad8;padding:10px}ol.linenums{margin-top:0;margin-bottom:0}
 body{min-width:200px;max-width:850px;margin:0 auto;padding:30px;}.chapter-nav{font-size: 10pt;}a:link,a:visited{color:#00f}.codeblock_name,code,pre.prettyprint{font-family:Monaco,"Lucida Console",monospace}body{font-size:14pt}.codeblock_name,.math,.seealso,code{font-size:10pt}.codeblock{page-break-inside:avoid;padding-bottom:15px}.math{text-indent:0}pre.prettyprint{font-size:10pt;padding:10px;border-radius:10px;border:none;white-space:pre-wrap}.codeblock_name{margin-top:1.25em;display:block}a:link{text-decoration:none}a:link:not(.lit):hover{color:#00f;text-decoration:underline}a:link:active{color:red}h4{padding-right:1.25em}h4.noheading{margin-bottom:0}h1{text-align:center}code{padding:2px}pre{-moz-tab-size:4;-o-tab-size:4;tab-size:4}p:not(.notp){margin:0;text-indent:2em}.two-col{list-style-type:none}.two-col li:before{content:'-';padding:5px;margin-right:5px;color:orange;background-color:#fff;display:inline-block}@media print{body{font-size:10pt}pre.prettyprint{font-size:8pt}.seealso{font-size:9pt}.codeblock_name,.math,code{font-size:8pt}.math{text-indent:0}}
+/* Element Styles */
+
 img {
     max-width: 100%;
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
+
+p {
+    text-indent: 0;
+    line-height: 1.3;
+}
+
+.section > p {
+    margin-bottom: 1.3rem;
+}
+
+li {
+    margin-bottom: 0.3rem;
+}
+
+/* Header Style */
+
+h4.noheading {
+    display: none;
+}
+
+.section:first-of-type > p {
+    margin-bottom: 0.25rem;
+    text-align: center;
+}
 </style>
 </head>
 <body onload="prettyPrint()">
 <section>
 <h1>Write your Own Virtual Machine</h1>
-<a name="1:1"><div class="section"><h4>1. Contents</h4></a>
-<p>By: <a href="https://github.com/justinmeiners"><strong>Justin Meiners</strong></a> & <a href="https://github.com/rpendleton"><strong>Ryan Pendleton</strong></a>
+<a name="1:1"><div class="section"><h4 class="noheading">1. </h4></a>
+<p>By: <a href="https://github.com/justinmeiners"><strong>Justin Meiners</strong></a> and <a href="https://github.com/rpendleton"><strong>Ryan Pendleton</strong></a>
 </p>
-<p><a href="https://github.com/justinmeiners/lc3-vm">GitHub Repo</a>
+<p>View the final code and other resources in the <a href="https://github.com/justinmeiners/lc3-vm">GitHub repo</a>.
 </p>
+<h4> 1. Contents</h4>
 <ol>
+<li><a href="#1:1">Contents</a>
+</li>
 <li><a href="#1:2">Introduction</a>
 </li>
 <li><a href="#1:3">LC-3 Architecture</a>
@@ -577,7 +606,7 @@ void update_flags(uint16_t r)
 </blockquote>
 <p>Just like before, we need to sign extend this 9-bit value, but this time add it to the current <code>PC</code>. (If you look back at the execution loop, the <code>PC</code> was incremented right after this instruction was loaded.) The resulting sum is an address to a location in memory, and that address <em>contains, yet another</em> value which is the address of the value to load.
 </p>
-<p>This may seem like a roundabout way to read from memory, but it is indispensable. The <code>LD</code> instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. <code>LDI</code> is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data: 
+<p>This may seem like a roundabout way to read from memory, but it is indispensable. The <code>LD</code> instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. <code>LDI</code> is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data:
 </p>
 
 <div class="codeblock">
@@ -585,7 +614,7 @@ void update_flags(uint16_t r)
 <pre class="prettyprint lang-c">
 // the value of far_data is an address
 // of course far_data itself (the location in memory containing the address) has an address
-char* far_data = "apple"; 
+char* far_data = "apple";
 
 // In memory it may be layed out like this:
 
@@ -1391,7 +1420,7 @@ Are you on an ANSI terminal (y/n)? y
 </p>
 <p>Since C++ has powerful compile-time generics, we can use the compiler to generate parts of the instructions for us. This method reduces code duplication and is actually closer to how the computer would be wired in hardware.
 </p>
-<p>The idea here is to reuse the steps common to each instruction. For example, several of the instructions use indirect addressing or sign extend a value and add it to the current PC value. Wouldn't it be nice if we could write this code once for all instructions? 
+<p>The idea here is to reuse the steps common to each instruction. For example, several of the instructions use indirect addressing or sign extend a value and add it to the current PC value. Wouldn't it be nice if we could write this code once for all instructions?
 </p>
 <p>By thinking of the instruction as a pipeline of steps we can see that each instruction is just a permutation of several of the smaller steps. We will use bitwise flags to mark which steps to perform for each instruction. A <code>1</code> in the bit corresponding to the instruction number indicates the compiler should include this section of code for that instruction.
 </p>

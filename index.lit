@@ -4,25 +4,28 @@
 
 @title Write your Own Virtual Machine
 
-@s Contents
+@s
 
-By: [**Justin Meiners**](https://github.com/justinmeiners) & [**Ryan Pendleton**](https://github.com/rpendleton)
+By: [**Justin Meiners**](https://github.com/justinmeiners) and [**Ryan Pendleton**](https://github.com/rpendleton)
 
-[GitHub Repo](https://github.com/justinmeiners/lc3-vm)
+View the final code and other resources in the [GitHub repo](https://github.com/justinmeiners/lc3-vm).
 
-1. [Introduction](#1:2)
-2. [LC-3 Architecture](#1:3)
-3. [Assembly Examples](#1:4)
-4. [Executing Programs](#1:5)
-5. [Implementing Instructions](#1:6)
-6. [Instruction Cheat Sheet](#1:7)
-7. [Trap Routines](#1:8)
-8. [Trap Routine Cheat Sheet](#1:9)
-9. [Loading Programs](#1:10)
-10. [Memory Mapped Registers](#1:11)
-11. [Platform Details](#1:12)
-12. [Running the VM](#1:13)
-13. [Alternate C++ Technique](#1:14)
+#### 1. Contents
+
+1. [Contents](#1:1)
+2. [Introduction](#1:2)
+3. [LC-3 Architecture](#1:3)
+4. [Assembly Examples](#1:4)
+5. [Executing Programs](#1:5)
+6. [Implementing Instructions](#1:6)
+7. [Instruction Cheat Sheet](#1:7)
+8. [Trap Routines](#1:8)
+9. [Trap Routine Cheat Sheet](#1:9)
+10. [Loading Programs](#1:10)
+11. [Memory Mapped Registers](#1:11)
+12. [Platform Details](#1:12)
+13. [Running the VM](#1:13)
+14. [Alternate C++ Technique](#1:14)
 
 @s Introduction
 
@@ -411,12 +414,12 @@ In contrast to `ADD`, there are no modes and fewer parameters. This time, the op
 
 Just like before, we need to sign extend this 9-bit value, but this time add it to the current `PC`. (If you look back at the execution loop, the `PC` was incremented right after this instruction was loaded.) The resulting sum is an address to a location in memory, and that address *contains, yet another* value which is the address of the value to load.
 
-This may seem like a roundabout way to read from memory, but it is indispensable. The `LD` instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. `LDI` is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data: 
+This may seem like a roundabout way to read from memory, but it is indispensable. The `LD` instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. `LDI` is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data:
 
 --- C LDI Sample
 // the value of far_data is an address
 // of course far_data itself (the location in memory containing the address) has an address
-char* far_data = "apple"; 
+char* far_data = "apple";
 
 // In memory it may be layed out like this:
 
@@ -979,7 +982,7 @@ This section shows an advanced way of executing instructions that makes the code
 
 Since C++ has powerful compile-time generics, we can use the compiler to generate parts of the instructions for us. This method reduces code duplication and is actually closer to how the computer would be wired in hardware.
 
-The idea here is to reuse the steps common to each instruction. For example, several of the instructions use indirect addressing or sign extend a value and add it to the current PC value. Wouldn't it be nice if we could write this code once for all instructions? 
+The idea here is to reuse the steps common to each instruction. For example, several of the instructions use indirect addressing or sign extend a value and add it to the current PC value. Wouldn't it be nice if we could write this code once for all instructions?
 
 By thinking of the instruction as a pipeline of steps we can see that each instruction is just a permutation of several of the smaller steps. We will use bitwise flags to mark which steps to perform for each instruction. A `1` in the bit corresponding to the instruction number indicates the compiler should include this section of code for that instruction.
 
@@ -1119,5 +1122,3 @@ int main(int argc, const char* argv[])
     @{Shutdown}
 }
 ---
-
-
