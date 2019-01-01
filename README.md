@@ -14,6 +14,8 @@ Ryan's game [LC3 2048](https://github.com/rpendleton/lc3-2048)
 
 Ryan's [alternate VM](https://github.com/rpendleton/c-lc3sim)
 
+dmjio's [Haskell LC3 VM](https://github.com/dmjio/LC3)
+
 ## Tutorial License
 
 This applied to the instructional text of the tutorial and the figures.
