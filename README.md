@@ -20,7 +20,7 @@ dmjio's [Haskell LC3 VM](https://github.com/dmjio/LC3)
 
 This applied to the instructional text of the tutorial and the figures.
 
-[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+[CC BY-NC-SA 4.0](http://creativecommons.org/licenses/by-nc-sa/4.0/")
 
 ## Code License
 
