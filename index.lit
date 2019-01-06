@@ -26,6 +26,7 @@ View the final code and other resources in the [GitHub repo](https://github.com/
 12. [Platform Details](#1:12)
 13. [Running the VM](#1:13)
 14. [Alternate C++ Technique](#1:14)
+15. [Related Projects](#1:15)
 
 @s Introduction
 
@@ -1122,3 +1123,25 @@ int main(int argc, const char* argv[])
     @{Shutdown}
 }
 ---
+
+@s Related Projects
+
+Several people in the community have reached out to share their own VMs created with this tutorial. These projects
+may be helpful for learners who are familiar with programming languages other than C. Feel free to fork this [repo](https://github.com/justinmeiners/lc3-vm) and contribute your own.
+
+**C**
+
+- [rpendleton](https://github.com/rpendleton/c-lc3sim)
+
+**Haskell**
+
+- [dmjio](https://github.com/dmjio/LC3)
+
+**Swift**
+
+- [hashemi](https://github.com/hashemi/lc3-swift)
+
+
+
+
+
