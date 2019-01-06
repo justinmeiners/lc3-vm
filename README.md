@@ -1,20 +1,8 @@
-# [READ TUTORIAL HERE](https://justinmeiners.github.io/lc3-vm/)
-
 # LC-3 VM
 
-This is a tutorial and source code for creating a VM of the  [LC3 computer](https://en.wikipedia.org/wiki/LC-3). 
+# [READ TUTORIAL HERE](https://justinmeiners.github.io/lc3-vm/)
 
-Ideally, it will run any LC-3 assembly program.
-
-## Other Links
-
-My game [LC3 Rogue](https://github.com/justinmeiners/lc3-rogue)
-
-Ryan's game [LC3 2048](https://github.com/rpendleton/lc3-2048)
-
-Ryan's [alternate VM](https://github.com/rpendleton/c-lc3sim)
-
-dmjio's [Haskell LC3 VM](https://github.com/dmjio/LC3)
+This is a tutorial and source code for creating a VM of the [LC3 computer](https://en.wikipedia.org/wiki/LC-3). 
 
 ## Tutorial License
 
