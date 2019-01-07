@@ -6,7 +6,7 @@ This is a tutorial and source code for creating a VM of the [LC3 computer](https
 
 ## Tutorial License
 
-This applied to the instructional text of the tutorial and the figures.
+This applies to the instructional text of the tutorial and the figures.
 
 [CC BY-NC-SA 4.0](http://creativecommons.org/licenses/by-nc-sa/4.0/)
 
