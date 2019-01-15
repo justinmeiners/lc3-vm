@@ -34,7 +34,7 @@ In this tutorial, I will teach you how to write your own virtual machine (VM) th
 
 The [final code](src/lc3.c) is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do [binary arithmetic](https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html). To build and run the code, you will need to be on a Unix system (including macOS). A few Unix APIs are used for configuring the terminal input and display, but these are not essential to the main code. (Contributions for Windows support are welcome.)
 
-> **Note:** This VM is a [literate program](https://en.wikipedia.org/wiki/Literate_programming). This means you are reading the source code right now! Each piece of code from the project will be shown and explained thoroughly, so you can be sure nothing is left out. The final code was then created by ["weaving"](https://github.com/zyedidia/Literate) the code blocks together. The repo for this project is [found here](https://github.com/justinmeiners/lc3-vm).
+> **Note:** This VM is a [literate program](https://en.wikipedia.org/wiki/Literate_programming). This means you are reading the source code right now! Each piece of code from the project will be shown and explained thoroughly, so you can be sure nothing is left out. The final code was created by ["weaving"](https://github.com/zyedidia/Literate) the blocks of code together.
 
 ### What is a virtual machine?
 
