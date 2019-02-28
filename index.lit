@@ -1133,7 +1133,7 @@ may be helpful for learners who are familiar with programming languages other th
 
 - [andyjung-dev](https://github.com/andyjung-dev/LC3-VM-Extended) extends the tutorial implementation with a few features.
 - [rpendleton](https://github.com/rpendleton/lc3sim-c) uses assembly implementation of TRAP codes.
-- [viking](https://github.com/viking/lc3-vm/blob/master/main.c) well commented and adds tests.
+- [viking](https://github.com/viking/lc3-vm) well commented and adds tests.
 
 **C++**
 
