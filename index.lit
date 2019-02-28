@@ -1131,28 +1131,27 @@ may be helpful for learners who are familiar with programming languages other th
 
 **C**
 
-- [andyjung-dev](https://github.com/andyjung-dev/LC3-VM-Extended): extends the tutorial implementation with a few features.
-- [rpendleton](https://github.com/rpendleton/lc3sim-c): uses assembly implementation of trap files.
-- [MattLombana](https://github.com/MattLombana/lc3-vm)
-- [viking](https://github.com/viking/lc3-vm/blob/master/main.c): well commented and adds tests.
+- [andyjung-dev](https://github.com/andyjung-dev/LC3-VM-Extended) extends the tutorial implementation with a few features.
+- [rpendleton](https://github.com/rpendleton/lc3sim-c) uses assembly implementation of TRAP codes.
+- [viking](https://github.com/viking/lc3-vm/blob/master/main.c) well commented and adds tests.
 
 **C++**
 
-- [daniMaarouf](https://github.com/daniMaarouf/lc3-vm): Python based debugger.
-- [jsawruk](https://github.com/jsawruk/lc3-vm): alternative C and C++ implementation.
+- [daniMaarouf](https://github.com/daniMaarouf/lc3-vm) Python based debugger.
+- [jsawruk](https://github.com/jsawruk/lc3-vm) alternative C and C++ implementation.
 
 **Common Lisp**
 
-- [resttime](https://github.com/resttime/lc3): first Common Lisp implementation.
+- [resttime](https://github.com/resttime/lc3) first Common Lisp implementation.
 
 **Go**
 
-- [ziggy42](https://github.com/ziggy42/gLC3): first Go implementation.
+- [ziggy42](https://github.com/ziggy42/gLC3) first Go implementation.
 - [robmorgan](https://github.com/robmorgan/go-lc3-vm)
 
 **Haskell**
 
-- [dmjio](https://github.com/dmjio/LC3): first Haskell implementation.
+- [dmjio](https://github.com/dmjio/LC3) first Haskell implementation.
 
 **JavaScript**
 
@@ -1160,20 +1159,20 @@ may be helpful for learners who are familiar with programming languages other th
 
 **Python**
 
-- [Bl41r](https://github.com/Bl41r/lc-3-virtual-machine): first Python implementation.
+- [Bl41r](https://github.com/Bl41r/lc-3-virtual-machine) first Python implementation.
 
 **Rust**
 
 - [erfur](https://github.com/erfur/lc3-vm-rust)
-- [KuldeepSinh](https://github.com/KuldeepSinh/lc3_vm): first Rust implementation.
+- [KuldeepSinh](https://github.com/KuldeepSinh/lc3_vm) first Rust implementation.
 - [twe4ked](https://github.com/twe4ked/rs-lc3)
 
 **Swift**
 
-- [hashemi](https://github.com/hashemi/lc3-swift): first Swift implementation.
+- [hashemi](https://github.com/hashemi/lc3-swift) first Swift implementation.
 
 **TypeScript**
 
-- [mrhampson](https://github.com/mrhampson/lc3-typescript-vm): first TypeScript implementation. Node.js only.
+- [mrhampson](https://github.com/mrhampson/lc3-typescript-vm) first TypeScript implementation. Node.js only.
 
 
