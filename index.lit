@@ -1152,6 +1152,7 @@ may be helpful for learners who are familiar with programming languages other th
 **Haskell**
 
 - [dmjio](https://github.com/dmjio/LC3) first Haskell implementation.
+- [cleverca22](https://github.com/cleverca22/LC3) alternative Haskell implementation.
 
 **JavaScript**
 
@@ -1160,12 +1161,14 @@ may be helpful for learners who are familiar with programming languages other th
 **Python**
 
 - [Bl41r](https://github.com/Bl41r/lc-3-virtual-machine) first Python implementation.
+- [ianklatzco](https://github.com/ianklatzco/lc3) Python implementation. includes a disassembler.
+- [paulnameless](https://github.com/paul-nameless/lc3-vm) alternative Python implementation.
 
 **Rust**
 
-- [erfur](https://github.com/erfur/lc3-vm-rust)
+- [erfur](https://github.com/erfur/lc3-vm-rust) alternative Rust implementation.
 - [KuldeepSinh](https://github.com/KuldeepSinh/lc3_vm) first Rust implementation.
-- [twe4ked](https://github.com/twe4ked/rs-lc3)
+- [twe4ked](https://github.com/twe4ked/rs-lc3) includes debugging features.
 
 **Swift**
 
