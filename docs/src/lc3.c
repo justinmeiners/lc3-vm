@@ -454,8 +454,9 @@ int main(int argc, const char* argv[])
                     case TRAP_IN:
                         /* TRAP IN */
                         printf("Enter a character: ");
-                        reg[R_R0] = (uint16_t)getc(stdin);
-
+                        restore_input_buffering();
+                        reg[R_R0] = (uint16_t)getchar();
+                        disable_input_buffering();
                         break;
                     case TRAP_PUTSP:
                         /* TRAP PUTSP */
