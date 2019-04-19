@@ -1028,9 +1028,9 @@ fflush(stdout);
 <span class="codeblock_name">{TRAP IN <a href="index.html#1:9">9</a>}</span>
 <pre class="prettyprint lang-c">
 printf("Enter a character: ");
-restore_input_buffering();
-reg[R_R0] = (uint16_t)getchar();
-disable_input_buffering();
+char c = getchar();
+putc(c, stdout);
+reg[R_R0] = (uint16_t)c;
 </pre>
 
 

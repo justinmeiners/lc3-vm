@@ -699,9 +699,9 @@ fflush(stdout);
 Prompt for Input Character
 --- TRAP IN
 printf("Enter a character: ");
-restore_input_buffering();
-reg[R_R0] = (uint16_t)getchar();
-disable_input_buffering();
+char c = getchar();
+putc(c, stdout);
+reg[R_R0] = (uint16_t)c;
 ---
 
 Output String
