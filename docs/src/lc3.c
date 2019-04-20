@@ -77,6 +77,7 @@ enum
     TRAP_HALT = 0x25   /* halt the program */
 };
 
+
 /* Memory Storage */
 /* 65536 locations */
 uint16_t memory[UINT16_MAX];
@@ -457,6 +458,7 @@ int main(int argc, const char* argv[])
                         char c = getchar();
                         putc(c, stdout);
                         reg[R_R0] = (uint16_t)c;
+
                         break;
                     case TRAP_PUTSP:
                         /* TRAP PUTSP */
