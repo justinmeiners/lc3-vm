@@ -1167,6 +1167,10 @@ may be helpful for learners who are familiar with programming languages other th
 - [paulnameless](https://github.com/paul-nameless/lc3-vm) alternative Python implementation.
 - [mhashim6](https://github.com/mhashim6/LC-3) modular Python implementation.
 
+**Racket**
+
+- [whichxjy](https://github.com/whichxjy/LC3-VM-Racket) first Racket implementation.
+
 **Rust**
 
 - [erfur](https://github.com/erfur/lc3-vm-rust) alternative Rust implementation.
