@@ -2,7 +2,7 @@
 
 # [READ TUTORIAL HERE](https://justinmeiners.github.io/lc3-vm/)
 
-This is a tutorial and source code for creating a VM of the [LC3 computer](https://en.wikipedia.org/wiki/LC-3). 
+This is a tutorial and source code for creating a VM of the [LC3 computer](https://en.wikipedia.org/wiki/Little_Computer_3). 
 
 ## Tutorial License
 
