@@ -60,7 +60,7 @@ Another example of this behavior is demonstrated by [Ethereum smart contracts](h
 
 @s LC-3 Architecture
 
-Our VM will simulate a fictional computer called the [LC-3](https://en.wikipedia.org/wiki/LC-3). The LC-3 is popular for teaching university students how to program in assembly language. It has a simplified instruction set [compared to x86](http://ref.x86asm.net/coder64.html), but contains all the main ideas used in modern CPUs.
+Our VM will simulate a fictional computer called the [LC-3](https://en.wikipedia.org/wiki/Little_Computer_3). The LC-3 is popular for teaching university students how to program in assembly language. It has a simplified instruction set [compared to x86](http://ref.x86asm.net/coder64.html), but contains all the main ideas used in modern CPUs.
 
 First, we need to simulate the essential hardware components of the machine. Try to understand what each component is, but don't worry right now if you are unsure of how it fits into the larger picture. Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.
 
@@ -1184,5 +1184,3 @@ may be helpful for learners who are familiar with programming languages other th
 **TypeScript**
 
 - [mrhampson](https://github.com/mrhampson/lc3-typescript-vm) first TypeScript implementation. Node.js only.
-
-
