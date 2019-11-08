@@ -1146,6 +1146,10 @@ may be helpful for learners who are familiar with programming languages other th
 
 - [resttime](https://github.com/resttime/lc3) first Common Lisp implementation.
 
+**F#**
+
+- [yurisliepins](https://github.com/yurisliepins/lc3-vm) first F# implementation.
+
 **Go**
 
 - [robmorgan](https://github.com/robmorgan/go-lc3-vm) alternative Go implementation.
