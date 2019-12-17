@@ -38,7 +38,7 @@ The [final code](src/lc3.c) is about 250 lines of C. All you need to know is how
 
 ### What is a virtual machine?
 
-A VM is a program that acts like a computer. It simulates a CPU along with a few other hardware components, allowing it to perform arithmetic, read and write to memory, and interact with I/O devices, just like a physical computer. Most importantly, it can understand a machine language which you can you can use to program it.
+A VM is a program that acts like a computer. It simulates a CPU along with a few other hardware components, allowing it to perform arithmetic, read and write to memory, and interact with I/O devices, just like a physical computer. Most importantly, it can understand a machine language which you can use to program it.
 
 The amount of computer hardware the VM attempts to simulate depends on its purpose. Some VMs are designed to reproduce the behavior of some particular computer, such as video game emulators. Most people don't have an NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program. These emulators must [faithfully recreate](http://wiki.nesdev.com/w/index.php/Tricky-to-emulate_games) every [detail](http://wiki.nesdev.com/w/index.php/Emulator_tests) and major hardware component of the original device.
 
