@@ -128,7 +128,7 @@ h4.noheading {
 </p>
 </blockquote>
 <h3> What is a virtual machine?</h3>
-<p>A VM is a program that acts like a computer. It simulates a CPU along with a few other hardware components, allowing it to perform arithmetic, read and write to memory, and interact with I/O devices, just like a physical computer. Most importantly, it can understand a machine language which you can you can use to program it.
+<p>A VM is a program that acts like a computer. It simulates a CPU along with a few other hardware components, allowing it to perform arithmetic, read and write to memory, and interact with I/O devices, just like a physical computer. Most importantly, it can understand a machine language which you can use to program it.
 </p>
 <p>The amount of computer hardware the VM attempts to simulate depends on its purpose. Some VMs are designed to reproduce the behavior of some particular computer, such as video game emulators. Most people don't have an NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program. These emulators must <a href="http://wiki.nesdev.com/w/index.php/Tricky-to-emulate_games">faithfully recreate</a> every <a href="http://wiki.nesdev.com/w/index.php/Emulator_tests">detail</a> and major hardware component of the original device.
 </p>
@@ -498,7 +498,7 @@ ADD R0 R0 1 ; add 1 to R0 and store back in R0
 <blockquote><p> If bit [5] is 0, the second source operand is obtained from SR2. If bit [5] is 1, the second source operand is obtained by sign-extending the imm5 field to 16 bits. In both cases, the second source operand is added to the contents of SR1 and the result stored in DR. (Pg. 526)
 </p>
 </blockquote>
-<p>That sounds just like what we discussed. But what is "sign-extending"? Although the immediate mode value has only 5 bits, it needs to be added to a 16-bit number. Those 5 bits need to be extended to 16 to match the other number. For positive numbers, we can fill in 0's for the additional bits and the value is the same. However, for negative numbers, this causes a problem. For example, -1 stored in 5 bits is <code>1 1111</code>. If we just extended it with 0's, this is <code>0000 0000 0001 1111</code> which is equal to 32! Sign extension prevents this problem by filling in 0's for positive numbers and 1's for negative numbers.
+<p>That sounds just like what we discussed. But what is "sign-extending"? Although the immediate mode value has only 5 bits, it needs to be added to a 16-bit number. Those 5 bits need to be extended to 16 to match the other number. For positive numbers, we can fill in 0's for the additional bits and the value is the same. However, for negative numbers, this causes a problem. For example, -1 stored in 5 bits is <code>1 1111</code>. If we just extended it with 0's, this is <code>0000 0000 0001 1111</code> which is equal to 31! Sign extension prevents this problem by filling in 0's for positive numbers and 1's for negative numbers.
 </p>
 
 <div class="codeblock">
@@ -1621,7 +1621,8 @@ may be helpful for learners who are familiar with programming languages other th
 <p><strong>F#</strong>
 </p>
 <ul>
-<li><a href="https://github.com/yurisliepins/lc3-vm">yurisliepins</a> first F# implementation.
+<li><p><a href="https://github.com/yurisliepins/lc3-vm">yurisliepins</a> first F# implementation.
+</p>
 </li>
 </ul>
 <p><strong>Go</strong>
