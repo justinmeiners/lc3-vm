@@ -494,10 +494,12 @@ int main(int argc, const char* argv[])
                         break;
                     case TRAP_IN:
                         /* TRAP IN */
-                        printf("Enter a character: ");
-                        char c = getchar();
-                        putc(c, stdout);
-                        reg[R_R0] = (uint16_t)c;
+                        {
+                            printf("Enter a character: ");
+                            char c = getchar();
+                            putc(c, stdout);
+                            reg[R_R0] = (uint16_t)c;
+                        }
 
                         break;
                     case TRAP_PUTSP:

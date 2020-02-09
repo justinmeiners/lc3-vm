@@ -698,10 +698,12 @@ fflush(stdout);
 
 Prompt for Input Character
 --- TRAP IN
-printf("Enter a character: ");
-char c = getchar();
-putc(c, stdout);
-reg[R_R0] = (uint16_t)c;
+{
+    printf("Enter a character: ");
+    char c = getchar();
+    putc(c, stdout);
+    reg[R_R0] = (uint16_t)c;
+}
 ---
 
 Output String
