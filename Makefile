@@ -1,8 +1,9 @@
-all: docs/src/lc3.c docs/src/lc3-alt.cpp docs/index.html
+all: docs/src/lc3.c docs/src/lc3-win.c docs/src/lc3-alt.cpp docs/index.html
 
-docs/src/lc3.c docs/src/lc3-alt.cpp: index.lit
+docs/src/lc3.c docs/src/lc3-win.c docs/src/lc3-alt.cpp: index.lit
 	lit --tangle $<
 	mv lc3.c docs/src/
+	mv lc3-win.c docs/src/
 	mv lc3-alt.cpp docs/src/
 
 docs/index.html: index.lit main.css
@@ -12,6 +13,7 @@ docs/index.html: index.lit main.css
 .PHONY:
 clean:
 	rm -f docs/src/lc3.c
+	rm -f docs/src/lc3-win.c
 	rm -f docs/src/lc3-alt.cpp
 	rm -f docs/index.html
 	rm -f docs/main.css

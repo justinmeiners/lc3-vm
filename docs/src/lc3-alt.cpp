@@ -5,21 +5,14 @@
 #include <stdint.h>
 #include <string.h>
 #include <signal.h>
-#ifndef _WIN32
-    /* unix */
-    #include <unistd.h>
-    #include <fcntl.h>
+/* unix */
+#include <unistd.h>
+#include <fcntl.h>
 
-    #include <sys/time.h>
-    #include <sys/types.h>
-    #include <sys/termios.h>
-    #include <sys/mman.h>
-#else
-    /* _WIN32 */
-    #include <Windows.h>
-    #include <conio.h> // _kbhit
-    HANDLE hStdin = INVALID_HANDLE_VALUE;
-#endif
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/termios.h>
+#include <sys/mman.h>
 
 
 /* Registers */
@@ -95,7 +88,6 @@ uint16_t memory[UINT16_MAX];
 uint16_t reg[R_COUNT];
 
 
-/* Functions */
 /* Sign Extend */
 uint16_t sign_extend(uint16_t x, int bit_count)
 {
@@ -162,11 +154,6 @@ int read_image(const char* image_path)
 /* Check Key */
 uint16_t check_key()
 {
-#ifdef _WIN32
-    /* _WIN32 */
-    return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 && _kbhit();
-#else
-    /* unix */
     fd_set readfds;
     FD_ZERO(&readfds);
     FD_SET(STDIN_FILENO, &readfds);
@@ -175,7 +162,6 @@ uint16_t check_key()
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
     return select(1, &readfds, NULL, NULL, &timeout) != 0;
-#endif
 }
 
 /* Memory Access */
@@ -202,45 +188,19 @@ uint16_t mem_read(uint16_t address)
 }
 
 /* Input Buffering */
-#ifdef _WIN32
-    /* _WIN32 */
-    DWORD fdwMode, fdwOldMode;
-#else
-    /* unix */
-    /* Input Buffering */
-    struct termios original_tio;
-#endif
+struct termios original_tio;
 
 void disable_input_buffering()
 {
-#ifdef _WIN32
-    /* _WIN32 */
-    hStdin = GetStdHandle(STD_INPUT_HANDLE);
-    GetConsoleMode(hStdin, &fdwOldMode); // save old mode
-    fdwMode = fdwOldMode 
-            ^ ENABLE_ECHO_INPUT  // no input echo
-            ^ ENABLE_LINE_INPUT; // return when one or 
-                                 // more characters are available
-    SetConsoleMode(hStdin, fdwMode); // set new mode
-    FlushConsoleInputBuffer(hStdin); // clear buffer
-#else
-    /* unix */
     tcgetattr(STDIN_FILENO, &original_tio);
     struct termios new_tio = original_tio;
     new_tio.c_lflag &= ~ICANON & ~ECHO;
     tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
-#endif
 }
 
 void restore_input_buffering()
 {
-#ifdef _WIN32
-    /* _WIN32 */
-    SetConsoleMode(hStdin, fdwOldMode);
-#else
-    /* unix */
     tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
-#endif
 }
 
 /* Handle Interrupt */
@@ -250,7 +210,6 @@ void handle_interrupt(int signal)
     printf("\n");
     exit(-2);
 }
-
 
 
 int running = 1;
