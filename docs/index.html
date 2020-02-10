@@ -1453,10 +1453,11 @@ restore_input_buffering();
 <div class="codeblock">
 <span class="codeblock_name">{Windows Includes <a href="index.html#1:13">13</a>}</span>
 <pre class="prettyprint lang-c">
-#include &lt;Windows.h&gt;
 #include &lt;stdint.h&gt; // uint16_t
 #include &lt;stdio.h&gt;  // FILE
 #include &lt;signal.h&gt; // SIGINT
+/* windows only */
+#include &lt;Windows.h&gt;
 #include &lt;conio.h&gt;  // _kbhit
 
 HANDLE hStdin = INVALID_HANDLE_VALUE;
