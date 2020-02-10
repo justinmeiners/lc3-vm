@@ -1,13 +1,11 @@
 /* lc3-alt-win.cpp */
 /* Windows Includes */
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include <signal.h>
-/* _WIN32 */
 #include <Windows.h>
-#include <conio.h> // _kbhit
+#include <stdint.h> // uint16_t
+#include <stdio.h>  // FILE
+#include <signal.h> // SIGINT
+#include <conio.h>  // _kbhit
+
 HANDLE hStdin = INVALID_HANDLE_VALUE;
 
 
