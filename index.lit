@@ -1183,7 +1183,7 @@ static void (*op_table[16])(uint16_t) = {
 > If you are interested in emulation, or the NES, I highly recommend his videos.
 
 The rest of the C++ version uses the code we already wrote!
-The full source is [here](src/lc3-alt.cpp).
+The full source is here: [unix](src/lc3-alt.cpp), [windows](src/lc3-alt-win.cpp).
 
 --- lc3-alt.cpp --- noWeave
 @{Includes}
@@ -1206,6 +1206,51 @@ The full source is [here](src/lc3-alt.cpp).
 @{Check Key}
 @{Memory Access}
 @{Input Buffering}
+@{Handle Interrupt}
+
+int running = 1;
+@{Instruction C++}
+@{Op Table}
+
+int main(int argc, const char* argv[])
+{
+    @{Load Arguments}
+    @{Setup}
+
+    enum { PC_START = 0x3000 };
+    reg[R_PC] = PC_START;
+
+    while (running)
+    {
+        uint16_t instr = mem_read(reg[R_PC]++);
+        uint16_t op = instr >> 12;
+        op_table[op](instr);
+    }
+    @{Shutdown}
+}
+---
+
+--- lc3-alt-win.cpp --- noWeave
+@{Windows Includes}
+
+@{Registers}
+@{Condition Flags}
+@{Opcodes}
+
+@{Memory Mapped Registers}
+@{TRAP Codes}
+
+@{Memory Storage}
+@{Register Storage}
+
+@{Sign Extend}
+@{Swap}
+@{Update Flags}
+@{Read Image File}
+@{Read Image}
+@{Check Key Windows}
+@{Memory Access}
+@{Input Buffering Windows}
 @{Handle Interrupt}
 
 int running = 1;
