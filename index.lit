@@ -33,7 +33,8 @@ View the final code and other resources in the [GitHub repo](https://github.com/
 
 In this tutorial, I will teach you how to write your own virtual machine (VM) that can run assembly language programs, such as my friend's [2048](https://github.com/rpendleton/lc3-2048) or my [Roguelike](https://github.com/justinmeiners/lc3-rogue). If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer and better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be surprisingly simple and enlightening.
 
-The [final code](src/lc3.c) is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do [binary arithmetic](https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html). To build and run the code, you will need to be on a Unix system (including macOS). A few Unix APIs are used for configuring the terminal input and display, but these are not essential to the main code. (Contributions for Windows support are welcome.)
+The final code is about 250 lines of C ([unix](src/lc3.c), [windows](src/lc3-win.c)).
+All you need to know is how to read basic C or C++ and how to do [binary arithmetic](https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html).
 
 > **Note:** This VM is a [literate program](https://en.wikipedia.org/wiki/Literate_programming). This means you are reading the source code right now! Each piece of code from the project will be shown and explained thoroughly, so you can be sure nothing is left out. The final code was created by ["weaving"](https://github.com/zyedidia/Literate) the blocks of code together.
 
@@ -1041,11 +1042,15 @@ HANDLE hStdin = INVALID_HANDLE_VALUE;
 @s Running the VM
 
 You can now build and run the LC-3 VM!
-1. Compile [your program](src/lc3.c) with your favorite C compiler.
+1. Compile your program] with your favorite C compiler.
+   (Final source for [unix](src/lc3.c), [windows](src/lc3-win.c)).
+
+    For gcc: `\$ gcc lc3.c -o lc3`
+
 2. Download the assembled version of [2048](supplies/2048.obj) or [Rogue](supplies/rogue.obj).
 3. Run the program with the obj file as an argument:
 
-    `lc3-vm path/to/2048.obj`
+    `\$ lc3-vm path/to/2048.obj`
 
 4. Play 2048!
 

@@ -124,7 +124,8 @@ h4.noheading {
 <a name="1:2"><div class="section"><h4>2. Introduction</h4></a>
 <p>In this tutorial, I will teach you how to write your own virtual machine (VM) that can run assembly language programs, such as my friend's <a href="https://github.com/rpendleton/lc3-2048">2048</a> or my <a href="https://github.com/justinmeiners/lc3-rogue">Roguelike</a>. If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer and better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be surprisingly simple and enlightening.
 </p>
-<p>The <a href="src/lc3.c">final code</a> is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do <a href="https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html">binary arithmetic</a>. To build and run the code, you will need to be on a Unix system (including macOS). A few Unix APIs are used for configuring the terminal input and display, but these are not essential to the main code. (Contributions for Windows support are welcome.)
+<p>The final code is about 250 lines of C (<a href="src/lc3.c">unix</a>, <a href="src/lc3-win.c">windows</a>).
+All you need to know is how to read basic C or C++ and how to do <a href="https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html">binary arithmetic</a>.
 </p>
 <blockquote><p> <strong>Note:</strong> This VM is a <a href="https://en.wikipedia.org/wiki/Literate_programming">literate program</a>. This means you are reading the source code right now! Each piece of code from the project will be shown and explained thoroughly, so you can be sure nothing is left out. The final code was created by <a href="https://github.com/zyedidia/Literate">"weaving"</a> the blocks of code together.
 </p>
@@ -1472,15 +1473,22 @@ HANDLE hStdin = INVALID_HANDLE_VALUE;
 <p>You can now build and run the LC-3 VM!
 </p>
 <ol>
-<li>Compile <a href="src/lc3.c">your program</a> with your favorite C compiler.
-</li>
-<li>Download the assembled version of <a href="supplies/2048.obj">2048</a> or <a href="supplies/rogue.obj">Rogue</a>.
-</li>
-<li>Run the program with the obj file as an argument:
-<p><code>lc3-vm path/to/2048.obj</code>
+<li><p>Compile your program] with your favorite C compiler.
+   (Final source for <a href="src/lc3.c">unix</a>, <a href="src/lc3-win.c">windows</a>).
+</p>
+<p>For gcc: <code>$ gcc lc3.c -o lc3</code>
 </p>
 </li>
-<li>Play 2048!
+<li><p>Download the assembled version of <a href="supplies/2048.obj">2048</a> or <a href="supplies/rogue.obj">Rogue</a>.
+</p>
+</li>
+<li><p>Run the program with the obj file as an argument:
+</p>
+<p><code>$ lc3-vm path/to/2048.obj</code>
+</p>
+</li>
+<li><p>Play 2048!
+</p>
 </li>
 </ol>
 
