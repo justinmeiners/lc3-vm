@@ -108,13 +108,15 @@ h4.noheading {
 </li>
 <li><a href="#1:11">Memory Mapped Registers</a>
 </li>
-<li><a href="#1:12">Platform Details</a>
+<li><a href="#1:12">Platform Specifics (Unix)</a>
 </li>
-<li><a href="#1:13">Running the VM</a>
+<li><a href="#1:13">Platform Specifics (Windows)</a>
 </li>
-<li><a href="#1:14">Alternate C++ Technique</a>
+<li><a href="#1:14">Running the VM</a>
 </li>
-<li><a href="#1:15">Related Projects</a>
+<li><a href="#1:15">Alternate C++ Technique</a>
+</li>
+<li><a href="#1:16">Related Projects</a>
 </li>
 </ol>
 
@@ -122,7 +124,8 @@ h4.noheading {
 <a name="1:2"><div class="section"><h4>2. Introduction</h4></a>
 <p>In this tutorial, I will teach you how to write your own virtual machine (VM) that can run assembly language programs, such as my friend's <a href="https://github.com/rpendleton/lc3-2048">2048</a> or my <a href="https://github.com/justinmeiners/lc3-rogue">Roguelike</a>. If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer and better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be surprisingly simple and enlightening.
 </p>
-<p>The <a href="src/lc3.c">final code</a> is about 250 lines of C. All you need to know is how to read basic C or C++ and how to do <a href="https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html">binary arithmetic</a>. To build and run the code, you will need to be on a Unix system (including macOS). A few Unix APIs are used for configuring the terminal input and display, but these are not essential to the main code. (Contributions for Windows support are welcome.)
+<p>The final code is about 250 lines of C (<a href="src/lc3.c">unix</a>, <a href="src/lc3-win.c">windows</a>).
+All you need to know is how to read basic C or C++ and how to do <a href="https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html">binary arithmetic</a>.
 </p>
 <blockquote><p> <strong>Note:</strong> This VM is a <a href="https://en.wikipedia.org/wiki/Literate_programming">literate program</a>. This means you are reading the source code right now! Each piece of code from the project will be shown and explained thoroughly, so you can be sure nothing is left out. The final code was created by <a href="https://github.com/zyedidia/Literate">"weaving"</a> the blocks of code together.
 </p>
@@ -168,7 +171,7 @@ uint16_t memory[UINT16_MAX];
 </pre>
 
 
-<p class="seealso">Used in sections <a href="index.html#1:11">11</a> and <a href="index.html#1:14">14</a></p>
+<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
 <h3> Registers</h3>
 <p>A register is a slot for storing a single value on the CPU. Registers are like the "workbench" of the CPU. For the CPU to work with a piece of data, it has to be in one of the registers. However, since there are just a few registers, only a minimal amount of data can be loaded at any given time. Programs work around this by loading values from memory into registers, calculating values into other registers, and then storing the final results back in memory.
@@ -206,7 +209,7 @@ enum
 </pre>
 
 
-<p class="seealso">Used in section <a href="index.html#1:14">14</a></p>
+
 </div>
 <p>Just like the memory, we will store the registers in an array:
 </p>
@@ -218,7 +221,7 @@ uint16_t reg[R_COUNT];
 </pre>
 
 
-<p class="seealso">Used in sections <a href="index.html#1:11">11</a> and <a href="index.html#1:14">14</a></p>
+<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
 <h3> Instruction Set</h3>
 <p>An instruction is a command which tells the CPU to do some fundamental task, such as add two numbers. Instructions have both an <strong>opcode</strong> which indicates the kind of task to perform and a set of <strong>parameters</strong> which provide inputs to the task being performed.
@@ -253,7 +256,7 @@ enum
 </pre>
 
 
-<p class="seealso">Used in section <a href="index.html#1:14">14</a></p>
+
 </div>
 <blockquote><p> <strong>Note:</strong> The Intel x86 architecture has hundreds of instructions, while others such as ARM and LC-3 have very few. Small instruction sets are referred to as <a href="https://en.wikipedia.org/wiki/Reduced_instruction_set_computer">RISCs</a> while larger ones are called <a href="https://en.wikipedia.org/wiki/Complex_instruction_set_computer">CISCs</a>. Larger instruction sets typically do not provide any fundamentally new possibilities, but they <a href="https://cs.stanford.edu/people/eroberts/courses/soco/projects/risc/risccisc/">often make it more convenient</a> to write assembly for. A single instruction in CISC might take the place of several in RISC. However, they tend to be more complex and expensive for engineers to design and manufacture. This and other tradeoffs cause the designs to come <a href="https://cs.stackexchange.com/questions/269/why-would-anyone-want-cisc">in and out of style</a>.
 </p>
@@ -276,7 +279,7 @@ enum
 </pre>
 
 
-<p class="seealso">Used in section <a href="index.html#1:14">14</a></p>
+
 </div>
 <blockquote><p> <strong>Note:</strong> (The <code>&lt;&lt;</code> symbol is called the <a href="https://msdn.microsoft.com/en-us/library/336xbhcz.aspx">left bitshift operator</a>. <code>(n &lt;&lt; k)</code> shifts the bits of <code>n</code> to the left <code>k</code> places. Thus <code>1 &lt;&lt; 2</code> will equal <code>4</code>. Read that link if you are not familiar. It will be important.)
 </p>
@@ -385,7 +388,7 @@ BRn LOOP                           ; go back to LOOP if the result was negative
 
 int main(int argc, const char* argv[])
 {
-<span class="nocode pln">    {Load Arguments, <a href="index.html#1:12">12</a>}</span>
+<span class="nocode pln">    {Load Arguments, <a href="index.html#1:5">5</a>}</span>
 <span class="nocode pln">    {Setup, <a href="index.html#1:12">12</a>}</span>
 
     /* set the PC to starting position */
@@ -458,6 +461,33 @@ int main(int argc, const char* argv[])
 
 <p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
+<p>While we are at the main loop let's handle command line input to make our program usable.
+We expect one or more paths to VM images and present a usage string if none are given.
+</p>
+
+<div class="codeblock">
+<span class="codeblock_name">{Load Arguments <a href="index.html#1:5">5</a>}</span>
+<pre class="prettyprint lang-c">
+if (argc &lt; 2)
+{
+    /* show usage string */
+    printf("lc3 [image-file1] ...\n");
+    exit(2);
+}
+
+for (int j = 1; j &lt; argc; ++j)
+{
+    if (!read_image(argv[j]))
+    {
+        printf("failed to load image: %s\n", argv[j]);
+        exit(1);
+    }
+}
+</pre>
+
+
+
+</div>
 </div>
 <a name="1:6"><div class="section"><h4>6. Implementing Instructions</h4></a>
 <p>Your task now is to fill in each opcode case with a correct implementation. A detailed specification for each instruction is included in the <a href="supplies/lc3-isa.pdf">project documents</a>. You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will demonstrate how to implement two of them here. The code for the rest can be found in the next section.
@@ -514,7 +544,7 @@ uint16_t sign_extend(uint16_t x, int bit_count)
 </pre>
 
 
-<p class="seealso">Used in section <a href="index.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
 <blockquote><p> <strong>Note:</strong> If you are interested in exactly how negative numbers can be represented in binary, you can read about <a href="https://en.wikipedia.org/wiki/Two%27s_complement">Two's Complement</a>. However, this is not essential. You can just copy the code above and use it whenever the specification says to sign extend numbers.
 </p>
@@ -548,7 +578,7 @@ void update_flags(uint16_t r)
 </pre>
 
 
-<p class="seealso">Used in section <a href="index.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
 <p>Now we are ready to write the code for the <code>ADD</code> case:
 </p>
@@ -908,7 +938,7 @@ enum
 </pre>
 
 
-<p class="seealso">Used in sections <a href="index.html#1:11">11</a> and <a href="index.html#1:14">14</a></p>
+<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
 <p>You may be wondering why the trap codes are not included in the instructions. This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system functions in C). In the official LC-3 simulator, trap routines are <a href="supplies/os.asm">written in assembly</a>. When a trap code is called, the <code>PC</code> is moved to that code's address. The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location the trap was called from.
 </p>
@@ -952,7 +982,7 @@ switch (instr &amp; 0xFF)
 </pre>
 
 
-<p class="seealso">Used in sections <a href="index.html#1:5">5</a> and <a href="index.html#1:14">14</a></p>
+<p class="seealso">Used in sections <a href="index.html#1:5">5</a> and <a href="index.html#1:15">15</a></p>
 </div>
 <p>As with instructions, I will show you how to implement a single trap routine and leave the rest to you.
 </p>
@@ -1027,10 +1057,12 @@ fflush(stdout);
 <div class="codeblock">
 <span class="codeblock_name">{TRAP IN <a href="index.html#1:9">9</a>}</span>
 <pre class="prettyprint lang-c">
-printf("Enter a character: ");
-char c = getchar();
-putc(c, stdout);
-reg[R_R0] = (uint16_t)c;
+{
+    printf("Enter a character: ");
+    char c = getchar();
+    putc(c, stdout);
+    reg[R_R0] = (uint16_t)c;
+}
 </pre>
 
 
@@ -1110,7 +1142,7 @@ void read_image_file(FILE* file)
 </pre>
 
 
-<p class="seealso">Used in section <a href="index.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
 <p>Notice that <code>swap16</code> is called on each loaded value. LC-3 programs are big-endian, but most of the modern computers we use are little endian. As a result, we need to swap each <code>uint16</code> that is loaded. (If you happen to be using a <a href="https://en.wikipedia.org/wiki/Power_Mac_G4_Cube">strange computer</a>, like a <a href="https://en.wikipedia.org/wiki/PowerPC#Endian_modes">PPC</a> then you should not swap.)
 </p>
@@ -1125,7 +1157,7 @@ uint16_t swap16(uint16_t x)
 </pre>
 
 
-<p class="seealso">Used in section <a href="index.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
 <blockquote><p> <strong>Note:</strong> <a href="https://en.wikipedia.org/wiki/Endianness">Endianness</a> refers to how bytes of an integer are interpreted. In little-endian, the first byte is the least significant digit, and in big-endian, it is reversed. As far as I know, the decision is <em>mostly</em> arbitrary. Different companies made different decisions, so now we are left with varying implementations. You do not need to know anything else about endianness for this project.
 </p>
@@ -1147,7 +1179,7 @@ int read_image(const char* image_path)
 </pre>
 
 
-<p class="seealso">Used in section <a href="index.html#1:12">12</a></p>
+<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
 </div>
 <a name="1:11"><div class="section"><h4>11. Memory Mapped Registers</h4></a>
@@ -1169,7 +1201,7 @@ enum
 </pre>
 
 
-<p class="seealso">Used in section <a href="index.html#1:14">14</a></p>
+
 </div>
 <p>Memory mapped registers make memory access a bit more complicated. We can't read and write to the memory array directly, but must instead call setter and getter functions. When memory is read from <code>KBSR</code>, the getter will check the keyboard and update both memory locations.
 </p>
@@ -1201,7 +1233,7 @@ uint16_t mem_read(uint16_t address)
 </pre>
 
 
-<p class="seealso">Used in section <a href="index.html#1:12">12</a></p>
+
 </div>
 <p>That completes the last component of the VM! Provided that you implemented the rest of the trap routines and instructions, you are almost ready to try it out!
 </p>
@@ -1217,7 +1249,15 @@ uint16_t mem_read(uint16_t address)
 <span class="nocode pln">{Memory Storage, <a href="index.html#1:3">3</a>}</span>
 <span class="nocode pln">{Register Storage, <a href="index.html#1:3">3</a>}</span>
 
-<span class="nocode pln">{Functions, <a href="index.html#1:12">12</a>}</span>
+<span class="nocode pln">{Sign Extend, <a href="index.html#1:6">6</a>}</span>
+<span class="nocode pln">{Swap, <a href="index.html#1:10">10</a>}</span>
+<span class="nocode pln">{Update Flags, <a href="index.html#1:6">6</a>}</span>
+<span class="nocode pln">{Read Image File, <a href="index.html#1:10">10</a>}</span>
+<span class="nocode pln">{Read Image, <a href="index.html#1:10">10</a>}</span>
+<span class="nocode pln">{Check Key, <a href="index.html#1:12">12</a>}</span>
+<span class="nocode pln">{Memory Access, <a href="index.html#1:11">11</a>}</span>
+<span class="nocode pln">{Input Buffering, <a href="index.html#1:12">12</a>}</span>
+<span class="nocode pln">{Handle Interrupt, <a href="index.html#1:12">12</a>}</span>
 
 <span class="nocode pln">{Main Loop, <a href="index.html#1:5">5</a>}</span>
 </pre>
@@ -1226,10 +1266,11 @@ uint16_t mem_read(uint16_t address)
 
 </div>
 </div>
-<a name="1:12"><div class="section"><h4>12. Platform Details</h4></a>
-<p>This section contains some tedious details that are needed to access the keyboard and behave nicely. These are not insightful or relevant to learning about VMs. Feel free to copy paste!
+<a name="1:12"><div class="section"><h4>12. Platform Specifics (Unix)</h4></a>
+<p>This section contains some tedious details that are needed to access the keyboard and behave nicely.
+These are not insightful or relevant to learning about VMs. Feel free to copy paste!
 </p>
-<p>If you are trying to run the VM on a non-Unix operating system, such as Windows, these functions need to be replaced with Windows-specific versions.
+<p>NOTE: Skip to the next section for the <strong>Windows</strong> versions of these functions.
 </p>
 
 <div class="codeblock">
@@ -1249,33 +1290,7 @@ uint16_t check_key()
 </pre>
 
 
-
-</div>
-<p>This extracts the program path from the program arguments and outputs a usage example if they are missing.
-</p>
-
-<div class="codeblock">
-<span class="codeblock_name">{Load Arguments <a href="index.html#1:12">12</a>}</span>
-<pre class="prettyprint lang-c">
-if (argc &lt; 2)
-{
-    /* show usage string */
-    printf("lc3 [image-file1] ...\n");
-    exit(2);
-}
-
-for (int j = 1; j &lt; argc; ++j)
-{
-    if (!read_image(argv[j]))
-    {
-        printf("failed to load image: %s\n", argv[j]);
-        exit(1);
-    }
-}
-</pre>
-
-
-<p class="seealso">Used in sections <a href="index.html#1:5">5</a> and <a href="index.html#1:14">14</a></p>
+<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
 <p>This is Unix specific code for setting up terminal input.
 </p>
@@ -1300,11 +1315,8 @@ void restore_input_buffering()
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
-<p>When the program is interrupted, we want to restore the terminal
-settings back to normal.
-</p>
 
 <div class="codeblock">
 <span class="codeblock_name">{Handle Interrupt <a href="index.html#1:12">12</a>}</span>
@@ -1318,7 +1330,7 @@ void handle_interrupt(int signal)
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
 
 <div class="codeblock">
@@ -1329,8 +1341,11 @@ disable_input_buffering();
 </pre>
 
 
-<p class="seealso">Used in sections <a href="index.html#1:5">5</a> and <a href="index.html#1:14">14</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
+<p>When the program is interrupted, we want to restore the terminal
+settings back to normal.
+</p>
 
 <div class="codeblock">
 <span class="codeblock_name">{Shutdown <a href="index.html#1:12">12</a>}</span>
@@ -1339,25 +1354,7 @@ restore_input_buffering();
 </pre>
 
 
-<p class="seealso">Used in sections <a href="index.html#1:5">5</a> and <a href="index.html#1:14">14</a></p>
-</div>
-
-<div class="codeblock">
-<span class="codeblock_name">{Functions <a href="index.html#1:12">12</a>}</span>
-<pre class="prettyprint lang-c">
-<span class="nocode pln">{Sign Extend, <a href="index.html#1:6">6</a>}</span>
-<span class="nocode pln">{Swap, <a href="index.html#1:10">10</a>}</span>
-<span class="nocode pln">{Update Flags, <a href="index.html#1:6">6</a>}</span>
-<span class="nocode pln">{Read Image File, <a href="index.html#1:10">10</a>}</span>
-<span class="nocode pln">{Read Image, <a href="index.html#1:10">10</a>}</span>
-<span class="nocode pln">{Check Key, <a href="index.html#1:12">12</a>}</span>
-<span class="nocode pln">{Memory Access, <a href="index.html#1:11">11</a>}</span>
-<span class="nocode pln">{Input Buffering, <a href="index.html#1:12">12</a>}</span>
-<span class="nocode pln">{Handle Interrupt, <a href="index.html#1:12">12</a>}</span>
-</pre>
-
-
-<p class="seealso">Used in sections <a href="index.html#1:11">11</a> and <a href="index.html#1:14">14</a></p>
+<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
 </div>
 
 <div class="codeblock">
@@ -1368,6 +1365,7 @@ restore_input_buffering();
 #include &lt;stdint.h&gt;
 #include &lt;string.h&gt;
 #include &lt;signal.h&gt;
+/* unix */
 #include &lt;unistd.h&gt;
 #include &lt;fcntl.h&gt;
 
@@ -1378,27 +1376,124 @@ restore_input_buffering();
 </pre>
 
 
-<p class="seealso">Used in sections <a href="index.html#1:3">3</a> and <a href="index.html#1:14">14</a></p>
+<p class="seealso">Used in section <a href="index.html#1:3">3</a></p>
 </div>
 </div>
-<a name="1:13"><div class="section"><h4>13. Running the VM</h4></a>
+<a name="1:13"><div class="section"><h4>13. Platform Specifics (Windows)</h4></a>
+<p>This section contains some tedious details that are needed to access the keyboard and behave nicely.
+These are not insightful or relevant to learning about VMs. Feel free to copy paste!
+</p>
+<p>NOTE: If you already included the <strong>Unix</strong> versions don't add these!
+</p>
+
+<div class="codeblock">
+<span class="codeblock_name">{Check Key Windows <a href="index.html#1:13">13</a>}</span>
+<pre class="prettyprint lang-c">
+uint16_t check_key()
+{
+    return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 &amp;&amp; _kbhit();
+}
+</pre>
+
+
+
+</div>
+
+<div class="codeblock">
+<span class="codeblock_name">{Input Buffering Windows <a href="index.html#1:13">13</a>}</span>
+<pre class="prettyprint lang-c">
+DWORD fdwMode, fdwOldMode;
+
+void disable_input_buffering()
+{
+    hStdin = GetStdHandle(STD_INPUT_HANDLE);
+    GetConsoleMode(hStdin, &amp;fdwOldMode); /* save old mode */
+    fdwMode = fdwOldMode 
+            ^ ENABLE_ECHO_INPUT  /* no input echo */
+            ^ ENABLE_LINE_INPUT; /* return when one or 
+                                    more characters are available */
+    SetConsoleMode(hStdin, fdwMode); /* set new mode */
+    FlushConsoleInputBuffer(hStdin); /* clear buffer */
+}
+
+void restore_input_buffering()
+{
+    SetConsoleMode(hStdin, fdwOldMode);
+}
+</pre>
+
+
+
+</div>
+
+<div class="codeblock">
+<span class="codeblock_name">{Windows Setup <a href="index.html#1:13">13</a>}</span>
+<pre class="prettyprint lang-c">
+signal(SIGINT, handle_interrupt);
+disable_input_buffering();
+</pre>
+
+
+
+</div>
+<p>When the program is interrupted, we want to restore the terminal
+settings back to normal.
+</p>
+
+<div class="codeblock">
+<span class="codeblock_name">{Windows Shutdown <a href="index.html#1:13">13</a>}</span>
+<pre class="prettyprint lang-c">
+restore_input_buffering();
+</pre>
+
+
+
+</div>
+
+<div class="codeblock">
+<span class="codeblock_name">{Windows Includes <a href="index.html#1:13">13</a>}</span>
+<pre class="prettyprint lang-c">
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;string.h&gt;
+#include &lt;signal.h&gt;
+/* _WIN32 */
+#include &lt;Windows.h&gt;
+#include &lt;conio.h&gt; // _kbhit
+HANDLE hStdin = INVALID_HANDLE_VALUE;
+</pre>
+
+
+
+</div>
+
+</div>
+<a name="1:14"><div class="section"><h4>14. Running the VM</h4></a>
 <p>You can now build and run the LC-3 VM!
 </p>
 <ol>
-<li>Compile <a href="src/lc3.c">your program</a> with your favorite C compiler.
-</li>
-<li>Download the assembled version of <a href="supplies/2048.obj">2048</a> or <a href="supplies/rogue.obj">Rogue</a>.
-</li>
-<li>Run the program with the obj file as an argument:
-<p><code>lc3-vm path/to/2048.obj</code>
+<li><p>Compile your program] with your favorite C compiler.
+   (Final source for <a href="src/lc3.c">unix</a>, <a href="src/lc3-win.c">windows</a>).
+</p>
+<p>For gcc: <code>$ gcc lc3.c -o lc3</code>
 </p>
 </li>
-<li>Play 2048!
+<li><p>Download the assembled version of <a href="supplies/2048.obj">2048</a> or <a href="supplies/rogue.obj">Rogue</a>.
+</p>
+</li>
+<li><p>Run the program with the obj file as an argument:
+</p>
+<p><code>$ lc3-vm path/to/2048.obj</code>
+</p>
+</li>
+<li><p>Play 2048!
+</p>
 </li>
 </ol>
 
 <div class="codeblock">
-<span class="codeblock_name">{2048 Example <a href="index.html#1:13">13</a>}</span>
+<span class="codeblock_name">{2048 Example <a href="index.html#1:14">14</a>}</span>
 <pre class="prettyprint lang-c">
 Control the game using WASD keys.
 Are you on an ANSI terminal (y/n)? y
@@ -1423,7 +1518,7 @@ Are you on an ANSI terminal (y/n)? y
 </p>
 
 </div>
-<a name="1:14"><div class="section"><h4>14. Alternate C++ Technique</h4></a>
+<a name="1:15"><div class="section"><h4>15. Alternate C++ Technique</h4></a>
 <p>This section shows an advanced way of executing instructions that makes the code a whole lot smaller. This section is entirely optional.
 </p>
 <p>Since C++ has powerful compile-time generics, we can use the compiler to generate parts of the instructions for us. This method reduces code duplication and is actually closer to how the computer would be wired in hardware.
@@ -1434,7 +1529,7 @@ Are you on an ANSI terminal (y/n)? y
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Instruction C++ <a href="index.html#1:14">14</a>}</span>
+<span class="codeblock_name">{Instruction C++ <a href="index.html#1:15">15</a>}</span>
 <pre class="prettyprint lang-c">
 template &lt;unsigned op&gt;
 void ins(uint16_t instr)
@@ -1526,7 +1621,7 @@ void ins(uint16_t instr)
 </div>
 
 <div class="codeblock">
-<span class="codeblock_name">{Op Table <a href="index.html#1:14">14</a>}</span>
+<span class="codeblock_name">{Op Table <a href="index.html#1:15">15</a>}</span>
 <pre class="prettyprint lang-c">
 static void (*op_table[16])(uint16_t) = {
     ins&lt;0&gt;, ins&lt;1&gt;, ins&lt;2&gt;, ins&lt;3&gt;,
@@ -1543,56 +1638,23 @@ static void (*op_table[16])(uint16_t) = {
  If you are interested in emulation, or the NES, I highly recommend his videos.
 </p>
 </blockquote>
-<p>The rest of the C++ version uses the code we already wrote. The full code is <a href="src/lc3-alt.cpp">here</a>.
+<p>The rest of the C++ version uses the code we already wrote!
+The full source is <a href="src/lc3-alt.cpp">here</a>.
 </p>
 
-<div class="codeblock">
-<span class="codeblock_name">{<strong>lc3-alt.cpp</strong> <a href="index.html#1:14">14</a>}</span>
-<pre class="prettyprint lang-c">
-<span class="nocode pln">{Includes, <a href="index.html#1:12">12</a>}</span>
-
-<span class="nocode pln">{Registers, <a href="index.html#1:3">3</a>}</span>
-<span class="nocode pln">{Condition Flags, <a href="index.html#1:3">3</a>}</span>
-<span class="nocode pln">{Opcodes, <a href="index.html#1:3">3</a>}</span>
-
-<span class="nocode pln">{Memory Mapped Registers, <a href="index.html#1:11">11</a>}</span>
-<span class="nocode pln">{TRAP Codes, <a href="index.html#1:8">8</a>}</span>
-
-<span class="nocode pln">{Memory Storage, <a href="index.html#1:3">3</a>}</span>
-<span class="nocode pln">{Register Storage, <a href="index.html#1:3">3</a>}</span>
-
-<span class="nocode pln">{Functions, <a href="index.html#1:12">12</a>}</span>
-
-int running = 1;
-<span class="nocode pln">{Instruction C++, <a href="index.html#1:14">14</a>}</span>
-<span class="nocode pln">{Op Table, <a href="index.html#1:14">14</a>}</span>
-
-int main(int argc, const char* argv[])
-{
-<span class="nocode pln">    {Load Arguments, <a href="index.html#1:12">12</a>}</span>
-<span class="nocode pln">    {Setup, <a href="index.html#1:12">12</a>}</span>
-
-    enum { PC_START = 0x3000 };
-    reg[R_PC] = PC_START;
-
-    while (running)
-    {
-        uint16_t instr = mem_read(reg[R_PC]++);
-        uint16_t op = instr &gt;&gt; 12;
-        op_table[op](instr);
-    }
-<span class="nocode pln">    {Shutdown, <a href="index.html#1:12">12</a>}</span>
-}
-</pre>
-
-
-
 </div>
-</div>
-<a name="1:15"><div class="section"><h4>15. Related Projects</h4></a>
-<p>Several people in the community have reached out to share their own VMs created with this tutorial. These projects
-may be helpful for learners who are familiar with programming languages other than C. Feel free to fork this <a href="https://github.com/justinmeiners/lc3-vm">repo</a> and contribute your own.
+<a name="1:16"><div class="section"><h4>16. Related Projects</h4></a>
+<p>Many programmers have reached out to share their own VMs created with this tutorial.
+These projects may be helpful for learners who are familiar with programming languages other than C.
+Feel free to fork this <a href="https://github.com/justinmeiners/lc3-vm">repo</a> and contribute your own.
 </p>
+<p><strong>Windows</strong>
+</p>
+<ul>
+<li><p>Special thanks to <a href="https://github.com/inkydragon">inkydragon</a> for contributing Windows platform support.
+</p>
+</li>
+</ul>
 <p><strong>C</strong>
 </p>
 <ul>
