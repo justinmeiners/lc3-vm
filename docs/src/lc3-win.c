@@ -1,18 +1,13 @@
-/* lc3.c */
-/* Includes */
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include <signal.h>
-/* unix */
-#include <unistd.h>
-#include <fcntl.h>
+/* lc3-win.c */
+/* Windows Includes */
+#include <stdint.h> // uint16_t
+#include <stdio.h>  // FILE
+#include <signal.h> // SIGINT
+/* windows only */
+#include <Windows.h>
+#include <conio.h>  // _kbhit
 
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/termios.h>
-#include <sys/mman.h>
+HANDLE hStdin = INVALID_HANDLE_VALUE;
 
 
 /* Registers */
@@ -29,6 +24,14 @@ enum
     R_PC, /* program counter */
     R_COND,
     R_COUNT
+};
+
+/* Condition Flags */
+enum
+{
+    FL_POS = 1 << 0, /* P */
+    FL_ZRO = 1 << 1, /* Z */
+    FL_NEG = 1 << 2, /* N */
 };
 
 /* Opcodes */
@@ -52,13 +55,6 @@ enum
     OP_TRAP    /* execute trap */
 };
 
-/* Condition Flags */
-enum
-{
-    FL_POS = 1 << 0, /* P */
-    FL_ZRO = 1 << 1, /* Z */
-    FL_NEG = 1 << 2, /* N */
-};
 
 /* Memory Mapped Registers */
 enum
@@ -150,17 +146,10 @@ int read_image(const char* image_path)
     return 1;
 }
 
-/* Check Key */
+/* Check Key Windows */
 uint16_t check_key()
 {
-    fd_set readfds;
-    FD_ZERO(&readfds);
-    FD_SET(STDIN_FILENO, &readfds);
-
-    struct timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 0;
-    return select(1, &readfds, NULL, NULL, &timeout) != 0;
+    return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 && _kbhit();
 }
 
 /* Memory Access */
@@ -186,20 +175,24 @@ uint16_t mem_read(uint16_t address)
     return memory[address];
 }
 
-/* Input Buffering */
-struct termios original_tio;
+/* Input Buffering Windows */
+DWORD fdwMode, fdwOldMode;
 
 void disable_input_buffering()
 {
-    tcgetattr(STDIN_FILENO, &original_tio);
-    struct termios new_tio = original_tio;
-    new_tio.c_lflag &= ~ICANON & ~ECHO;
-    tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
+    hStdin = GetStdHandle(STD_INPUT_HANDLE);
+    GetConsoleMode(hStdin, &fdwOldMode); /* save old mode */
+    fdwMode = fdwOldMode 
+            ^ ENABLE_ECHO_INPUT  /* no input echo */
+            ^ ENABLE_LINE_INPUT; /* return when one or 
+                                    more characters are available */
+    SetConsoleMode(hStdin, fdwMode); /* set new mode */
+    FlushConsoleInputBuffer(hStdin); /* clear buffer */
 }
 
 void restore_input_buffering()
 {
-    tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
+    SetConsoleMode(hStdin, fdwOldMode);
 }
 
 /* Handle Interrupt */

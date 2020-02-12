@@ -1,5 +1,7 @@
 *.sym
 *.out
+*.obj
+*.exe
 
 lc3
 lc3-alt
