@@ -68,7 +68,7 @@ First, we need to simulate the essential hardware components of the machine. Try
 
 ### Memory
 
-The LC-3 has 65,536 memory locations (the maximum that is addressable by a 16-bit unsigned integer $2^{16}$), each of which stores a 16-bit value. This means it can store a total of only 128kb, which is a lot smaller than you may be used to! In our program, this memory will be stored in a simple array:
+The LC-3 has 65,536 memory locations (the maximum that is addressable by a 16-bit unsigned integer `2^16`), each of which stores a 16-bit value. This means it can store a total of only 128kb, which is a lot smaller than you may be used to! In our program, this memory will be stored in a simple array:
 
 --- Memory Storage
 /* 65536 locations */
@@ -191,7 +191,7 @@ This is because the code we are reading is written in **assembly** which is a hu
 
 > **Note:** Although a compiler and an assembler play a similar role in development, they are not the same. An assembler simply encodes what the programmer has written in text into binary, replacing symbols with their binary representation and packing them into instructions.
 
-The commands `.ORIG` and `.STRINGZ` look like instructions but they aren't. They are assembler directives which generate a piece of code or data. For example, the `.STRINGZ` inserts a string of characters into the program binary at the location it is written.
+The commands `.ORIG` and `.STRINGZ` look like instructions but they aren't. They are assembler directives which generate a piece of code or data (like macros). For example, the `.STRINGZ` inserts a string of characters into the program binary at the location it is written.
 
 Loops and conditions are done with a [goto](https://en.wikipedia.org/wiki/Goto)-like instruction. Here is another example which counts to 10.
 
@@ -210,13 +210,13 @@ BRn LOOP                           ; go back to LOOP if the result was negative
 
 Once again, the previous examples are just to give you an idea of what the VM does. To write a VM, you don't need to be fluent in assembly. As long as you follow the proper procedure for reading and executing instructions, *any* LC-3 program will run correctly, no matter how complicated it is. In theory, it could even run a web browser or an operating system like Linux!
 
-If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that we never anticipated and may not be able to understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works. Turing discussed this marvelous idea:
+If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that we never anticipated and may not be able to understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works. Turing observed this marvelous idea:
 
 > "The view that machines cannot give rise to surprises is due, I believe, to a fallacy to which philosophers and mathematicians are particularly subject. This is the assumption that as soon as a fact is presented to a mind all consequences of that fact spring into the mind simultaneously with it. It is a very useful assumption under many circumstances, but one too easily forgets that it is false." — [Alan M. Turing](https://academic.oup.com/mind/article-pdf/LIX/236/433/9866119/433.pdf)
 
 ### Procedure
 
-Here is a precise description of the procedure we need to write:
+Here is the procedure we need to write:
 
 1. Load one instruction from memory at the address of the `PC` register.
 2. Increment the `PC` register.
@@ -224,7 +224,7 @@ Here is a precise description of the procedure we need to write:
 4. Perform the instruction using the parameters in the instruction.
 5. Go back to step 1.
 
-You may be wondering, "if the loop keeps incrementing the `PC`, and we don't have `if` or `while`, won't it quickly run out of instructions?" The answer is no. As we mentioned before, some goto-like instructions change the execution flow by jumping the `PC` around.
+You may be wondering, "if the loop keeps incrementing the `PC`, and we don't have `if` or `while`, won't it quickly run out of instructions?" No. As we mentioned before, some goto-like instructions change the execution flow by jumping the `PC` around.
 
 Let's start outlining this process in the main loop:
 
@@ -325,11 +325,11 @@ for (int j = 1; j < argc; ++j)
 
 @s Implementing Instructions
 
-Your task now is to fill in each opcode case with a correct implementation. A detailed specification for each instruction is included in the [project documents](supplies/lc3-isa.pdf). You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will demonstrate how to implement two of them here. The code for the rest can be found in the next section.
+Your task now is to fill in each opcode case with a correct implementation. This is easier than it sounds. A detailed specification for each instruction is included in the [project documents](supplies/lc3-isa.pdf). The specificiation for each translates pretty easily to several lines of codes. I will demonstrate how to implement two of them here. The code for the rest can be found in the next section.
 
 ### ADD
 
-The `ADD` instruction takes two numbers, adds them together, and stores the result in a register. The specification for it is found on page 526. Each `ADD` instruction looks like the following:
+The `ADD` instruction takes two numbers, adds them together, and stores the result in a register. Its specification is found on page 526. Each `ADD` instruction looks like the following:
 
 ![Add Encoding](img/add_layout.gif)
 
@@ -341,7 +341,13 @@ So we know where we want to store the result and we know the first number to add
 ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
 ---
 
-In immediate mode, instead of adding the contents of a register, the value is embedded in the instruction itself. This is convenient because the program doesn't need more instructions to load that number into the register from memory. Instead, it is right inside the instruction when we need it. The tradeoff is that it can only store a small number $2^{5}=32$ (unsigned) to be exact. This is most useful for incrementing a value. In assembly, it could be written as:
+Immediate mode is a convenience which reduces the length of a typical program.
+Instead of adding two values stored in separate registers, the second value is embedded in the instruction itself, marked
+`imm5` in the diagram.
+This removes the need to write instructions to load the value from memory.
+The tradeoff is that the instruction only has room for a small number, up to `2^5=32` (unsigned) to be exact,
+making immediate mode primarily useful for incrementing and decrementing. In assembly, it could be written as:
+
 
 --- Add Immediate Assembly
 ADD R0 R0 1 ; add 1 to R0 and store back in R0
@@ -351,7 +357,7 @@ Here is a summary from the specification:
 
 > If bit [5] is 0, the second source operand is obtained from SR2. If bit [5] is 1, the second source operand is obtained by sign-extending the imm5 field to 16 bits. In both cases, the second source operand is added to the contents of SR1 and the result stored in DR. (Pg. 526)
 
-That sounds just like what we discussed. But what is "sign-extending"? Although the immediate mode value has only 5 bits, it needs to be added to a 16-bit number. Those 5 bits need to be extended to 16 to match the other number. For positive numbers, we can fill in 0's for the additional bits and the value is the same. However, for negative numbers, this causes a problem. For example, -1 stored in 5 bits is `1 1111`. If we just extended it with 0's, this is `0000 0000 0001 1111` which is equal to 31! Sign extension prevents this problem by filling in 0's for positive numbers and 1's for negative numbers.
+That sounds just like the behaviour we discussed, but what is "sign-extending"? The immediate mode value has only 5 bits, but it needs to be added to a 16-bit number. To do the addition, those 5 bits need to be extended to 16 to match the other number. For positive numbers, we can simply fill in 0's for the additional bits. For negative numbers, this causes a problem. For example, -1 in 5 bits is `1 1111`. If we just extended it with 0's, this is `0000 0000 0001 1111` which is equal to 31. Sign extension corrects this problem by filling in 0's for positive numbers and 1's for negative numbers, so that original values are preserved.
 
 --- Sign Extend
 uint16_t sign_extend(uint16_t x, int bit_count)
