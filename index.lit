@@ -341,8 +341,8 @@ So we know where we want to store the result and we know the first number to add
 ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
 ---
 
-Immediate mode is a convenience which reduces the number of instructions in a typical program.
-Instead of adding the contents of two registers, one register is added to a value embedded in the instruction itself. 
+Immediate mode is a convenience which reduces the length of a typical program.
+Instead of adding two values stored in separate registers, one of the values is embedded in the instruction itself. 
 This removes the need to write instructions to load the value from memory.
 The tradeoff is that the instruction only has room for a small number, up to $2^{5}=32$ (unsigned) to be exact,
 making immediate mode primarily useful for incrementing and decrementing. In assembly, it could be written as:
