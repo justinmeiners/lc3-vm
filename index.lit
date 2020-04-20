@@ -341,7 +341,8 @@ So we know where we want to store the result and we know the first number to add
 ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
 ---
 
-In immediate mode, instead of adding the contents of a register, the value is embedded in the instruction itself. This is convenient because the program doesn't need more instructions to load that number into the register from memory. Instead, it is right inside the instruction when we need it. The tradeoff is that it can only store a small number $2^{5}=32$ (unsigned) to be exact. This is most useful for incrementing a value. In assembly, it could be written as:
+In immediate mode, instead of adding the contents of a register, the value to add is embedded in the instruction itself. This is convenient as it avoids additional instructions to load that number into a register from memory. Instead, it is right inside the instruction when we need it. The tradeoff is that the instruction only has room for a small number, up to $2^{5}=32$ (unsigned) to be exact. So immediate mode is mostly useful for incrementing and similar arithmetic. In assembly, it could be written as:
+
 
 --- Add Immediate Assembly
 ADD R0 R0 1 ; add 1 to R0 and store back in R0
@@ -351,7 +352,7 @@ Here is a summary from the specification:
 
 > If bit [5] is 0, the second source operand is obtained from SR2. If bit [5] is 1, the second source operand is obtained by sign-extending the imm5 field to 16 bits. In both cases, the second source operand is added to the contents of SR1 and the result stored in DR. (Pg. 526)
 
-That sounds just like what we discussed. But what is "sign-extending"? Although the immediate mode value has only 5 bits, it needs to be added to a 16-bit number. Those 5 bits need to be extended to 16 to match the other number. For positive numbers, we can fill in 0's for the additional bits and the value is the same. However, for negative numbers, this causes a problem. For example, -1 stored in 5 bits is `1 1111`. If we just extended it with 0's, this is `0000 0000 0001 1111` which is equal to 31! Sign extension prevents this problem by filling in 0's for positive numbers and 1's for negative numbers.
+That sounds just like the behaviour we discussed, but what is "sign-extending"? The immediate mode value has only 5 bits, but it needs to be added to a 16-bit number. To do the addition, those 5 bits need to be extended to 16 to match the other number. For positive numbers, we can simply fill in 0's for the additional bits. For negative numbers, this causes a problem. For example, -1 in 5 bits is `1 1111`. If we just extended it with 0's, this is `0000 0000 0001 1111` which is equal to 31. Sign extension corrects this problem by filling in 0's for positive numbers and 1's for negative numbers, so that original values are preserved.
 
 --- Sign Extend
 uint16_t sign_extend(uint16_t x, int bit_count)
