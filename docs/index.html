@@ -160,7 +160,7 @@ All you need to know is how to read basic C or C++ and how to do <a href="https:
 <p>First, we need to simulate the essential hardware components of the machine. Try to understand what each component is, but don't worry right now if you are unsure of how it fits into the larger picture. Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.
 </p>
 <h3> Memory</h3>
-<p>The LC-3 has 65,536 memory locations (the maximum that is addressable by a 16-bit unsigned integer <code>2^{16}</code>), each of which stores a 16-bit value. This means it can store a total of only 128kb, which is a lot smaller than you may be used to! In our program, this memory will be stored in a simple array:
+<p>The LC-3 has 65,536 memory locations (the maximum that is addressable by a 16-bit unsigned integer <code>2^16</code>), each of which stores a 16-bit value. This means it can store a total of only 128kb, which is a lot smaller than you may be used to! In our program, this memory will be stored in a simple array:
 </p>
 
 <div class="codeblock">
@@ -514,7 +514,7 @@ ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
 <p>Immediate mode is a convenience which reduces the length of a typical program.
 Instead of adding two values stored in separate registers, one of the values is embedded in the instruction itself. 
 This removes the need to write instructions to load the value from memory.
-The tradeoff is that the instruction only has room for a small number, up to <code>2^{5}=32</code> (unsigned) to be exact,
+The tradeoff is that the instruction only has room for a small number, up to <code>2^5=32</code> (unsigned) to be exact,
 making immediate mode primarily useful for incrementing and decrementing. In assembly, it could be written as:
 </p>
 
