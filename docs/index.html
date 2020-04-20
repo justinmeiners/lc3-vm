@@ -330,7 +330,7 @@ HELLO_STR .STRINGZ "Hello World!"  ; store this string here in the program
 <blockquote><p> <strong>Note:</strong> Although a compiler and an assembler play a similar role in development, they are not the same. An assembler simply encodes what the programmer has written in text into binary, replacing symbols with their binary representation and packing them into instructions.
 </p>
 </blockquote>
-<p>The commands <code>.ORIG</code> and <code>.STRINGZ</code> look like instructions but they aren't. They are assembler directives which generate a piece of code or data. For example, the <code>.STRINGZ</code> inserts a string of characters into the program binary at the location it is written.
+<p>The commands <code>.ORIG</code> and <code>.STRINGZ</code> look like instructions but they aren't. They are assembler directives which generate a piece of code or data (like macros). For example, the <code>.STRINGZ</code> inserts a string of characters into the program binary at the location it is written.
 </p>
 <p>Loops and conditions are done with a <a href="https://en.wikipedia.org/wiki/Goto">goto</a>-like instruction. Here is another example which counts to 10.
 </p>
@@ -357,13 +357,13 @@ BRn LOOP                           ; go back to LOOP if the result was negative
 <a name="1:5"><div class="section"><h4>5. Executing Programs</h4></a>
 <p>Once again, the previous examples are just to give you an idea of what the VM does. To write a VM, you don't need to be fluent in assembly. As long as you follow the proper procedure for reading and executing instructions, <em>any</em> LC-3 program will run correctly, no matter how complicated it is. In theory, it could even run a web browser or an operating system like Linux!
 </p>
-<p>If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that we never anticipated and may not be able to understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works. Turing discussed this marvelous idea:
+<p>If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that we never anticipated and may not be able to understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works. Turing observed this marvelous idea:
 </p>
 <blockquote><p> "The view that machines cannot give rise to surprises is due, I believe, to a fallacy to which philosophers and mathematicians are particularly subject. This is the assumption that as soon as a fact is presented to a mind all consequences of that fact spring into the mind simultaneously with it. It is a very useful assumption under many circumstances, but one too easily forgets that it is false." — <a href="https://academic.oup.com/mind/article-pdf/LIX/236/433/9866119/433.pdf">Alan M. Turing</a>
 </p>
 </blockquote>
 <h3> Procedure</h3>
-<p>Here is a precise description of the procedure we need to write:
+<p>Here is the procedure we need to write:
 </p>
 <ol>
 <li>Load one instruction from memory at the address of the <code>PC</code> register.
@@ -377,7 +377,7 @@ BRn LOOP                           ; go back to LOOP if the result was negative
 <li>Go back to step 1.
 </li>
 </ol>
-<p>You may be wondering, "if the loop keeps incrementing the <code>PC</code>, and we don't have <code>if</code> or <code>while</code>, won't it quickly run out of instructions?" The answer is no. As we mentioned before, some goto-like instructions change the execution flow by jumping the <code>PC</code> around.
+<p>You may be wondering, "if the loop keeps incrementing the <code>PC</code>, and we don't have <code>if</code> or <code>while</code>, won't it quickly run out of instructions?" No. As we mentioned before, some goto-like instructions change the execution flow by jumping the <code>PC</code> around.
 </p>
 <p>Let's start outlining this process in the main loop:
 </p>
@@ -490,10 +490,10 @@ for (int j = 1; j &lt; argc; ++j)
 </div>
 </div>
 <a name="1:6"><div class="section"><h4>6. Implementing Instructions</h4></a>
-<p>Your task now is to fill in each opcode case with a correct implementation. A detailed specification for each instruction is included in the <a href="supplies/lc3-isa.pdf">project documents</a>. You will need to learn how each instruction works from its specification and write an implementation. This is easier than it sounds. I will demonstrate how to implement two of them here. The code for the rest can be found in the next section.
+<p>Your task now is to fill in each opcode case with a correct implementation. This is easier than it sounds. A detailed specification for each instruction is included in the <a href="supplies/lc3-isa.pdf">project documents</a>. The specificiation for each translates pretty easily to several lines of codes. I will demonstrate how to implement two of them here. The code for the rest can be found in the next section.
 </p>
 <h3> ADD</h3>
-<p>The <code>ADD</code> instruction takes two numbers, adds them together, and stores the result in a register. The specification for it is found on page 526. Each <code>ADD</code> instruction looks like the following:
+<p>The <code>ADD</code> instruction takes two numbers, adds them together, and stores the result in a register. Its specification is found on page 526. Each <code>ADD</code> instruction looks like the following:
 </p>
 <p><img src="img/add_layout.gif" alt="Add Encoding">
 </p>
@@ -512,7 +512,8 @@ ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
 
 </div>
 <p>Immediate mode is a convenience which reduces the length of a typical program.
-Instead of adding two values stored in separate registers, one of the values is embedded in the instruction itself. 
+Instead of adding two values stored in separate registers, the second value is embedded in the instruction itself, marked
+<code>imm5</code> in the diagram.
 This removes the need to write instructions to load the value from memory.
 The tradeoff is that the instruction only has room for a small number, up to <code>2^5=32</code> (unsigned) to be exact,
 making immediate mode primarily useful for incrementing and decrementing. In assembly, it could be written as:
