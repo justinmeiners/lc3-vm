@@ -511,7 +511,11 @@ ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
 
 
 </div>
-<p>In immediate mode, instead of adding the contents of a register, the value to add is embedded in the instruction itself. This is convenient as it avoids additional instructions to load that number into a register from memory. Instead, it is right inside the instruction when we need it. The tradeoff is that the instruction only has room for a small number, up to <span class="math">2^{5}=32</span> (unsigned) to be exact. So immediate mode is mostly useful for incrementing and similar arithmetic. In assembly, it could be written as:
+<p>Immediate mode is a convenience which reduces the number of instructions in a typical program.
+Instead of adding the contents of two registers, one register is added to a value embedded in the instruction itself. 
+This removes the need to write instructions to load the value from memory.
+The tradeoff is that the instruction only has room for a small number, up to <span class="math">2^{5}=32</span> (unsigned) to be exact,
+making immediate mode primarily useful for incrementing and decrementing. In assembly, it could be written as:
 </p>
 
 <div class="codeblock">
