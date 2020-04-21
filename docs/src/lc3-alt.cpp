@@ -220,9 +220,9 @@ void ins(uint16_t instr)
     uint16_t r0, r1, r2, imm5, imm_flag;
     uint16_t pc_plus_off, base_plus_off;
 
-    uint16_t opbit = (1 << op);
+    constexpr uint16_t opbit = (1 << op);
     if (0x4EEE & opbit) { r0 = (instr >> 9) & 0x7; }
-    if (0x12E3 & opbit) { r1 = (instr >> 6) & 0x7; }
+    if (0x12F3 & opbit) { r1 = (instr >> 6) & 0x7; }
     if (0x0022 & opbit)
     {
         r2 = instr & 0x7;

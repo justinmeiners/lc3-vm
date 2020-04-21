@@ -1541,9 +1541,9 @@ void ins(uint16_t instr)
     uint16_t r0, r1, r2, imm5, imm_flag;
     uint16_t pc_plus_off, base_plus_off;
 
-    uint16_t opbit = (1 &lt;&lt; op);
+    constexpr uint16_t opbit = (1 &lt;&lt; op);
     if (0x4EEE &amp; opbit) { r0 = (instr &gt;&gt; 9) &amp; 0x7; }
-    if (0x12E3 &amp; opbit) { r1 = (instr &gt;&gt; 6) &amp; 0x7; }
+    if (0x12F3 &amp; opbit) { r1 = (instr &gt;&gt; 6) &amp; 0x7; }
     if (0x0022 &amp; opbit)
     {
         r2 = instr &amp; 0x7;
