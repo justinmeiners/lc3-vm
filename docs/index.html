@@ -687,7 +687,7 @@ char* far_data = "apple";
     /* destination register (DR) */
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     /* PCoffset 9*/
-    uint16_t pc_offset = sign_extend(instr &amp; 0x1ff, 9);
+    uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
     /* add pc_offset to the current PC, look at that memory location to get the final address */
     reg[r0] = mem_read(mem_read(reg[R_PC] + pc_offset));
     update_flags(r0);
@@ -769,7 +769,7 @@ abort();
 <span class="codeblock_name">{BR <a href="index.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
-    uint16_t pc_offset = sign_extend((instr) &amp; 0x1ff, 9);
+    uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
     uint16_t cond_flag = (instr &gt;&gt; 9) &amp; 0x7;
     if (cond_flag &amp; reg[R_COND])
     {
@@ -804,17 +804,16 @@ abort();
 <span class="codeblock_name">{JSR <a href="index.html#1:7">7</a>}</span>
 <pre class="prettyprint lang-c">
 {
-    uint16_t r1 = (instr &gt;&gt; 6) &amp; 0x7;
-    uint16_t long_pc_offset = sign_extend(instr &amp; 0x7ff, 11);
     uint16_t long_flag = (instr &gt;&gt; 11) &amp; 1;
-
     reg[R_R7] = reg[R_PC];
     if (long_flag)
     {
+        uint16_t long_pc_offset = sign_extend(instr &amp; 0x7FF, 11);
         reg[R_PC] += long_pc_offset;  /* JSR */
     }
     else
     {
+        uint16_t r1 = (instr &gt;&gt; 6) &amp; 0x7;
         reg[R_PC] = reg[r1]; /* JSRR */
     }
     break;
@@ -831,7 +830,7 @@ abort();
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
-    uint16_t pc_offset = sign_extend(instr &amp; 0x1ff, 9);
+    uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
     reg[r0] = mem_read(reg[R_PC] + pc_offset);
     update_flags(r0);
 }
@@ -864,7 +863,7 @@ abort();
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
-    uint16_t pc_offset = sign_extend(instr &amp; 0x1ff, 9);
+    uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
     reg[r0] = reg[R_PC] + pc_offset;
     update_flags(r0);
 }
@@ -880,7 +879,7 @@ abort();
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
-    uint16_t pc_offset = sign_extend(instr &amp; 0x1ff, 9);
+    uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
     mem_write(reg[R_PC] + pc_offset, reg[r0]);
 }
 </pre>
@@ -895,7 +894,7 @@ abort();
 <pre class="prettyprint lang-c">
 {
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
-    uint16_t pc_offset = sign_extend(instr &amp; 0x1ff, 9);
+    uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
     mem_write(mem_read(reg[R_PC] + pc_offset), reg[r0]);
 }
 </pre>
@@ -1546,18 +1545,25 @@ void ins(uint16_t instr)
     if (0x12F3 &amp; opbit) { r1 = (instr &gt;&gt; 6) &amp; 0x7; }
     if (0x0022 &amp; opbit)
     {
-        r2 = instr &amp; 0x7;
         imm_flag = (instr &gt;&gt; 5) &amp; 0x1;
-        imm5 = sign_extend((instr) &amp; 0x1F, 5);
+
+        if (imm_flag)
+        {
+            imm5 = sign_extend(instr &amp; 0x1F, 5);
+        }
+        else
+        {
+            r2 = instr &amp; 0x7;
+        }
     }
     if (0x00C0 &amp; opbit)
     {   // Base + offset
-        base_plus_off = reg[r1] + sign_extend(instr &amp; 0x3f, 6);
+        base_plus_off = reg[r1] + sign_extend(instr &amp; 0x3F, 6);
     }
     if (0x4C0D &amp; opbit)
     {
         // Indirect address
-        pc_plus_off = reg[R_PC] + sign_extend(instr &amp; 0x1ff, 9);
+        pc_plus_off = reg[R_PC] + sign_extend(instr &amp; 0x1FF, 9);
     }
     if (0x0001 &amp; opbit)
     {
@@ -1592,14 +1598,15 @@ void ins(uint16_t instr)
     if (0x0010 &amp; opbit)  // JSR
     {
         uint16_t long_flag = (instr &gt;&gt; 11) &amp; 1;
-        pc_plus_off = reg[R_PC] +  sign_extend(instr &amp; 0x7ff, 11);
         reg[R_R7] = reg[R_PC];
         if (long_flag)
         {
+            pc_plus_off = reg[R_PC] + sign_extend(instr &amp; 0x7FF, 11);
             reg[R_PC] = pc_plus_off;
         }
         else
         {
+            r1 = (instr &gt;&gt; 6) &amp; 0x7;
             reg[R_PC] = reg[r1];
         }
     }
