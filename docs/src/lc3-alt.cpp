@@ -220,23 +220,30 @@ void ins(uint16_t instr)
     uint16_t r0, r1, r2, imm5, imm_flag;
     uint16_t pc_plus_off, base_plus_off;
 
-    uint16_t opbit = (1 << op);
+    constexpr uint16_t opbit = (1 << op);
     if (0x4EEE & opbit) { r0 = (instr >> 9) & 0x7; }
-    if (0x12E3 & opbit) { r1 = (instr >> 6) & 0x7; }
+    if (0x12F3 & opbit) { r1 = (instr >> 6) & 0x7; }
     if (0x0022 & opbit)
     {
-        r2 = instr & 0x7;
         imm_flag = (instr >> 5) & 0x1;
-        imm5 = sign_extend((instr) & 0x1F, 5);
+
+        if (imm_flag)
+        {
+            imm5 = sign_extend(instr & 0x1F, 5);
+        }
+        else
+        {
+            r2 = instr & 0x7;
+        }
     }
     if (0x00C0 & opbit)
     {   // Base + offset
-        base_plus_off = reg[r1] + sign_extend(instr & 0x3f, 6);
+        base_plus_off = reg[r1] + sign_extend(instr & 0x3F, 6);
     }
     if (0x4C0D & opbit)
     {
         // Indirect address
-        pc_plus_off = reg[R_PC] + sign_extend(instr & 0x1ff, 9);
+        pc_plus_off = reg[R_PC] + sign_extend(instr & 0x1FF, 9);
     }
     if (0x0001 & opbit)
     {
@@ -271,10 +278,10 @@ void ins(uint16_t instr)
     if (0x0010 & opbit)  // JSR
     {
         uint16_t long_flag = (instr >> 11) & 1;
-        pc_plus_off = reg[R_PC] +  sign_extend(instr & 0x7ff, 11);
         reg[R_R7] = reg[R_PC];
         if (long_flag)
         {
+            pc_plus_off = reg[R_PC] + sign_extend(instr & 0x7FF, 11);
             reg[R_PC] = pc_plus_off;
         }
         else

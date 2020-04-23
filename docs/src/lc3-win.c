@@ -304,7 +304,7 @@ int main(int argc, const char* argv[])
             case OP_BR:
                 /* BR */
                 {
-                    uint16_t pc_offset = sign_extend((instr) & 0x1ff, 9);
+                    uint16_t pc_offset = sign_extend(instr & 0x1FF, 9);
                     uint16_t cond_flag = (instr >> 9) & 0x7;
                     if (cond_flag & reg[R_COND])
                     {
@@ -325,17 +325,16 @@ int main(int argc, const char* argv[])
             case OP_JSR:
                 /* JSR */
                 {
-                    uint16_t r1 = (instr >> 6) & 0x7;
-                    uint16_t long_pc_offset = sign_extend(instr & 0x7ff, 11);
                     uint16_t long_flag = (instr >> 11) & 1;
-                
                     reg[R_R7] = reg[R_PC];
                     if (long_flag)
                     {
+                        uint16_t long_pc_offset = sign_extend(instr & 0x7FF, 11);
                         reg[R_PC] += long_pc_offset;  /* JSR */
                     }
                     else
                     {
+                        uint16_t r1 = (instr >> 6) & 0x7;
                         reg[R_PC] = reg[r1]; /* JSRR */
                     }
                     break;
@@ -346,7 +345,7 @@ int main(int argc, const char* argv[])
                 /* LD */
                 {
                     uint16_t r0 = (instr >> 9) & 0x7;
-                    uint16_t pc_offset = sign_extend(instr & 0x1ff, 9);
+                    uint16_t pc_offset = sign_extend(instr & 0x1FF, 9);
                     reg[r0] = mem_read(reg[R_PC] + pc_offset);
                     update_flags(r0);
                 }
@@ -358,7 +357,7 @@ int main(int argc, const char* argv[])
                     /* destination register (DR) */
                     uint16_t r0 = (instr >> 9) & 0x7;
                     /* PCoffset 9*/
-                    uint16_t pc_offset = sign_extend(instr & 0x1ff, 9);
+                    uint16_t pc_offset = sign_extend(instr & 0x1FF, 9);
                     /* add pc_offset to the current PC, look at that memory location to get the final address */
                     reg[r0] = mem_read(mem_read(reg[R_PC] + pc_offset));
                     update_flags(r0);
@@ -380,7 +379,7 @@ int main(int argc, const char* argv[])
                 /* LEA */
                 {
                     uint16_t r0 = (instr >> 9) & 0x7;
-                    uint16_t pc_offset = sign_extend(instr & 0x1ff, 9);
+                    uint16_t pc_offset = sign_extend(instr & 0x1FF, 9);
                     reg[r0] = reg[R_PC] + pc_offset;
                     update_flags(r0);
                 }
@@ -390,7 +389,7 @@ int main(int argc, const char* argv[])
                 /* ST */
                 {
                     uint16_t r0 = (instr >> 9) & 0x7;
-                    uint16_t pc_offset = sign_extend(instr & 0x1ff, 9);
+                    uint16_t pc_offset = sign_extend(instr & 0x1FF, 9);
                     mem_write(reg[R_PC] + pc_offset, reg[r0]);
                 }
 
@@ -399,7 +398,7 @@ int main(int argc, const char* argv[])
                 /* STI */
                 {
                     uint16_t r0 = (instr >> 9) & 0x7;
-                    uint16_t pc_offset = sign_extend(instr & 0x1ff, 9);
+                    uint16_t pc_offset = sign_extend(instr & 0x1FF, 9);
                     mem_write(mem_read(reg[R_PC] + pc_offset), reg[r0]);
                 }
 
