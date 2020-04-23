@@ -278,7 +278,8 @@ void ins(uint16_t instr)
         }
         else
         {
-            r1 = (instr >> 6) & 0x7;
+            // r1 = (instr >> 6) & 0x7;
+            // Read earlier 
             reg[R_PC] = reg[r1];
         }
     }
