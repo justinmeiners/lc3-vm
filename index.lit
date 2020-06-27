@@ -1311,6 +1311,10 @@ Feel free to fork this [repo](https://github.com/justinmeiners/lc3-vm) and contr
 
 - [resttime](https://github.com/resttime/lc3) first Common Lisp implementation.
 
+**Crystal**
+
+- [andraantariksa](https://github.com/andraantariksa/lc3-vm.cr) first Crystal implementation.
+
 **F#**
 
 - [yurisliepins](https://github.com/yurisliepins/lc3-vm) first F# implementation.
