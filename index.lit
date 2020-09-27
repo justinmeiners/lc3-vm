@@ -979,9 +979,9 @@ void disable_input_buffering()
 {
     hStdin = GetStdHandle(STD_INPUT_HANDLE);
     GetConsoleMode(hStdin, &fdwOldMode); /* save old mode */
-    fdwMode = fdwOldMode 
+    fdwMode = fdwOldMode
             ^ ENABLE_ECHO_INPUT  /* no input echo */
-            ^ ENABLE_LINE_INPUT; /* return when one or 
+            ^ ENABLE_LINE_INPUT; /* return when one or
                                     more characters are available */
     SetConsoleMode(hStdin, fdwMode); /* set new mode */
     FlushConsoleInputBuffer(hStdin); /* clear buffer */
@@ -1337,7 +1337,7 @@ Feel free to fork this [repo](https://github.com/justinmeiners/lc3-vm) and contr
 
 - [Bl41r](https://github.com/Bl41r/lc-3-virtual-machine) first Python implementation.
 - [ianklatzco](https://github.com/ianklatzco/lc3) Python implementation. includes a disassembler.
-- [paulnameless](https://github.com/paul-nameless/lc3-vm) alternative Python implementation.
+- [paul-nameless](https://github.com/paul-nameless/lc3-vm) alternative Python implementation.
 - [mhashim6](https://github.com/mhashim6/LC-3) modular Python implementation.
 
 **Racket**
@@ -1349,6 +1349,10 @@ Feel free to fork this [repo](https://github.com/justinmeiners/lc3-vm) and contr
 - [erfur](https://github.com/erfur/lc3-vm-rust) alternative Rust implementation.
 - [KuldeepSinh](https://github.com/KuldeepSinh/lc3_vm) first Rust implementation.
 - [twe4ked](https://github.com/twe4ked/rs-lc3) includes debugging features.
+
+**Scala**
+
+- [hwrdtm](https://github.com/hwrdtm/scala-lc3) first Scala implementation.
 
 **Swift**
 
