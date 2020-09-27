@@ -1412,9 +1412,9 @@ void disable_input_buffering()
 {
     hStdin = GetStdHandle(STD_INPUT_HANDLE);
     GetConsoleMode(hStdin, &amp;fdwOldMode); /* save old mode */
-    fdwMode = fdwOldMode 
+    fdwMode = fdwOldMode
             ^ ENABLE_ECHO_INPUT  /* no input echo */
-            ^ ENABLE_LINE_INPUT; /* return when one or 
+            ^ ENABLE_LINE_INPUT; /* return when one or
                                     more characters are available */
     SetConsoleMode(hStdin, fdwMode); /* set new mode */
     FlushConsoleInputBuffer(hStdin); /* clear buffer */
