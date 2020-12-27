@@ -1321,6 +1321,7 @@ Feel free to fork this [repo](https://github.com/justinmeiners/lc3-vm) and contr
 
 **Go**
 
+- [hadialqattan](https://github.com/hadialqattan/lc3-vm-golang) alternative Go implementation. Includes Docker-based utilities to aid in assembling and debugging programs.
 - [robmorgan](https://github.com/robmorgan/go-lc3-vm) alternative Go implementation.
 - [ziggy42](https://github.com/ziggy42/gLC3) first Go implementation.
 
@@ -1332,6 +1333,10 @@ Feel free to fork this [repo](https://github.com/justinmeiners/lc3-vm) and contr
 **JavaScript**
 
 - [rpendleton](https://github.com/rpendleton/lc3sim-js) first JavaScript implementation. Works in the browser.
+
+**Kotlin**
+
+- [CianciuStyles](https://github.com/CianciuStyles/lc3-vm-kotlin) first Kotlin implementation.
 
 **Python**
 
