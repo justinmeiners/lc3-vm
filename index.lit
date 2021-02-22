@@ -1354,6 +1354,7 @@ Feel free to fork this [repo](https://github.com/justinmeiners/lc3-vm) and contr
 - [erfur](https://github.com/erfur/lc3-vm-rust) alternative Rust implementation.
 - [KuldeepSinh](https://github.com/KuldeepSinh/lc3_vm) first Rust implementation.
 - [twe4ked](https://github.com/twe4ked/rs-lc3) includes debugging features.
+- [atul-g](https://github.com/atul-g/rust_vm) Documented Rust implementation with a diagram for readers.
 
 **Scala**
 
