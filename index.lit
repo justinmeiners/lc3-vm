@@ -1319,6 +1319,9 @@ Feel free to fork this [repo](https://github.com/justinmeiners/lc3-vm) and contr
 - [Swift](https://github.com/topics/lc3?l=swift)
 - [TypeScript](https://github.com/topics/lc3?l=typescript)
 
-Want to contribute? We would like an integration test written in assembly
-which people can use. This is a good [first issue](https://github.com/justinmeiners/lc3-vm/issues/13) to learn from.
+To add your own project, just make sure it has the GitHub topic `lc3` attached.
+If your language is missing, feel free to give us an issue or pull request.
+
+Want to contribute? We need help with an integration test.
+This is a good [first issue](https://github.com/justinmeiners/lc3-vm/issues/13) to learn from.
 
