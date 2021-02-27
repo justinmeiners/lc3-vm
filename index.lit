@@ -1286,83 +1286,39 @@ int main(int argc, const char* argv[])
 }
 ---
 
-@s Related Projects
+One further modification you might consider is to use implement TRAP codes in assembly. as opposed
+to calling into the host language.
+This was mentioned previously.
+The [source](/supplies/os.asm) for this OS has already been written by the creators of LC3,
+you just need to load it and handle it properly.
+See Ryan's [implementation](https://github.com/rpendleton/lc3sim-c) to see how it works.
 
-Many programmers have reached out to share their own VMs created with this tutorial.
-These projects may be helpful for learners who are familiar with programming languages other than C.
+@s Contributions
+
+Special thanks to [inkydragon](https://github.com/inkydragon) for contributing Windows platform support.
+
+Many programmers have learned from this article and reached out to
+share their own VMs in various languages.
+A selection of these used to be listed, but since there were so many
+we decided to utilize the GitHub tags to organize them.
 Feel free to fork this [repo](https://github.com/justinmeiners/lc3-vm) and contribute your own.
 
-**Windows**
+- [C](https://github.com/topics/lc3?l=c)
+- [C++](https://github.com/topics/lc3?l=c%2B%2B)
+- [Common Lisp](https://github.com/topics/lc3?l=common-lisp)
+- [Crystal](https://github.com/topics/lc3?l=crystal)
+- [F#](https://github.com/topics/lc3?l=f%23)
+- [Go](https://github.com/topics/lc3?l=go)
+- [Haskell](https://github.com/topics/lc3?l=haskell)
+- [JavaScript](https://github.com/topics/lc3?l=javascript)
+- [Kotlin](https://github.com/topics/lc3?l=kotlin)
+- [Python](https://github.com/topics/lc3?l=python)
+- [Racket](https://github.com/topics/lc3?l=racket)
+- [Rust](https://github.com/topics/lc3?l=rust)
+- [Scala](https://github.com/topics/lc3?l=scala)
+- [Swift](https://github.com/topics/lc3?l=swift)
+- [TypeScript](https://github.com/topics/lc3?l=typescript)
 
-- Special thanks to [inkydragon](https://github.com/inkydragon) for contributing Windows platform support.
+Want to contribute? We would like an integration test written in assembly
+which people can use. This is a good [first issue](https://github.com/justinmeiners/lc3-vm/issues/13) to learn from.
 
-**C**
-
-- [andyjung-dev](https://github.com/andyjung-dev/LC3-VM-Extended) extends the tutorial implementation with a few features.
-- [rpendleton](https://github.com/rpendleton/lc3sim-c) uses assembly implementation of TRAP codes.
-- [viking](https://github.com/viking/lc3-vm) well commented and adds tests.
-
-**C++**
-
-- [daniMaarouf](https://github.com/daniMaarouf/lc3-vm) Python based debugger.
-- [jsawruk](https://github.com/jsawruk/lc3-vm) alternative C and C++ implementation.
-
-**Common Lisp**
-
-- [resttime](https://github.com/resttime/lc3) first Common Lisp implementation.
-
-**Crystal**
-
-- [andraantariksa](https://github.com/andraantariksa/lc3-vm.cr) first Crystal implementation.
-
-**F#**
-
-- [yurisliepins](https://github.com/yurisliepins/lc3-vm) first F# implementation.
-
-**Go**
-
-- [hadialqattan](https://github.com/hadialqattan/lc3-vm-golang) alternative Go implementation. Includes Docker-based utilities to aid in assembling and debugging programs.
-- [robmorgan](https://github.com/robmorgan/go-lc3-vm) alternative Go implementation.
-- [ziggy42](https://github.com/ziggy42/gLC3) first Go implementation.
-
-**Haskell**
-
-- [dmjio](https://github.com/dmjio/LC3) first Haskell implementation.
-- [cleverca22](https://github.com/cleverca22/LC3) alternative Haskell implementation.
-
-**JavaScript**
-
-- [rpendleton](https://github.com/rpendleton/lc3sim-js) first JavaScript implementation. Works in the browser.
-
-**Kotlin**
-
-- [CianciuStyles](https://github.com/CianciuStyles/lc3-vm-kotlin) first Kotlin implementation.
-
-**Python**
-
-- [Bl41r](https://github.com/Bl41r/lc-3-virtual-machine) first Python implementation.
-- [ianklatzco](https://github.com/ianklatzco/lc3) Python implementation. includes a disassembler.
-- [paul-nameless](https://github.com/paul-nameless/lc3-vm) alternative Python implementation.
-- [mhashim6](https://github.com/mhashim6/LC-3) modular Python implementation.
-
-**Racket**
-
-- [whichxjy](https://github.com/whichxjy/LC3-VM-Racket) first Racket implementation.
-
-**Rust**
-
-- [erfur](https://github.com/erfur/lc3-vm-rust) alternative Rust implementation.
-- [KuldeepSinh](https://github.com/KuldeepSinh/lc3_vm) first Rust implementation.
-- [twe4ked](https://github.com/twe4ked/rs-lc3) includes debugging features.
-
-**Scala**
-
-- [hwrdtm](https://github.com/hwrdtm/scala-lc3) first Scala implementation.
-
-**Swift**
-
-- [hashemi](https://github.com/hashemi/lc3-swift) first Swift implementation.
-
-**TypeScript**
-
-- [mrhampson](https://github.com/mrhampson/lc3-typescript-vm) first TypeScript implementation. Node.js only.
