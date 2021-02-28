@@ -1295,11 +1295,11 @@ int main(int argc, const char* argv[])
 
 @s Contributions
 
-[atul-g](https://github.com/atul-g/rust_vm) has contributed a handy [reference card](supplies/lc3-ref-card.png),
-which summarizes how the whole system works.
+[atul-g](https://github.com/atul-g/rust_vm) has contributed a handy [reference card](supplies/lc3-ref-card.png)
+that summarizes how the whole system works.
 
 Many programmers have completed this tutorial and shared their implementations in various languages.
-A selection of these used to be listed, but since there were so many
+A selection of these used to be listed, but since there were so many,
 we decided to utilize GitHub tags to organize them.
 
 - [C](https://github.com/topics/lc3?l=c)
