@@ -646,7 +646,7 @@ You may be wondering why the trap codes are not included in the instructions.
 This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to OS system calls).
 In the official LC-3 simulator, trap routines are [written in assembly](supplies/os.asm).
 When a trap code is called, the `PC` is moved to that code's address.
-The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location following the initial call.
+The CPU executes the procedure's instructions, and when it is complete, the PC is reset to the location following the initial call.
 
 > **Note:** This is why programs start at address `0x3000` instead of `0x0`. The lower addresses are left empty to leave space for the trap routine code.
 
@@ -1298,9 +1298,9 @@ int main(int argc, const char* argv[])
 [atul-g](https://github.com/atul-g/rust_vm) has contributed a handy [reference card](supplies/lc3-ref-card.png),
 which summarizes how the whole system works.
 
-Many programmers have completed this tutorial and shared their version in various languages.
+Many programmers have completed this tutorial and shared their implementations in various languages.
 A selection of these used to be listed, but since there were so many
-we decided to utilize the GitHub tags to organize them.
+we decided to utilize GitHub tags to organize them.
 
 - [C](https://github.com/topics/lc3?l=c)
 - [C++](https://github.com/topics/lc3?l=c%2B%2B)
@@ -1319,7 +1319,7 @@ we decided to utilize the GitHub tags to organize them.
 - [TypeScript](https://github.com/topics/lc3?l=typescript)
 
 To list your own project, just make sure it is tagged with the GitHub topic `lc3`.
-If your language is missing, feel free to give us an issue or pull request.
+If your language is missing, feel free to submit a pull request.
 
 Special thanks to [inkydragon](https://github.com/inkydragon) for contributing Windows platform support. 
 

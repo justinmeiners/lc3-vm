@@ -948,7 +948,7 @@ enum
 This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to OS system calls).
 In the official LC-3 simulator, trap routines are <a href="supplies/os.asm">written in assembly</a>.
 When a trap code is called, the <code>PC</code> is moved to that code's address.
-The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location following the initial call.
+The CPU executes the procedure's instructions, and when it is complete, the PC is reset to the location following the initial call.
 </p>
 <blockquote><p> <strong>Note:</strong> This is why programs start at address <code>0x3000</code> instead of <code>0x0</code>. The lower addresses are left empty to leave space for the trap routine code.
 </p>
@@ -1665,9 +1665,9 @@ The full source is here: <a href="src/lc3-alt.cpp">unix</a>, <a href="src/lc3-al
 <p><a href="https://github.com/atul-g/rust_vm">atul-g</a> has contributed a handy <a href="supplies/lc3-ref-card.png">reference card</a>,
 which summarizes how the whole system works.
 </p>
-<p>Many programmers have completed this tutorial and shared their version in various languages.
+<p>Many programmers have completed this tutorial and shared their implementations in various languages.
 A selection of these used to be listed, but since there were so many
-we decided to utilize the GitHub tags to organize them.
+we decided to utilize GitHub tags to organize them.
 </p>
 <ul>
 <li><a href="https://github.com/topics/lc3?l=c">C</a>
@@ -1702,7 +1702,7 @@ we decided to utilize the GitHub tags to organize them.
 </li>
 </ul>
 <p>To list your own project, just make sure it is tagged with the GitHub topic <code>lc3</code>.
-If your language is missing, feel free to give us an issue or pull request.
+If your language is missing, feel free to submit a pull request.
 </p>
 <p>Special thanks to <a href="https://github.com/inkydragon">inkydragon</a> for contributing Windows platform support. 
 </p>
