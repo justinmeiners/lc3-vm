@@ -944,12 +944,19 @@ enum
 
 <p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
-<p>You may be wondering why the trap codes are not included in the instructions. This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system functions in C). In the official LC-3 simulator, trap routines are <a href="supplies/os.asm">written in assembly</a>. When a trap code is called, the <code>PC</code> is moved to that code's address. The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location the trap was called from.
+<p>You may be wondering why the trap codes are not included in the instructions.
+This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system calls in unix).
+In the official LC-3 simulator, trap routines are <a href="supplies/os.asm">written in assembly</a>.
+When a trap code is called, the <code>PC</code> is moved to that code's address.
+The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location the trap was called from.
 </p>
 <blockquote><p> <strong>Note:</strong> This is why programs start at address <code>0x3000</code> instead of <code>0x0</code>. The lower addresses are left empty to leave space for the trap routine code.
 </p>
 </blockquote>
-<p>There is no specification for <em>how</em> trap routines must be implemented, only what they are supposed to do. In our VM, we are going to do things slightly differently by writing them in C. When a trap code is invoked, a C function will be called. When it is completed, execution will return to the instructions.
+<p>There is no specification for <em>how</em> trap routines must be implemented, only what they are supposed to do.
+In our VM, we are going to do things slightly differently by writing them in C.
+When a trap code is invoked, a C function will be called. When it is completed, execution will return to the instructions.
+(If you are curious to see how to use the actual OS image, see <a href="https://github.com/rpendleton/lc3sim-c">Ryan's implementation</a>. ) 
 </p>
 <p>Even though the trap routines can be written in assembly and this is what a physical LC-3 computer would do, it isn't the best fit for a VM. Instead of writing our own primitive I/O routines, we can take advantage of the ones available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability.
 </p>
@@ -1653,23 +1660,14 @@ The full source is here: <a href="src/lc3-alt.cpp">unix</a>, <a href="src/lc3-al
 </p>
 
 
-<p>One further modification you might consider is to use implement TRAP codes in assembly. as opposed
-to calling into the host language.
-This was mentioned previously.
-The <a href="/supplies/os.asm">source</a> for this OS has already been written by the creators of LC3,
-you just need to load it and handle it properly.
-See Ryan's <a href="https://github.com/rpendleton/lc3sim-c">implementation</a> to see how it works.
-</p>
-
 </div>
 <a name="1:16"><div class="section"><h4>16. Contributions</h4></a>
-<p>Special thanks to <a href="https://github.com/inkydragon">inkydragon</a> for contributing Windows platform support.
+<p><a href="https://github.com/atul-g/rust_vm">atul-g</a> has contributed a handy <a href="supplies/lc3-ref-card.png">reference card</a>,
+which summarizes how the whole system works.
 </p>
-<p>Many programmers have learned from this article and reached out to
-share their own VMs in various languages.
+<p>Many programmers have completed this tutorial and shared their version in various languages.
 A selection of these used to be listed, but since there were so many
 we decided to utilize the GitHub tags to organize them.
-Feel free to fork this <a href="https://github.com/justinmeiners/lc3-vm">repo</a> and contribute your own.
 </p>
 <ul>
 <li><a href="https://github.com/topics/lc3?l=c">C</a>
@@ -1703,8 +1701,10 @@ Feel free to fork this <a href="https://github.com/justinmeiners/lc3-vm">repo</a
 <li><a href="https://github.com/topics/lc3?l=typescript">TypeScript</a>
 </li>
 </ul>
-<p>To add your own project, just make sure it has the GitHub topic <code>lc3</code> attached.
+<p>To list your own project, just make sure it is tagged with the GitHub topic <code>lc3</code>.
 If your language is missing, feel free to give us an issue or pull request.
+</p>
+<p>Special thanks to <a href="https://github.com/inkydragon">inkydragon</a> for contributing Windows platform support. 
 </p>
 <p>Want to contribute? We need help with an integration test.
 This is a good <a href="https://github.com/justinmeiners/lc3-vm/issues/13">first issue</a> to learn from.

@@ -642,11 +642,18 @@ enum
 };
 ---
 
-You may be wondering why the trap codes are not included in the instructions. This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system functions in C). In the official LC-3 simulator, trap routines are [written in assembly](supplies/os.asm). When a trap code is called, the `PC` is moved to that code's address. The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location the trap was called from.
+You may be wondering why the trap codes are not included in the instructions.
+This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system calls in unix).
+In the official LC-3 simulator, trap routines are [written in assembly](supplies/os.asm).
+When a trap code is called, the `PC` is moved to that code's address.
+The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location the trap was called from.
 
 > **Note:** This is why programs start at address `0x3000` instead of `0x0`. The lower addresses are left empty to leave space for the trap routine code.
 
-There is no specification for *how* trap routines must be implemented, only what they are supposed to do. In our VM, we are going to do things slightly differently by writing them in C. When a trap code is invoked, a C function will be called. When it is completed, execution will return to the instructions.
+There is no specification for *how* trap routines must be implemented, only what they are supposed to do.
+In our VM, we are going to do things slightly differently by writing them in C.
+When a trap code is invoked, a C function will be called. When it is completed, execution will return to the instructions.
+(If you are curious to see how to use the actual OS image, see [Ryan's implementation](https://github.com/rpendleton/lc3sim-c). ) 
 
 Even though the trap routines can be written in assembly and this is what a physical LC-3 computer would do, it isn't the best fit for a VM. Instead of writing our own primitive I/O routines, we can take advantage of the ones available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability.
 
@@ -1286,22 +1293,14 @@ int main(int argc, const char* argv[])
 }
 ---
 
-One further modification you might consider is to use implement TRAP codes in assembly. as opposed
-to calling into the host language.
-This was mentioned previously.
-The [source](/supplies/os.asm) for this OS has already been written by the creators of LC3,
-you just need to load it and handle it properly.
-See Ryan's [implementation](https://github.com/rpendleton/lc3sim-c) to see how it works.
-
 @s Contributions
 
-Special thanks to [inkydragon](https://github.com/inkydragon) for contributing Windows platform support.
+[atul-g](https://github.com/atul-g/rust_vm) has contributed a handy [reference card](supplies/lc3-ref-card.png),
+which summarizes how the whole system works.
 
-Many programmers have learned from this article and reached out to
-share their own VMs in various languages.
+Many programmers have completed this tutorial and shared their version in various languages.
 A selection of these used to be listed, but since there were so many
 we decided to utilize the GitHub tags to organize them.
-Feel free to fork this [repo](https://github.com/justinmeiners/lc3-vm) and contribute your own.
 
 - [C](https://github.com/topics/lc3?l=c)
 - [C++](https://github.com/topics/lc3?l=c%2B%2B)
@@ -1319,8 +1318,10 @@ Feel free to fork this [repo](https://github.com/justinmeiners/lc3-vm) and contr
 - [Swift](https://github.com/topics/lc3?l=swift)
 - [TypeScript](https://github.com/topics/lc3?l=typescript)
 
-To add your own project, just make sure it has the GitHub topic `lc3` attached.
+To list your own project, just make sure it is tagged with the GitHub topic `lc3`.
 If your language is missing, feel free to give us an issue or pull request.
+
+Special thanks to [inkydragon](https://github.com/inkydragon) for contributing Windows platform support. 
 
 Want to contribute? We need help with an integration test.
 This is a good [first issue](https://github.com/justinmeiners/lc3-vm/issues/13) to learn from.
