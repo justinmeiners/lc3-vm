@@ -642,11 +642,18 @@ enum
 };
 ---
 
-You may be wondering why the trap codes are not included in the instructions. This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system functions in C). In the official LC-3 simulator, trap routines are [written in assembly](supplies/os.asm). When a trap code is called, the `PC` is moved to that code's address. The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location the trap was called from.
+You may be wondering why the trap codes are not included in the instructions.
+This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to OS system calls).
+In the official LC-3 simulator, trap routines are [written in assembly](supplies/os.asm).
+When a trap code is called, the `PC` is moved to that code's address.
+The CPU executes the procedure's instructions, and when it is complete, the PC is reset to the location following the initial call.
 
 > **Note:** This is why programs start at address `0x3000` instead of `0x0`. The lower addresses are left empty to leave space for the trap routine code.
 
-There is no specification for *how* trap routines must be implemented, only what they are supposed to do. In our VM, we are going to do things slightly differently by writing them in C. When a trap code is invoked, a C function will be called. When it is completed, execution will return to the instructions.
+There is no specification for *how* trap routines must be implemented, only what they are supposed to do.
+In our VM, we are going to do things slightly differently by writing them in C.
+When a trap code is invoked, a C function will be called. When it is completed, execution will return to the instructions.
+(If you are curious about trap codes in assembly, see [Ryan's implementation](https://github.com/rpendleton/lc3sim-c).) 
 
 Even though the trap routines can be written in assembly and this is what a physical LC-3 computer would do, it isn't the best fit for a VM. Instead of writing our own primitive I/O routines, we can take advantage of the ones available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability.
 
@@ -1286,83 +1293,36 @@ int main(int argc, const char* argv[])
 }
 ---
 
-@s Related Projects
+@s Contributions
 
-Many programmers have reached out to share their own VMs created with this tutorial.
-These projects may be helpful for learners who are familiar with programming languages other than C.
-Feel free to fork this [repo](https://github.com/justinmeiners/lc3-vm) and contribute your own.
+[atul-g](https://github.com/atul-g/rust_vm) has contributed a handy [reference card](supplies/lc3-ref-card.png)
+that summarizes how the whole system works.
 
-**Windows**
+Many programmers have completed this tutorial and shared their implementations in various languages.
+A selection of these used to be listed, but since there were so many,
+we decided to utilize GitHub tags to organize them.
 
-- Special thanks to [inkydragon](https://github.com/inkydragon) for contributing Windows platform support.
+- [C](https://github.com/topics/lc3?l=c)
+- [C++](https://github.com/topics/lc3?l=c%2B%2B)
+- [Common Lisp](https://github.com/topics/lc3?l=common-lisp)
+- [Crystal](https://github.com/topics/lc3?l=crystal)
+- [F#](https://github.com/topics/lc3?l=f%23)
+- [Go](https://github.com/topics/lc3?l=go)
+- [Haskell](https://github.com/topics/lc3?l=haskell)
+- [JavaScript](https://github.com/topics/lc3?l=javascript)
+- [Kotlin](https://github.com/topics/lc3?l=kotlin)
+- [Python](https://github.com/topics/lc3?l=python)
+- [Racket](https://github.com/topics/lc3?l=racket)
+- [Rust](https://github.com/topics/lc3?l=rust)
+- [Scala](https://github.com/topics/lc3?l=scala)
+- [Swift](https://github.com/topics/lc3?l=swift)
+- [TypeScript](https://github.com/topics/lc3?l=typescript)
 
-**C**
+To list your own project, just make sure it is tagged with the GitHub topic `lc3`.
+If your language is missing, feel free to submit a pull request.
 
-- [andyjung-dev](https://github.com/andyjung-dev/LC3-VM-Extended) extends the tutorial implementation with a few features.
-- [rpendleton](https://github.com/rpendleton/lc3sim-c) uses assembly implementation of TRAP codes.
-- [viking](https://github.com/viking/lc3-vm) well commented and adds tests.
+Special thanks to [inkydragon](https://github.com/inkydragon) for contributing Windows platform support. 
 
-**C++**
+Want to contribute? We need help with an integration test.
+This is a good [first issue](https://github.com/justinmeiners/lc3-vm/issues/13) to learn from.
 
-- [daniMaarouf](https://github.com/daniMaarouf/lc3-vm) Python based debugger.
-- [jsawruk](https://github.com/jsawruk/lc3-vm) alternative C and C++ implementation.
-
-**Common Lisp**
-
-- [resttime](https://github.com/resttime/lc3) first Common Lisp implementation.
-
-**Crystal**
-
-- [andraantariksa](https://github.com/andraantariksa/lc3-vm.cr) first Crystal implementation.
-
-**F#**
-
-- [yurisliepins](https://github.com/yurisliepins/lc3-vm) first F# implementation.
-
-**Go**
-
-- [hadialqattan](https://github.com/hadialqattan/lc3-vm-golang) alternative Go implementation. Includes Docker-based utilities to aid in assembling and debugging programs.
-- [robmorgan](https://github.com/robmorgan/go-lc3-vm) alternative Go implementation.
-- [ziggy42](https://github.com/ziggy42/gLC3) first Go implementation.
-
-**Haskell**
-
-- [dmjio](https://github.com/dmjio/LC3) first Haskell implementation.
-- [cleverca22](https://github.com/cleverca22/LC3) alternative Haskell implementation.
-
-**JavaScript**
-
-- [rpendleton](https://github.com/rpendleton/lc3sim-js) first JavaScript implementation. Works in the browser.
-
-**Kotlin**
-
-- [CianciuStyles](https://github.com/CianciuStyles/lc3-vm-kotlin) first Kotlin implementation.
-
-**Python**
-
-- [Bl41r](https://github.com/Bl41r/lc-3-virtual-machine) first Python implementation.
-- [ianklatzco](https://github.com/ianklatzco/lc3) Python implementation. includes a disassembler.
-- [paul-nameless](https://github.com/paul-nameless/lc3-vm) alternative Python implementation.
-- [mhashim6](https://github.com/mhashim6/LC-3) modular Python implementation.
-
-**Racket**
-
-- [whichxjy](https://github.com/whichxjy/LC3-VM-Racket) first Racket implementation.
-
-**Rust**
-
-- [erfur](https://github.com/erfur/lc3-vm-rust) alternative Rust implementation.
-- [KuldeepSinh](https://github.com/KuldeepSinh/lc3_vm) first Rust implementation.
-- [twe4ked](https://github.com/twe4ked/rs-lc3) includes debugging features.
-
-**Scala**
-
-- [hwrdtm](https://github.com/hwrdtm/scala-lc3) first Scala implementation.
-
-**Swift**
-
-- [hashemi](https://github.com/hashemi/lc3-swift) first Swift implementation.
-
-**TypeScript**
-
-- [mrhampson](https://github.com/mrhampson/lc3-typescript-vm) first TypeScript implementation. Node.js only.

@@ -944,12 +944,19 @@ enum
 
 <p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
 </div>
-<p>You may be wondering why the trap codes are not included in the instructions. This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to system functions in C). In the official LC-3 simulator, trap routines are <a href="supplies/os.asm">written in assembly</a>. When a trap code is called, the <code>PC</code> is moved to that code's address. The CPU executes instructions of the procedure, and when it is complete, the PC is reset to the location the trap was called from.
+<p>You may be wondering why the trap codes are not included in the instructions.
+This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to OS system calls).
+In the official LC-3 simulator, trap routines are <a href="supplies/os.asm">written in assembly</a>.
+When a trap code is called, the <code>PC</code> is moved to that code's address.
+The CPU executes the procedure's instructions, and when it is complete, the PC is reset to the location following the initial call.
 </p>
 <blockquote><p> <strong>Note:</strong> This is why programs start at address <code>0x3000</code> instead of <code>0x0</code>. The lower addresses are left empty to leave space for the trap routine code.
 </p>
 </blockquote>
-<p>There is no specification for <em>how</em> trap routines must be implemented, only what they are supposed to do. In our VM, we are going to do things slightly differently by writing them in C. When a trap code is invoked, a C function will be called. When it is completed, execution will return to the instructions.
+<p>There is no specification for <em>how</em> trap routines must be implemented, only what they are supposed to do.
+In our VM, we are going to do things slightly differently by writing them in C.
+When a trap code is invoked, a C function will be called. When it is completed, execution will return to the instructions.
+(If you are curious about trap codes in assembly, see <a href="https://github.com/rpendleton/lc3sim-c">Ryan's implementation</a>.) 
 </p>
 <p>Even though the trap routines can be written in assembly and this is what a physical LC-3 computer would do, it isn't the best fit for a VM. Instead of writing our own primitive I/O routines, we can take advantage of the ones available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability.
 </p>
@@ -1654,139 +1661,54 @@ The full source is here: <a href="src/lc3-alt.cpp">unix</a>, <a href="src/lc3-al
 
 
 </div>
-<a name="1:16"><div class="section"><h4>16. Related Projects</h4></a>
-<p>Many programmers have reached out to share their own VMs created with this tutorial.
-These projects may be helpful for learners who are familiar with programming languages other than C.
-Feel free to fork this <a href="https://github.com/justinmeiners/lc3-vm">repo</a> and contribute your own.
+<a name="1:16"><div class="section"><h4>16. Contributions</h4></a>
+<p><a href="https://github.com/atul-g/rust_vm">atul-g</a> has contributed a handy <a href="supplies/lc3-ref-card.png">reference card</a>
+that summarizes how the whole system works.
 </p>
-<p><strong>Windows</strong>
-</p>
-<ul>
-<li><p>Special thanks to <a href="https://github.com/inkydragon">inkydragon</a> for contributing Windows platform support.
-</p>
-</li>
-</ul>
-<p><strong>C</strong>
+<p>Many programmers have completed this tutorial and shared their implementations in various languages.
+A selection of these used to be listed, but since there were so many,
+we decided to utilize GitHub tags to organize them.
 </p>
 <ul>
-<li><a href="https://github.com/andyjung-dev/LC3-VM-Extended">andyjung-dev</a> extends the tutorial implementation with a few features.
+<li><a href="https://github.com/topics/lc3?l=c">C</a>
 </li>
-<li><a href="https://github.com/rpendleton/lc3sim-c">rpendleton</a> uses assembly implementation of TRAP codes.
+<li><a href="https://github.com/topics/lc3?l=c%2B%2B">C++</a>
 </li>
-<li><a href="https://github.com/viking/lc3-vm">viking</a> well commented and adds tests.
+<li><a href="https://github.com/topics/lc3?l=common-lisp">Common Lisp</a>
 </li>
-</ul>
-<p><strong>C++</strong>
-</p>
-<ul>
-<li><a href="https://github.com/daniMaarouf/lc3-vm">daniMaarouf</a> Python based debugger.
+<li><a href="https://github.com/topics/lc3?l=crystal">Crystal</a>
 </li>
-<li><a href="https://github.com/jsawruk/lc3-vm">jsawruk</a> alternative C and C++ implementation.
+<li><a href="https://github.com/topics/lc3?l=f%23">F#</a>
 </li>
-</ul>
-<p><strong>Common Lisp</strong>
-</p>
-<ul>
-<li><p><a href="https://github.com/resttime/lc3">resttime</a> first Common Lisp implementation.
-</p>
+<li><a href="https://github.com/topics/lc3?l=go">Go</a>
 </li>
-</ul>
-<p><strong>Crystal</strong>
-</p>
-<ul>
-<li><p><a href="https://github.com/andraantariksa/lc3-vm.cr">andraantariksa</a> first Crystal implementation.
-</p>
+<li><a href="https://github.com/topics/lc3?l=haskell">Haskell</a>
 </li>
-</ul>
-<p><strong>F#</strong>
-</p>
-<ul>
-<li><p><a href="https://github.com/yurisliepins/lc3-vm">yurisliepins</a> first F# implementation.
-</p>
+<li><a href="https://github.com/topics/lc3?l=javascript">JavaScript</a>
+</li>
+<li><a href="https://github.com/topics/lc3?l=kotlin">Kotlin</a>
+</li>
+<li><a href="https://github.com/topics/lc3?l=python">Python</a>
+</li>
+<li><a href="https://github.com/topics/lc3?l=racket">Racket</a>
+</li>
+<li><a href="https://github.com/topics/lc3?l=rust">Rust</a>
+</li>
+<li><a href="https://github.com/topics/lc3?l=scala">Scala</a>
+</li>
+<li><a href="https://github.com/topics/lc3?l=swift">Swift</a>
+</li>
+<li><a href="https://github.com/topics/lc3?l=typescript">TypeScript</a>
 </li>
 </ul>
-<p><strong>Go</strong>
+<p>To list your own project, just make sure it is tagged with the GitHub topic <code>lc3</code>.
+If your language is missing, feel free to submit a pull request.
 </p>
-<ul>
-<li><a href="https://github.com/hadialqattan/lc3-vm-golang">hadialqattan</a> alternative Go implementation. Includes Docker-based utilities to aid in assembling and debugging programs.
-</li>
-<li><a href="https://github.com/robmorgan/go-lc3-vm">robmorgan</a> alternative Go implementation.
-</li>
-<li><a href="https://github.com/ziggy42/gLC3">ziggy42</a> first Go implementation.
-</li>
-</ul>
-<p><strong>Haskell</strong>
+<p>Special thanks to <a href="https://github.com/inkydragon">inkydragon</a> for contributing Windows platform support. 
 </p>
-<ul>
-<li><a href="https://github.com/dmjio/LC3">dmjio</a> first Haskell implementation.
-</li>
-<li><a href="https://github.com/cleverca22/LC3">cleverca22</a> alternative Haskell implementation.
-</li>
-</ul>
-<p><strong>JavaScript</strong>
+<p>Want to contribute? We need help with an integration test.
+This is a good <a href="https://github.com/justinmeiners/lc3-vm/issues/13">first issue</a> to learn from.
 </p>
-<ul>
-<li><p><a href="https://github.com/rpendleton/lc3sim-js">rpendleton</a> first JavaScript implementation. Works in the browser.
-</p>
-</li>
-</ul>
-<p><strong>Kotlin</strong>
-</p>
-<ul>
-<li><p><a href="https://github.com/CianciuStyles/lc3-vm-kotlin">CianciuStyles</a> first Kotlin implementation.
-</p>
-</li>
-</ul>
-<p><strong>Python</strong>
-</p>
-<ul>
-<li><a href="https://github.com/Bl41r/lc-3-virtual-machine">Bl41r</a> first Python implementation.
-</li>
-<li><a href="https://github.com/ianklatzco/lc3">ianklatzco</a> Python implementation. includes a disassembler.
-</li>
-<li><a href="https://github.com/paul-nameless/lc3-vm">paul-nameless</a> alternative Python implementation.
-</li>
-<li><a href="https://github.com/mhashim6/LC-3">mhashim6</a> modular Python implementation.
-</li>
-</ul>
-<p><strong>Racket</strong>
-</p>
-<ul>
-<li><p><a href="https://github.com/whichxjy/LC3-VM-Racket">whichxjy</a> first Racket implementation.
-</p>
-</li>
-</ul>
-<p><strong>Rust</strong>
-</p>
-<ul>
-<li><a href="https://github.com/erfur/lc3-vm-rust">erfur</a> alternative Rust implementation.
-</li>
-<li><a href="https://github.com/KuldeepSinh/lc3_vm">KuldeepSinh</a> first Rust implementation.
-</li>
-<li><a href="https://github.com/twe4ked/rs-lc3">twe4ked</a> includes debugging features.
-</li>
-</ul>
-<p><strong>Scala</strong>
-</p>
-<ul>
-<li><p><a href="https://github.com/hwrdtm/scala-lc3">hwrdtm</a> first Scala implementation.
-</p>
-</li>
-</ul>
-<p><strong>Swift</strong>
-</p>
-<ul>
-<li><p><a href="https://github.com/hashemi/lc3-swift">hashemi</a> first Swift implementation.
-</p>
-</li>
-</ul>
-<p><strong>TypeScript</strong>
-</p>
-<ul>
-<li><p><a href="https://github.com/mrhampson/lc3-typescript-vm">mrhampson</a> first TypeScript implementation. Node.js only.
-</p>
-</li>
-</ul>
 
 </div>
 </body>
