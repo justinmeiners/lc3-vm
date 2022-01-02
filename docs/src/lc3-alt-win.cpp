@@ -327,6 +327,7 @@ void ins(uint16_t instr)
                      printf("Enter a character: ");
                      char c = getchar();
                      putc(c, stdout);
+                     fflush(stdout);
                      reg[R_R0] = (uint16_t)c;
                      update_flags(R_R0);
                  }
