@@ -235,6 +235,9 @@ int main(int argc, const char* argv[])
     @{Load Arguments}
     @{Setup}
 
+    /* since exactly one condition flag should be set at any given time, set the Z flag */
+    reg[R_COND] = FL_ZRO;
+
     /* set the PC to starting position */
     /* 0x3000 is the default */
     enum { PC_START = 0x3000 };
@@ -653,7 +656,7 @@ The CPU executes the procedure's instructions, and when it is complete, the PC i
 There is no specification for *how* trap routines must be implemented, only what they are supposed to do.
 In our VM, we are going to do things slightly differently by writing them in C.
 When a trap code is invoked, a C function will be called. When it is completed, execution will return to the instructions.
-(If you are curious about trap codes in assembly, see [Ryan's implementation](https://github.com/rpendleton/lc3sim-c).) 
+(If you are curious about trap codes in assembly, see [Ryan's implementation](https://github.com/rpendleton/lc3sim-c).)
 
 Even though the trap routines can be written in assembly and this is what a physical LC-3 computer would do, it isn't the best fit for a VM. Instead of writing our own primitive I/O routines, we can take advantage of the ones available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability.
 
@@ -723,6 +726,7 @@ Input Character
 --- TRAP GETC
 /* read a single ASCII char */
 reg[R_R0] = (uint16_t)getchar();
+update_flags(R_R0);
 ---
 
 Output Character
@@ -737,7 +741,9 @@ Prompt for Input Character
     printf("Enter a character: ");
     char c = getchar();
     putc(c, stdout);
+    fflush(stdout);
     reg[R_R0] = (uint16_t)c;
+    update_flags(R_R0);
 }
 ---
 
@@ -1235,6 +1241,8 @@ int main(int argc, const char* argv[])
     @{Load Arguments}
     @{Setup}
 
+    reg[R_COND] = FL_ZRO;
+
     enum { PC_START = 0x3000 };
     reg[R_PC] = PC_START;
 
@@ -1321,8 +1329,7 @@ we decided to utilize GitHub tags to organize them.
 To list your own project, just make sure it is tagged with the GitHub topic `lc3`.
 If your language is missing, feel free to submit a pull request.
 
-Special thanks to [inkydragon](https://github.com/inkydragon) for contributing Windows platform support. 
+Special thanks to [inkydragon](https://github.com/inkydragon) for contributing Windows platform support.
 
 Want to contribute? We need help with an integration test.
 This is a good [first issue](https://github.com/justinmeiners/lc3-vm/issues/13) to learn from.
-

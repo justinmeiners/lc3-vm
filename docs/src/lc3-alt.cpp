@@ -306,6 +306,7 @@ void ins(uint16_t instr)
                  /* TRAP GETC */
                  /* read a single ASCII char */
                  reg[R_R0] = (uint16_t)getchar();
+                 update_flags(R_R0);
 
                  break;
              case TRAP_OUT:
@@ -334,7 +335,9 @@ void ins(uint16_t instr)
                      printf("Enter a character: ");
                      char c = getchar();
                      putc(c, stdout);
+                     fflush(stdout);
                      reg[R_R0] = (uint16_t)c;
+                     update_flags(R_R0);
                  }
 
                  break;
@@ -403,6 +406,8 @@ int main(int argc, const char* argv[])
     signal(SIGINT, handle_interrupt);
     disable_input_buffering();
 
+
+    reg[R_COND] = FL_ZRO;
 
     enum { PC_START = 0x3000 };
     reg[R_PC] = PC_START;

@@ -230,6 +230,9 @@ int main(int argc, const char* argv[])
     disable_input_buffering();
 
 
+    /* since exactly one condition flag should be set at any given time, set the Z flag */
+    reg[R_COND] = FL_ZRO;
+
     /* set the PC to starting position */
     /* 0x3000 is the default */
     enum { PC_START = 0x3000 };
@@ -421,6 +424,7 @@ int main(int argc, const char* argv[])
                         /* TRAP GETC */
                         /* read a single ASCII char */
                         reg[R_R0] = (uint16_t)getchar();
+                        update_flags(R_R0);
 
                         break;
                     case TRAP_OUT:
@@ -449,7 +453,9 @@ int main(int argc, const char* argv[])
                             printf("Enter a character: ");
                             char c = getchar();
                             putc(c, stdout);
+                            fflush(stdout);
                             reg[R_R0] = (uint16_t)c;
+                            update_flags(R_R0);
                         }
 
                         break;
