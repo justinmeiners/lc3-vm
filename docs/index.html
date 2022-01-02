@@ -391,6 +391,9 @@ int main(int argc, const char* argv[])
 <span class="nocode pln">    {Load Arguments, <a href="index.html#1:5">5</a>}</span>
 <span class="nocode pln">    {Setup, <a href="index.html#1:12">12</a>}</span>
 
+    /* since exactly one condition flag should be set at any given time, set the Z flag */
+    reg[R_COND] = FL_ZRO;
+
     /* set the PC to starting position */
     /* 0x3000 is the default */
     enum { PC_START = 0x3000 };
@@ -956,7 +959,7 @@ The CPU executes the procedure's instructions, and when it is complete, the PC i
 <p>There is no specification for <em>how</em> trap routines must be implemented, only what they are supposed to do.
 In our VM, we are going to do things slightly differently by writing them in C.
 When a trap code is invoked, a C function will be called. When it is completed, execution will return to the instructions.
-(If you are curious about trap codes in assembly, see <a href="https://github.com/rpendleton/lc3sim-c">Ryan's implementation</a>.) 
+(If you are curious about trap codes in assembly, see <a href="https://github.com/rpendleton/lc3sim-c">Ryan's implementation</a>.)
 </p>
 <p>Even though the trap routines can be written in assembly and this is what a physical LC-3 computer would do, it isn't the best fit for a VM. Instead of writing our own primitive I/O routines, we can take advantage of the ones available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability.
 </p>
@@ -1707,7 +1710,7 @@ we decided to utilize GitHub tags to organize them.
 <p>To list your own project, just make sure it is tagged with the GitHub topic <code>lc3</code>.
 If your language is missing, feel free to submit a pull request.
 </p>
-<p>Special thanks to <a href="https://github.com/inkydragon">inkydragon</a> for contributing Windows platform support. 
+<p>Special thanks to <a href="https://github.com/inkydragon">inkydragon</a> for contributing Windows platform support.
 </p>
 <p>Want to contribute? We need help with an integration test.
 This is a good <a href="https://github.com/justinmeiners/lc3-vm/issues/13">first issue</a> to learn from.

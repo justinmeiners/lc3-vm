@@ -230,6 +230,9 @@ int main(int argc, const char* argv[])
     disable_input_buffering();
 
 
+    /* since exactly one condition flag should be set at any given time, set the Z flag */
+    reg[R_COND] = FL_ZRO;
+
     /* set the PC to starting position */
     /* 0x3000 is the default */
     enum { PC_START = 0x3000 };

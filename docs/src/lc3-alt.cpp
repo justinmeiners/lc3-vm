@@ -407,6 +407,8 @@ int main(int argc, const char* argv[])
     disable_input_buffering();
 
 
+    reg[R_COND] = FL_ZRO;
+
     enum { PC_START = 0x3000 };
     reg[R_PC] = PC_START;
 
