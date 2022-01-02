@@ -1044,6 +1044,7 @@ switch (instr &amp; 0xFF)
 <pre class="prettyprint lang-c">
 /* read a single ASCII char */
 reg[R_R0] = (uint16_t)getchar();
+update_flags(R_R0);
 </pre>
 
 
@@ -1073,6 +1074,7 @@ fflush(stdout);
     char c = getchar();
     putc(c, stdout);
     reg[R_R0] = (uint16_t)c;
+    update_flags(R_R0);
 }
 </pre>
 

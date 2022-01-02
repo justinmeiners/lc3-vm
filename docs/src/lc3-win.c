@@ -421,6 +421,7 @@ int main(int argc, const char* argv[])
                         /* TRAP GETC */
                         /* read a single ASCII char */
                         reg[R_R0] = (uint16_t)getchar();
+                        update_flags(R_R0);
 
                         break;
                     case TRAP_OUT:
@@ -450,6 +451,7 @@ int main(int argc, const char* argv[])
                             char c = getchar();
                             putc(c, stdout);
                             reg[R_R0] = (uint16_t)c;
+                            update_flags(R_R0);
                         }
 
                         break;

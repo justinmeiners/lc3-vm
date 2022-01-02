@@ -298,6 +298,7 @@ void ins(uint16_t instr)
                  /* TRAP GETC */
                  /* read a single ASCII char */
                  reg[R_R0] = (uint16_t)getchar();
+                 update_flags(R_R0);
 
                  break;
              case TRAP_OUT:
@@ -327,6 +328,7 @@ void ins(uint16_t instr)
                      char c = getchar();
                      putc(c, stdout);
                      reg[R_R0] = (uint16_t)c;
+                     update_flags(R_R0);
                  }
 
                  break;
