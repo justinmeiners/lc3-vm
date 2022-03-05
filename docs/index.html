@@ -1,198 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <title>Write your Own Virtual Machine</title>
-<script>
-!function(){var q=null;window.PR_SHOULD_USE_CONTINUATION=!0;
-(function(){function R(a){function d(e){var b=e.charCodeAt(0);if(b!==92)return b;var a=e.charAt(1);return(b=r[a])?b:"0"<=a&&a<="7"?parseInt(e.substring(1),8):a==="u"||a==="x"?parseInt(e.substring(2),16):e.charCodeAt(1)}function g(e){if(e<32)return(e<16?"\\x0":"\\x")+e.toString(16);e=String.fromCharCode(e);return e==="\\"||e==="-"||e==="]"||e==="^"?"\\"+e:e}function b(e){var b=e.substring(1,e.length-1).match(/\\u[\dA-Fa-f]{4}|\\x[\dA-Fa-f]{2}|\\[0-3][0-7]{0,2}|\\[0-7]{1,2}|\\[\S\s]|[^\\]/g),e=[],a=
-b[0]==="^",c=["["];a&&c.push("^");for(var a=a?1:0,f=b.length;a<f;++a){var h=b[a];if(/\\[bdsw]/i.test(h))c.push(h);else{var h=d(h),l;a+2<f&&"-"===b[a+1]?(l=d(b[a+2]),a+=2):l=h;e.push([h,l]);l<65||h>122||(l<65||h>90||e.push([Math.max(65,h)|32,Math.min(l,90)|32]),l<97||h>122||e.push([Math.max(97,h)&-33,Math.min(l,122)&-33]))}}e.sort(function(e,a){return e[0]-a[0]||a[1]-e[1]});b=[];f=[];for(a=0;a<e.length;++a)h=e[a],h[0]<=f[1]+1?f[1]=Math.max(f[1],h[1]):b.push(f=h);for(a=0;a<b.length;++a)h=b[a],c.push(g(h[0])),
-h[1]>h[0]&&(h[1]+1>h[0]&&c.push("-"),c.push(g(h[1])));c.push("]");return c.join("")}function s(e){for(var a=e.source.match(/\[(?:[^\\\] ]|\\[\S\s])*]|\\u[\dA-Fa-f]{4}|\\x[\dA-Fa-f]{2}|\\\d+|\\[^\dux]|\(\?[!:=]|[()^]|[^()[\\^]+/g),c=a.length,d=[],f=0,h=0;f<c;++f){var l=a[f];l==="("?++h:"\\"===l.charAt(0)&&(l=+l.substring(1))&&(l<=h?d[l]=-1:a[f]=g(l))}for(f=1;f<d.length;++f)-1===d[f]&&(d[f]=++x);for(h=f=0;f<c;++f)l=a[f],l==="("?(++h,d[h]||(a[f]="(?:")):"\\"===l.charAt(0)&&(l=+l.substring(1))&&l<=h&&
-(a[f]="\\"+d[l]);for(f=0;f<c;++f)"^"===a[f]&&"^"!==a[f+1]&&(a[f]="");if(e.ignoreCase&&m)for(f=0;f<c;++f)l=a[f],e=l.charAt(0),l.length>=2&&e==="["?a[f]=b(l):e!=="\\"&&(a[f]=l.replace(/[A-Za-z]/g,function(a){a=a.charCodeAt(0);return"["+String.fromCharCode(a&-33,a|32)+"]"}));return a.join("")}for(var x=0,m=!1,j=!1,k=0,c=a.length;k<c;++k){var i=a[k];if(i.ignoreCase)j=!0;else if(/[a-z]/i.test(i.source.replace(/\\u[\da-f]{4}|\\x[\da-f]{2}|\\[^UXux]/gi,""))){m=!0;j=!1;break}}for(var r={b:8,t:9,n:10,v:11,
-f:12,r:13},n=[],k=0,c=a.length;k<c;++k){i=a[k];if(i.global||i.multiline)throw Error(""+i);n.push("(?:"+s(i)+")")}return RegExp(n.join("|"),j?"gi":"g")}function S(a,d){function g(a){var c=a.nodeType;if(c==1){if(!b.test(a.className)){for(c=a.firstChild;c;c=c.nextSibling)g(c);c=a.nodeName.toLowerCase();if("br"===c||"li"===c)s[j]="\n",m[j<<1]=x++,m[j++<<1|1]=a}}else if(c==3||c==4)c=a.nodeValue,c.length&&(c=d?c.replace(/\r\n?/g,"\n"):c.replace(/[\t\n\r ]+/g," "),s[j]=c,m[j<<1]=x,x+=c.length,m[j++<<1|1]=
-a)}var b=/(?:^|\s)nocode(?:\s|$)/,s=[],x=0,m=[],j=0;g(a);return{a:s.join("").replace(/\n$/,""),d:m}}function H(a,d,g,b){d&&(a={a:d,e:a},g(a),b.push.apply(b,a.g))}function T(a){for(var d=void 0,g=a.firstChild;g;g=g.nextSibling)var b=g.nodeType,d=b===1?d?a:g:b===3?U.test(g.nodeValue)?a:d:d;return d===a?void 0:d}function D(a,d){function g(a){for(var j=a.e,k=[j,"pln"],c=0,i=a.a.match(s)||[],r={},n=0,e=i.length;n<e;++n){var z=i[n],w=r[z],t=void 0,f;if(typeof w==="string")f=!1;else{var h=b[z.charAt(0)];
-if(h)t=z.match(h[1]),w=h[0];else{for(f=0;f<x;++f)if(h=d[f],t=z.match(h[1])){w=h[0];break}t||(w="pln")}if((f=w.length>=5&&"lang-"===w.substring(0,5))&&!(t&&typeof t[1]==="string"))f=!1,w="src";f||(r[z]=w)}h=c;c+=z.length;if(f){f=t[1];var l=z.indexOf(f),B=l+f.length;t[2]&&(B=z.length-t[2].length,l=B-f.length);w=w.substring(5);H(j+h,z.substring(0,l),g,k);H(j+h+l,f,I(w,f),k);H(j+h+B,z.substring(B),g,k)}else k.push(j+h,w)}a.g=k}var b={},s;(function(){for(var g=a.concat(d),j=[],k={},c=0,i=g.length;c<i;++c){var r=
-g[c],n=r[3];if(n)for(var e=n.length;--e>=0;)b[n.charAt(e)]=r;r=r[1];n=""+r;k.hasOwnProperty(n)||(j.push(r),k[n]=q)}j.push(/[\S\s]/);s=R(j)})();var x=d.length;return g}function v(a){var d=[],g=[];a.tripleQuotedStrings?d.push(["str",/^(?:'''(?:[^'\\]|\\[\S\s]|''?(?=[^']))*(?:'''|$)|"""(?:[^"\\]|\\[\S\s]|""?(?=[^"]))*(?:"""|$)|'(?:[^'\\]|\\[\S\s])*(?:'|$)|"(?:[^"\\]|\\[\S\s])*(?:"|$))/,q,"'\""]):a.multiLineStrings?d.push(["str",/^(?:'(?:[^'\\]|\\[\S\s])*(?:'|$)|"(?:[^"\\]|\\[\S\s])*(?:"|$)|`(?:[^\\`]|\\[\S\s])*(?:`|$))/,
-q,"'\"`"]):d.push(["str",/^(?:'(?:[^\n\r'\\]|\\.)*(?:'|$)|"(?:[^\n\r"\\]|\\.)*(?:"|$))/,q,"\"'"]);a.verbatimStrings&&g.push(["str",/^@"(?:[^"]|"")*(?:"|$)/,q]);var b=a.hashComments;b&&(a.cStyleComments?(b>1?d.push(["com",/^#(?:##(?:[^#]|#(?!##))*(?:###|$)|.*)/,q,"#"]):d.push(["com",/^#(?:(?:define|e(?:l|nd)if|else|error|ifn?def|include|line|pragma|undef|warning)\b|[^\n\r]*)/,q,"#"]),g.push(["str",/^<(?:(?:(?:\.\.\/)*|\/?)(?:[\w-]+(?:\/[\w-]+)+)?[\w-]+\.h(?:h|pp|\+\+)?|[a-z]\w*)>/,q])):d.push(["com",
-/^#[^\n\r]*/,q,"#"]));a.cStyleComments&&(g.push(["com",/^\/\/[^\n\r]*/,q]),g.push(["com",/^\/\*[\S\s]*?(?:\*\/|$)/,q]));if(b=a.regexLiterals){var s=(b=b>1?"":"\n\r")?".":"[\\S\\s]";g.push(["lang-regex",RegExp("^(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[+\\-]=|->|\\/=?|::?|<<?=?|>>?>?=?|,|;|\\?|@|\\[|~|{|\\^\\^?=?|\\|\\|?=?|break|case|continue|delete|do|else|finally|instanceof|return|throw|try|typeof)\\s*("+("/(?=[^/*"+b+"])(?:[^/\\x5B\\x5C"+b+"]|\\x5C"+s+"|\\x5B(?:[^\\x5C\\x5D"+b+"]|\\x5C"+
-s+")*(?:\\x5D|$))+/")+")")])}(b=a.types)&&g.push(["typ",b]);b=(""+a.keywords).replace(/^ | $/g,"");b.length&&g.push(["kwd",RegExp("^(?:"+b.replace(/[\s,]+/g,"|")+")\\b"),q]);d.push(["pln",/^\s+/,q," \r\n\t\u00a0"]);b="^.[^\\s\\w.$@'\"`/\\\\]*";a.regexLiterals&&(b+="(?!s*/)");g.push(["lit",/^@[$_a-z][\w$@]*/i,q],["typ",/^(?:[@_]?[A-Z]+[a-z][\w$@]*|\w+_t\b)/,q],["pln",/^[$_a-z][\w$@]*/i,q],["lit",/^(?:0x[\da-f]+|(?:\d(?:_\d+)*\d*(?:\.\d*)?|\.\d\+)(?:e[+-]?\d+)?)[a-z]*/i,q,"0123456789"],["pln",/^\\[\S\s]?/,
-q],["pun",RegExp(b),q]);return D(d,g)}function J(a,d,g){function b(a){var c=a.nodeType;if(c==1&&!x.test(a.className))if("br"===a.nodeName)s(a),a.parentNode&&a.parentNode.removeChild(a);else for(a=a.firstChild;a;a=a.nextSibling)b(a);else if((c==3||c==4)&&g){var d=a.nodeValue,i=d.match(m);if(i)c=d.substring(0,i.index),a.nodeValue=c,(d=d.substring(i.index+i[0].length))&&a.parentNode.insertBefore(j.createTextNode(d),a.nextSibling),s(a),c||a.parentNode.removeChild(a)}}function s(a){function b(a,c){var d=
-c?a.cloneNode(!1):a,e=a.parentNode;if(e){var e=b(e,1),g=a.nextSibling;e.appendChild(d);for(var i=g;i;i=g)g=i.nextSibling,e.appendChild(i)}return d}for(;!a.nextSibling;)if(a=a.parentNode,!a)return;for(var a=b(a.nextSibling,0),d;(d=a.parentNode)&&d.nodeType===1;)a=d;c.push(a)}for(var x=/(?:^|\s)nocode(?:\s|$)/,m=/\r\n?|\n/,j=a.ownerDocument,k=j.createElement("li");a.firstChild;)k.appendChild(a.firstChild);for(var c=[k],i=0;i<c.length;++i)b(c[i]);d===(d|0)&&c[0].setAttribute("value",d);var r=j.createElement("ol");
-r.className="linenums";for(var d=Math.max(0,d-1|0)||0,i=0,n=c.length;i<n;++i)k=c[i],k.className="L"+(i+d)%10,k.firstChild||k.appendChild(j.createTextNode("\u00a0")),r.appendChild(k);a.appendChild(r)}function p(a,d){for(var g=d.length;--g>=0;){var b=d[g];F.hasOwnProperty(b)?E.console&&console.warn("cannot override language handler %s",b):F[b]=a}}function I(a,d){if(!a||!F.hasOwnProperty(a))a=/^\s*</.test(d)?"default-markup":"default-code";return F[a]}function K(a){var d=a.h;try{var g=S(a.c,a.i),b=g.a;
-a.a=b;a.d=g.d;a.e=0;I(d,b)(a);var s=/\bMSIE\s(\d+)/.exec(navigator.userAgent),s=s&&+s[1]<=8,d=/\n/g,x=a.a,m=x.length,g=0,j=a.d,k=j.length,b=0,c=a.g,i=c.length,r=0;c[i]=m;var n,e;for(e=n=0;e<i;)c[e]!==c[e+2]?(c[n++]=c[e++],c[n++]=c[e++]):e+=2;i=n;for(e=n=0;e<i;){for(var p=c[e],w=c[e+1],t=e+2;t+2<=i&&c[t+1]===w;)t+=2;c[n++]=p;c[n++]=w;e=t}c.length=n;var f=a.c,h;if(f)h=f.style.display,f.style.display="none";try{for(;b<k;){var l=j[b+2]||m,B=c[r+2]||m,t=Math.min(l,B),A=j[b+1],G;if(A.nodeType!==1&&(G=x.substring(g,
-t))){s&&(G=G.replace(d,"\r"));A.nodeValue=G;var L=A.ownerDocument,o=L.createElement("span");o.className=c[r+1];var v=A.parentNode;v.replaceChild(o,A);o.appendChild(A);g<l&&(j[b+1]=A=L.createTextNode(x.substring(t,l)),v.insertBefore(A,o.nextSibling))}g=t;g>=l&&(b+=2);g>=B&&(r+=2)}}finally{if(f)f.style.display=h}}catch(u){E.console&&console.log(u&&u.stack||u)}}var E=window,y=["break,continue,do,else,for,if,return,while"],C=[[y,"auto,case,char,const,default,double,enum,extern,float,goto,inline,int,long,register,short,signed,sizeof,static,struct,switch,typedef,union,unsigned,void,volatile"],
-"catch,class,delete,false,import,new,operator,private,protected,public,this,throw,true,try,typeof"],M=[C,"alignof,align_union,asm,axiom,bool,concept,concept_map,const_cast,constexpr,decltype,delegate,dynamic_cast,explicit,export,friend,generic,late_check,mutable,namespace,nullptr,property,reinterpret_cast,static_assert,static_cast,template,typeid,typename,using,virtual,where"],V=[C,"abstract,assert,boolean,byte,extends,final,finally,implements,import,instanceof,interface,null,native,package,strictfp,super,synchronized,throws,transient"],
-N=[C,"abstract,as,base,bool,by,byte,checked,decimal,delegate,descending,dynamic,event,finally,fixed,foreach,from,group,implicit,in,interface,internal,into,is,let,lock,null,object,out,override,orderby,params,partial,readonly,ref,sbyte,sealed,stackalloc,string,select,uint,ulong,unchecked,unsafe,ushort,var,virtual,where"],C=[C,"debugger,eval,export,function,get,null,set,undefined,var,with,Infinity,NaN"],O=[y,"and,as,assert,class,def,del,elif,except,exec,finally,from,global,import,in,is,lambda,nonlocal,not,or,pass,print,raise,try,with,yield,False,True,None"],
-P=[y,"alias,and,begin,case,class,def,defined,elsif,end,ensure,false,in,module,next,nil,not,or,redo,rescue,retry,self,super,then,true,undef,unless,until,when,yield,BEGIN,END"],W=[y,"as,assert,const,copy,drop,enum,extern,fail,false,fn,impl,let,log,loop,match,mod,move,mut,priv,pub,pure,ref,self,static,struct,true,trait,type,unsafe,use"],y=[y,"case,done,elif,esac,eval,fi,function,in,local,set,then,until"],Q=/^(DIR|FILE|vector|(de|priority_)?queue|list|stack|(const_)?iterator|(multi)?(set|map)|bitset|u?(int|float)\d*)\b/,
-U=/\S/,X=v({keywords:[M,N,C,"caller,delete,die,do,dump,elsif,eval,exit,foreach,for,goto,if,import,last,local,my,next,no,our,print,package,redo,require,sub,undef,unless,until,use,wantarray,while,BEGIN,END",O,P,y],hashComments:!0,cStyleComments:!0,multiLineStrings:!0,regexLiterals:!0}),F={};p(X,["default-code"]);p(D([],[["pln",/^[^<?]+/],["dec",/^<!\w[^>]*(?:>|$)/],["com",/^<\!--[\S\s]*?(?:--\>|$)/],["lang-",/^<\?([\S\s]+?)(?:\?>|$)/],["lang-",/^<%([\S\s]+?)(?:%>|$)/],["pun",/^(?:<[%?]|[%?]>)/],["lang-",
-/^<xmp\b[^>]*>([\S\s]+?)<\/xmp\b[^>]*>/i],["lang-js",/^<script\b[^>]*>([\S\s]*?)(<\/script\b[^>]*>)/i],["lang-css",/^<style\b[^>]*>([\S\s]*?)(<\/style\b[^>]*>)/i],["lang-in.tag",/^(<\/?[a-z][^<>]*>)/i] ]),["default-markup","htm","html","mxml","xhtml","xml","xsl"]);p(D([["pln",/^\s+/,q," \t\r\n"],["atv",/^(?:"[^"]*"?|'[^']*'?)/,q,"\"'"] ],[["tag",/^^<\/?[a-z](?:[\w-.:]*\w)?|\/?>$/i],["atn",/^(?!style[\s=]|on)[a-z](?:[\w:-]*\w)?/i],["lang-uq.val",/^=\s*([^\s"'>]*(?:[^\s"'/>]|\/(?=\s)))/],["pun",/^[/<->]+/],
-["lang-js",/^on\w+\s*=\s*"([^"]+)"/i],["lang-js",/^on\w+\s*=\s*'([^']+)'/i],["lang-js",/^on\w+\s*=\s*([^\s"'>]+)/i],["lang-css",/^style\s*=\s*"([^"]+)"/i],["lang-css",/^style\s*=\s*'([^']+)'/i],["lang-css",/^style\s*=\s*([^\s"'>]+)/i] ]),["in.tag"]);p(D([],[["atv",/^[\S\s]+/] ]),["uq.val"]);p(v({keywords:M,hashComments:!0,cStyleComments:!0,types:Q}),["c","cc","cpp","cxx","cyc","m"]);p(v({keywords:"null,true,false"}),["json"]);p(v({keywords:N,hashComments:!0,cStyleComments:!0,verbatimStrings:!0,types:Q}),
-["cs"]);p(v({keywords:V,cStyleComments:!0}),["java"]);p(v({keywords:y,hashComments:!0,multiLineStrings:!0}),["bash","bsh","csh","sh"]);p(v({keywords:O,hashComments:!0,multiLineStrings:!0,tripleQuotedStrings:!0}),["cv","py","python"]);p(v({keywords:"caller,delete,die,do,dump,elsif,eval,exit,foreach,for,goto,if,import,last,local,my,next,no,our,print,package,redo,require,sub,undef,unless,until,use,wantarray,while,BEGIN,END",hashComments:!0,multiLineStrings:!0,regexLiterals:2}),["perl","pl","pm"]);p(v({keywords:P,
-hashComments:!0,multiLineStrings:!0,regexLiterals:!0}),["rb","ruby"]);p(v({keywords:C,cStyleComments:!0,regexLiterals:!0}),["javascript","js"]);p(v({keywords:"all,and,by,catch,class,else,extends,false,finally,for,if,in,is,isnt,loop,new,no,not,null,of,off,on,or,return,super,then,throw,true,try,unless,until,when,while,yes",hashComments:3,cStyleComments:!0,multilineStrings:!0,tripleQuotedStrings:!0,regexLiterals:!0}),["coffee"]);p(v({keywords:W,cStyleComments:!0,multilineStrings:!0}),["rc","rs","rust"]);
-p(D([],[["str",/^[\S\s]+/] ]),["regex"]);var Y=E.PR={createSimpleLexer:D,registerLangHandler:p,sourceDecorator:v,PR_ATTRIB_NAME:"atn",PR_ATTRIB_VALUE:"atv",PR_COMMENT:"com",PR_DECLARATION:"dec",PR_KEYWORD:"kwd",PR_LITERAL:"lit",PR_NOCODE:"nocode",PR_PLAIN:"pln",PR_PUNCTUATION:"pun",PR_SOURCE:"src",PR_STRING:"str",PR_TAG:"tag",PR_TYPE:"typ",prettyPrintOne:E.prettyPrintOne=function(a,d,g){var b=document.createElement("div");b.innerHTML="<pre>"+a+"</pre>";b=b.firstChild;g&&J(b,g,!0);K({h:d,j:g,c:b,i:1});
-return b.innerHTML},prettyPrint:E.prettyPrint=function(a,d){function g(){for(var b=E.PR_SHOULD_USE_CONTINUATION?c.now()+250:Infinity;i<p.length&&c.now()<b;i++){for(var d=p[i],j=h,k=d;k=k.previousSibling;){var m=k.nodeType,o=(m===7||m===8)&&k.nodeValue;if(o?!/^\??prettify\b/.test(o):m!==3||/\S/.test(k.nodeValue))break;if(o){j={};o.replace(/\b(\w+)=([\w%+\-.:]+)/g,function(a,b,c){j[b]=c});break}}k=d.className;if((j!==h||e.test(k))&&!v.test(k)){m=!1;for(o=d.parentNode;o;o=o.parentNode)if(f.test(o.tagName)&&
-o.className&&e.test(o.className)){m=!0;break}if(!m){d.className+=" prettyprinted";m=j.lang;if(!m){var m=k.match(n),y;if(!m&&(y=T(d))&&t.test(y.tagName))m=y.className.match(n);m&&(m=m[1])}if(w.test(d.tagName))o=1;else var o=d.currentStyle,u=s.defaultView,o=(o=o?o.whiteSpace:u&&u.getComputedStyle?u.getComputedStyle(d,q).getPropertyValue("white-space"):0)&&"pre"===o.substring(0,3);u=j.linenums;if(!(u=u==="true"||+u))u=(u=k.match(/\blinenums\b(?::(\d+))?/))?u[1]&&u[1].length?+u[1]:!0:!1;u&&J(d,u,o);r=
-{h:m,c:d,j:u,i:o};K(r)}}}i<p.length?setTimeout(g,250):"function"===typeof a&&a()}for(var b=d||document.body,s=b.ownerDocument||document,b=[b.getElementsByTagName("pre"),b.getElementsByTagName("code"),b.getElementsByTagName("xmp")],p=[],m=0;m<b.length;++m)for(var j=0,k=b[m].length;j<k;++j)p.push(b[m][j]);var b=q,c=Date;c.now||(c={now:function(){return+new Date}});var i=0,r,n=/\blang(?:uage)?-([\w.]+)(?!\S)/,e=/\bprettyprint\b/,v=/\bprettyprinted\b/,w=/pre|xmp/i,t=/^code$/i,f=/^(?:pre|code|xmp)$/i,
-h={};g()}};typeof define==="function"&&define.amd&&define("google-code-prettify",[],function(){return Y})})();}()
-</script>
-<style>
-.pln{color:#1b181b}.str{color:#918b3b}.kwd{color:#7b59c0}.com{color:#9e8f9e}.typ{color:#516aec}.lit{color:#a65926}.clo,.opn,.pun{color:#1b181b}.tag{color:#ca402b}.atn{color:#a65926}.atv{color:#159393}.dec{color:#a65926}.var{color:#ca402b}.fun{color:#516aec}pre.prettyprint{background:#f7f3f7;color:#ab9bab;font-family:Menlo,Consolas,"Bitstream Vera Sans Mono","DejaVu Sans Mono",Monaco,monospace;font-size:12px;line-height:1.5;border:1px solid #d8cad8;padding:10px}ol.linenums{margin-top:0;margin-bottom:0}
-body{min-width:200px;max-width:850px;margin:0 auto;padding:30px;}.chapter-nav{font-size: 10pt;}a:link,a:visited{color:#00f}.codeblock_name,code,pre.prettyprint{font-family:Monaco,"Lucida Console",monospace}body{font-size:14pt}.codeblock_name,.math,.seealso,code{font-size:10pt}.codeblock{page-break-inside:avoid;padding-bottom:15px}.math{text-indent:0}pre.prettyprint{font-size:10pt;padding:10px;border-radius:10px;border:none;white-space:pre-wrap}.codeblock_name{margin-top:1.25em;display:block}a:link{text-decoration:none}a:link:not(.lit):hover{color:#00f;text-decoration:underline}a:link:active{color:red}h4{padding-right:1.25em}h4.noheading{margin-bottom:0}h1{text-align:center}code{padding:2px}pre{-moz-tab-size:4;-o-tab-size:4;tab-size:4}p:not(.notp){margin:0;text-indent:2em}.two-col{list-style-type:none}.two-col li:before{content:'-';padding:5px;margin-right:5px;color:orange;background-color:#fff;display:inline-block}@media print{body{font-size:10pt}pre.prettyprint{font-size:8pt}.seealso{font-size:9pt}.codeblock_name,.math,code{font-size:8pt}.math{text-indent:0}}
-/* Element Styles */
-
-img {
-    max-width: 100%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-p:not(.notp) {
-    text-indent: 0;
-    line-height: 1.3;
-}
-
-.section > p {
-    margin-bottom: 1.3rem;
-}
-
-li {
-    margin-bottom: 0.3rem;
-}
-
-pre {
-    -webkit-text-size-adjust: 100%;
-}
-
-/* Header Style */
-
-h4.noheading {
-    display: none;
-}
-
-.section:first-of-type > p {
-    margin-bottom: 0.25rem;
-    text-align: center;
-}
-</style>
+<link rel="stylesheet" href="katex/katex.min.css">
+<script defer src="katex/katex.min.js"></script>
+<script defer src="katex/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<link rel="stylesheet" href="google-code-prettify/prettify.css">
+<link rel="stylesheet" href="styles/prettify-theme.css">
+<script defer src="google-code-prettify/prettify.js"></script>
+<link rel="stylesheet" href="styles/main.css">
 </head>
 <body onload="prettyPrint()">
-<section>
-<h1>Write your Own Virtual Machine</h1>
-<a name="1:1"><div class="section"><h4 class="noheading">1. </h4></a>
-<p>By: <a href="https://github.com/justinmeiners"><strong>Justin Meiners</strong></a> and <a href="https://github.com/rpendleton"><strong>Ryan Pendleton</strong></a>
-</p>
-<p>View the final code and other resources in the <a href="https://github.com/justinmeiners/lc3-vm">GitHub repo</a>.
-</p>
-<h4> 1. Contents</h4>
-<ol>
-<li><a href="#1:1">Contents</a>
-</li>
-<li><a href="#1:2">Introduction</a>
-</li>
-<li><a href="#1:3">LC-3 Architecture</a>
-</li>
-<li><a href="#1:4">Assembly Examples</a>
-</li>
-<li><a href="#1:5">Executing Programs</a>
-</li>
-<li><a href="#1:6">Implementing Instructions</a>
-</li>
-<li><a href="#1:7">Instruction Cheat Sheet</a>
-</li>
-<li><a href="#1:8">Trap Routines</a>
-</li>
-<li><a href="#1:9">Trap Routine Cheat Sheet</a>
-</li>
-<li><a href="#1:10">Loading Programs</a>
-</li>
-<li><a href="#1:11">Memory Mapped Registers</a>
-</li>
-<li><a href="#1:12">Platform Specifics (Unix)</a>
-</li>
-<li><a href="#1:13">Platform Specifics (Windows)</a>
-</li>
-<li><a href="#1:14">Running the VM</a>
-</li>
-<li><a href="#1:15">Alternate C++ Technique</a>
-</li>
-<li><a href="#1:16">Related Projects</a>
-</li>
-</ol>
+<!-- Generated by srcweave https://github.com/justinmeiners/srcweave -->
+<h1><a id="c0"></a>Write your Own Virtual Machine</h1>
 
-</div>
-<a name="1:2"><div class="section"><h4>2. Introduction</h4></a>
-<p>In this tutorial, I will teach you how to write your own virtual machine (VM) that can run assembly language programs, such as my friend's <a href="https://github.com/rpendleton/lc3-2048">2048</a> or my <a href="https://github.com/justinmeiners/lc3-rogue">Roguelike</a>. If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer and better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be surprisingly simple and enlightening.
-</p>
+
+<p>By: <a href="https://github.com/justinmeiners"><strong>Justin Meiners</strong></a> and <a href="https://github.com/rpendleton"><strong>Ryan Pendleton</strong></a></p>
+
+<p>View the final code and other resources in the <a href="https://github.com/justinmeiners/lc3-vm">GitHub repo</a>.</p>
+
+<h4>Contents</h4>
+
+<ol><li><a href="#s0:0">Introduction</a></li><li><a href="#s0:1">LC-3 Architecture</a></li><li><a href="#s0:2">Assembly Examples</a></li><li><a href="#s0:3">Executing Programs</a></li><li><a href="#s0:4">Implementing Instructions</a></li><li><a href="#s0:5">Instruction Cheat Sheet</a></li><li><a href="#s0:6">Trap Routines</a></li><li><a href="#s0:7">Trap Routine Cheat Sheet</a></li><li><a href="#s0:8">Loading Programs</a></li><li><a href="#s0:9">Memory Mapped Registers</a></li><li><a href="#s0:10">Platform Specifics (Unix)</a></li><li><a href="#s0:11">Platform Specifics (Windows)</a></li><li><a href="#s0:12">Running the VM</a></li><li><a href="#s0:13">Alternate C++ Technique</a></li><li><a href="#s0:14">Contributions</a></li></ol>
+
+
+
+
+<h2><a id="s0:0"></a>1. Introduction</h2>
+
+
+<p>In this tutorial, I will teach you how to write your own virtual machine (VM) that can run assembly language programs, such as my friend&rsquo;s <a href="https://github.com/rpendleton/lc3-2048">2048</a> or my <a href="https://github.com/justinmeiners/lc3-rogue">Roguelike</a>. If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer and better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be surprisingly simple and enlightening.</p>
+
 <p>The final code is about 250 lines of C (<a href="src/lc3.c">unix</a>, <a href="src/lc3-win.c">windows</a>).
-All you need to know is how to read basic C or C++ and how to do <a href="https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html">binary arithmetic</a>.
-</p>
-<blockquote><p> <strong>Note:</strong> This VM is a <a href="https://en.wikipedia.org/wiki/Literate_programming">literate program</a>. This means you are reading the source code right now! Each piece of code from the project will be shown and explained thoroughly, so you can be sure nothing is left out. The final code was created by <a href="https://github.com/zyedidia/Literate">"weaving"</a> the blocks of code together.
-</p>
-</blockquote>
-<h3> What is a virtual machine?</h3>
-<p>A VM is a program that acts like a computer. It simulates a CPU along with a few other hardware components, allowing it to perform arithmetic, read and write to memory, and interact with I/O devices, just like a physical computer. Most importantly, it can understand a machine language which you can use to program it.
-</p>
-<p>The amount of computer hardware the VM attempts to simulate depends on its purpose. Some VMs are designed to reproduce the behavior of some particular computer, such as video game emulators. Most people don't have an NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program. These emulators must <a href="http://wiki.nesdev.com/w/index.php/Tricky-to-emulate_games">faithfully recreate</a> every <a href="http://wiki.nesdev.com/w/index.php/Emulator_tests">detail</a> and major hardware component of the original device.
-</p>
-<p>Other VMs don't act like any real computer and are entirely made up! This is primarily done to make software development easier. Imagine you wanted to create a program that ran on multiple computer architectures. A VM could offer a standard platform which provided portability for all of them. Instead of rewriting a program in different dialects of assembly for each CPU architecture, you would only need to write the small VM program in each assembly language. Each program would then be written only once in the VM's assembly language.
-</p>
-<p><img src="img/no_vm.gif" alt="architecture specific implementation">
-</p>
-<p><img src="img/vm.gif" alt="vm for each architecture">
-</p>
-<blockquote><p> <strong>Note:</strong> A compiler solves a similar problem by compiling a standard <em>high-level language</em> to several CPU architectures. A VM creates one standard <em>CPU architecture</em> which is simulated on various hardware devices. One advantage of a compiler is that it has no runtime overhead while a VM does. Even though compilers do a pretty good job, writing a new one that targets multiple platforms is very difficult, so VMs are still helpful here. In practice, VMs and compilers are mixed at various levels.
-</p>
-</blockquote>
-<p>The <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">Java Virtual Machine (JVM)</a> is a very successful example. The JVM itself is a moderately sized program that is small enough for one programmer to understand. This has made it possible to be written for thousands of devices including phones. Once the JVM is implemented on a new device, any Java, Kotlin, or Clojure program ever written can run on it without modification. The only cost is the overhead of the VM itself and the <a href="https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/">further abstraction</a> from the machine. Most of the time, this is a pretty good tradeoff.
-</p>
-<p>A VM doesn't have to be large or pervasive to provide a similar benefit. Old <a href="https://fabiensanglard.net/anotherWorld_code_review/">video games</a> often used small VMs to provide simple <a href="https://sf2platinum.wordpress.com/page/1/">scripting systems</a>.
-</p>
-<p>VMs are also useful for executing code in a secure or isolated way. One application of this is garbage collection. There <a href="https://www.lua.org/pil/24.2.html">is no trivial way</a> to implement automatic garbage collection on top of C or C++ since a program cannot see its own stack or variables. However, a VM is “outside” the program it is running and can observe all of the <a href="https://en.wikipedia.org/wiki/Tracing_garbage_collection">memory references</a> on the stack.
-</p>
-<p>Another example of this behavior is demonstrated by <a href="https://solidity.readthedocs.io/en/v0.4.24/introduction-to-smart-contracts.html">Ethereum smart contracts</a>. Smart contracts are small programs which are executed by each validating node in the blockchain network. This requires the node operators to run programs on their machines that have been written by complete strangers, without any opportunity to scrutinize them beforehand. To prevent a contract from doing malicious things, they are run inside a <a href="http://ethdocs.org/en/latest/introduction/what-is-ethereum.html#ethereum-virtual-machine">VM</a> that has no access to the file system, network, disc, etc. Ethereum is also a good application of the portability features that result when using a VM. Since Ethereum nodes can be run on many kinds of computers and operating systems, the use of a VM allows smart contracts to be written without any consideration of the many platforms they run on.
-</p>
+All you need to know is how to read basic C or C++ and how to do <a href="https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html">binary arithmetic</a>.</p>
 
-</div>
-<a name="1:3"><div class="section"><h4>3. LC-3 Architecture</h4></a>
-<p>Our VM will simulate a fictional computer called the <a href="https://en.wikipedia.org/wiki/Little_Computer_3">LC-3</a>. The LC-3 is popular for teaching university students how to program in assembly language. It has a simplified instruction set <a href="http://ref.x86asm.net/coder64.html">compared to x86</a>, but contains all the main ideas used in modern CPUs.
-</p>
-<p>First, we need to simulate the essential hardware components of the machine. Try to understand what each component is, but don't worry right now if you are unsure of how it fits into the larger picture. Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.
-</p>
-<h3> Memory</h3>
-<p>The LC-3 has 65,536 memory locations (the maximum that is addressable by a 16-bit unsigned integer <code>2^16</code>), each of which stores a 16-bit value. This means it can store a total of only 128kb, which is a lot smaller than you may be used to! In our program, this memory will be stored in a simple array:
-</p>
+<blockquote><p><strong>Note:</strong> This VM is a <a href="https://en.wikipedia.org/wiki/Literate_programming">literate program</a>. This means you are reading the source code right now! Each piece of code from the project will be shown and explained thoroughly, so you can be sure nothing is left out. The final code was created by <a href="https://github.com/zyedidia/Literate">&ldquo;weaving&rdquo;</a> the blocks of code together.</p></blockquote>
 
-<div class="codeblock">
-<span class="codeblock_name">{Memory Storage <a href="index.html#1:3">3</a>}</span>
-<pre class="prettyprint lang-c">
-/* 65536 locations */
+<h3>What is a virtual machine?</h3>
+
+<p>A VM is a program that acts like a computer. It simulates a CPU along with a few other hardware components, allowing it to perform arithmetic, read and write to memory, and interact with I/O devices, just like a physical computer. Most importantly, it can understand a machine language which you can use to program it.</p>
+
+<p>The amount of computer hardware the VM attempts to simulate depends on its purpose. Some VMs are designed to reproduce the behavior of some particular computer, such as video game emulators. Most people don&rsquo;t have an NES lying around anymore, but we can still play NES games by simulating the NES hardware in a program. These emulators must <a href="http://wiki.nesdev.com/w/index.php/Tricky-to-emulate_games">faithfully recreate</a> every <a href="http://wiki.nesdev.com/w/index.php/Emulator_tests">detail</a> and major hardware component of the original device.</p>
+
+<p>Other VMs don&rsquo;t act like any real computer and are entirely made up! This is primarily done to make software development easier. Imagine you wanted to create a program that ran on multiple computer architectures. A VM could offer a standard platform which provided portability for all of them. Instead of rewriting a program in different dialects of assembly for each CPU architecture, you would only need to write the small VM program in each assembly language. Each program would then be written only once in the VM&rsquo;s assembly language.</p>
+
+<p><img src="img/no_vm.gif" alt="architecture specific implementation" /></p>
+
+<p><img src="img/vm.gif" alt="vm for each architecture" /></p>
+
+<blockquote><p><strong>Note:</strong> A compiler solves a similar problem by compiling a standard <em>high-level language</em> to several CPU architectures. A VM creates one standard <em>CPU architecture</em> which is simulated on various hardware devices. One advantage of a compiler is that it has no runtime overhead while a VM does. Even though compilers do a pretty good job, writing a new one that targets multiple platforms is very difficult, so VMs are still helpful here. In practice, VMs and compilers are mixed at various levels.</p></blockquote>
+
+<p>The <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">Java Virtual Machine (JVM)</a> is a very successful example. The JVM itself is a moderately sized program that is small enough for one programmer to understand. This has made it possible to be written for thousands of devices including phones. Once the JVM is implemented on a new device, any Java, Kotlin, or Clojure program ever written can run on it without modification. The only cost is the overhead of the VM itself and the <a href="https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/">further abstraction</a> from the machine. Most of the time, this is a pretty good tradeoff.</p>
+
+<p>A VM doesn&rsquo;t have to be large or pervasive to provide a similar benefit. Old <a href="https://fabiensanglard.net/anotherWorld_code_review/">video games</a> often used small VMs to provide simple <a href="https://sf2platinum.wordpress.com/page/1/">scripting systems</a>.</p>
+
+<p>VMs are also useful for executing code in a secure or isolated way. One application of this is garbage collection. There <a href="https://www.lua.org/pil/24.2.html">is no trivial way</a> to implement automatic garbage collection on top of C or C++ since a program cannot see its own stack or variables. However, a VM is “outside” the program it is running and can observe all of the <a href="https://en.wikipedia.org/wiki/Tracing_garbage_collection">memory references</a> on the stack.</p>
+
+<p>Another example of this behavior is demonstrated by <a href="https://solidity.readthedocs.io/en/v0.4.24/introduction-to-smart-contracts.html">Ethereum smart contracts</a>. Smart contracts are small programs which are executed by each validating node in the blockchain network. This requires the node operators to run programs on their machines that have been written by complete strangers, without any opportunity to scrutinize them beforehand. To prevent a contract from doing malicious things, they are run inside a <a href="http://ethdocs.org/en/latest/introduction/what-is-ethereum.html#ethereum-virtual-machine">VM</a> that has no access to the file system, network, disc, etc. Ethereum is also a good application of the portability features that result when using a VM. Since Ethereum nodes can be run on many kinds of computers and operating systems, the use of a VM allows smart contracts to be written without any consideration of the many platforms they run on.</p>
+
+<h2><a id="s0:1"></a>2. LC-3 Architecture</h2>
+
+
+<p>Our VM will simulate a fictional computer called the <a href="https://en.wikipedia.org/wiki/Little_Computer_3">LC-3</a>. The LC-3 is popular for teaching university students how to program in assembly language. It has a simplified instruction set <a href="http://ref.x86asm.net/coder64.html">compared to x86</a>, but contains all the main ideas used in modern CPUs.</p>
+
+<p>First, we need to simulate the essential hardware components of the machine. Try to understand what each component is, but don&rsquo;t worry right now if you are unsure of how it fits into the larger picture. Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.</p>
+
+<h3>Memory</h3>
+
+<p>The LC-3 has 65,536 memory locations (the maximum that is addressable by a 16-bit unsigned integer <code>2^16</code>), each of which stores a 16-bit value. This means it can store a total of only 128kb, which is a lot smaller than you may be used to! In our program, this memory will be stored in a simple array:</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bMemory_Storage:51" href="#bMemory_Storage:51">Memory Storage</a></em></strong></span>
+<pre class="prettyprint"><code class="">/* 65536 locations */
 uint16_t memory[UINT16_MAX];
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:853" title="line 854. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> <span title="line 1192. lc3-alt.cpp">3</span> <span title="line 1239. lc3-alt-win.cpp">4</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
-</div>
-<h3> Registers</h3>
-<p>A register is a slot for storing a single value on the CPU. Registers are like the "workbench" of the CPU. For the CPU to work with a piece of data, it has to be in one of the registers. However, since there are just a few registers, only a minimal amount of data can be loaded at any given time. Programs work around this by loading values from memory into registers, calculating values into other registers, and then storing the final results back in memory.
-</p>
+<h3>Registers</h3>
+
+<p>A register is a slot for storing a single value on the CPU. Registers are like the &ldquo;workbench&rdquo; of the CPU. For the CPU to work with a piece of data, it has to be in one of the registers. However, since there are just a few registers, only a minimal amount of data can be loaded at any given time. Programs work around this by loading values from memory into registers, calculating values into other registers, and then storing the final results back in memory.</p>
+
 <p>The LC-3 has 10 total registers, each of which is 16 bits. Most of them are general purpose, but a few have designated roles.
-</p>
-<ul>
-<li>8 general purpose registers  (<code>R0</code>-<code>R7</code>)
-</li>
-<li>1 program counter (<code>PC</code>) register
-</li>
-<li>1 condition flags (<code>COND</code>) register
-</li>
-</ul>
-<p>The general purpose registers can be used to perform any program calculations. The program counter is an unsigned integer which is the address of the next instruction in memory to execute. The condition flags tell us information about the previous calculation.
-</p>
+- 8 general purpose registers  (<code>R0</code>-<code>R7</code>)
+- 1 program counter (<code>PC</code>) register
+- 1 condition flags (<code>COND</code>) register</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Registers <a href="index.html#1:3">3</a>}</span>
-<pre class="prettyprint lang-c">
-enum
+<p>The general purpose registers can be used to perform any program calculations. The program counter is an unsigned integer which is the address of the next instruction in memory to execute. The condition flags tell us information about the previous calculation.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bRegisters:67" href="#bRegisters:67">Registers</a></em></strong></span>
+<pre class="prettyprint"><code class="">enum
 {
     R_R0 = 0,
     R_R1,
@@ -206,35 +107,32 @@ enum
     R_COND,
     R_COUNT
 };
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:141" title="line 142. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> <span title="line 1192. lc3-alt.cpp">3</span> <span title="line 1239. lc3-alt-win.cpp">4</span> </small></p></div>
 
 
+<p>Just like the memory, we will store the registers in an array:</p>
 
-</div>
-<p>Just like the memory, we will store the registers in an array:
-</p>
-
-<div class="codeblock">
-<span class="codeblock_name">{Register Storage <a href="index.html#1:3">3</a>}</span>
-<pre class="prettyprint lang-c">
-uint16_t reg[R_COUNT];
-</pre>
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bRegister_Storage:86" href="#bRegister_Storage:86">Register Storage</a></em></strong></span>
+<pre class="prettyprint"><code class="">uint16_t reg[R_COUNT];
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:853" title="line 854. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> <span title="line 1192. lc3-alt.cpp">3</span> <span title="line 1239. lc3-alt-win.cpp">4</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
-</div>
-<h3> Instruction Set</h3>
-<p>An instruction is a command which tells the CPU to do some fundamental task, such as add two numbers. Instructions have both an <strong>opcode</strong> which indicates the kind of task to perform and a set of <strong>parameters</strong> which provide inputs to the task being performed.
-</p>
-<p>Each <strong>opcode</strong> represents one task that the CPU "knows" how to do. There are just 16 opcodes in LC-3. Everything the computer can calculate is some sequence of these simple instructions. Each instruction is 16 bits long, with the left 4 bits storing the opcode. The rest of the bits are used to store the parameters.
-</p>
-<p>We will discuss, in detail, what each instruction does later. For now, define the following opcodes. Make sure they stay in this order so that they are assigned the proper enum value:
-</p>
+<h3>Instruction Set</h3>
 
-<div class="codeblock">
-<span class="codeblock_name">{Opcodes <a href="index.html#1:3">3</a>}</span>
-<pre class="prettyprint lang-c">
-enum
+<p>An instruction is a command which tells the CPU to do some fundamental task, such as add two numbers. Instructions have both an <strong>opcode</strong> which indicates the kind of task to perform and a set of <strong>parameters</strong> which provide inputs to the task being performed.</p>
+
+<p>Each <strong>opcode</strong> represents one task that the CPU &ldquo;knows&rdquo; how to do. There are just 16 opcodes in LC-3. Everything the computer can calculate is some sequence of these simple instructions. Each instruction is 16 bits long, with the left 4 bits storing the opcode. The rest of the bits are used to store the parameters.</p>
+
+<p>We will discuss, in detail, what each instruction does later. For now, define the following opcodes. Make sure they stay in this order so that they are assigned the proper enum value:</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bOpcodes:98" href="#bOpcodes:98">Opcodes</a></em></strong></span>
+<pre class="prettyprint"><code class="">enum
 {
     OP_BR = 0, /* branch */
     OP_ADD,    /* add  */
@@ -253,143 +151,129 @@ enum
     OP_LEA,    /* load effective address */
     OP_TRAP    /* execute trap */
 };
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:141" title="line 142. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> <span title="line 1192. lc3-alt.cpp">3</span> <span title="line 1239. lc3-alt-win.cpp">4</span> </small></p></div>
 
 
+<blockquote><p><strong>Note:</strong> The Intel x86 architecture has hundreds of instructions, while others such as ARM and LC-3 have very few. Small instruction sets are referred to as <a href="https://en.wikipedia.org/wiki/Reduced_instruction_set_computer">RISCs</a> while larger ones are called <a href="https://en.wikipedia.org/wiki/Complex_instruction_set_computer">CISCs</a>. Larger instruction sets typically do not provide any fundamentally new possibilities, but they <a href="https://cs.stanford.edu/people/eroberts/courses/soco/projects/risc/risccisc/">often make it more convenient</a> to write assembly for. A single instruction in CISC might take the place of several in RISC. However, they tend to be more complex and expensive for engineers to design and manufacture. This and other tradeoffs cause the designs to come <a href="https://cs.stackexchange.com/questions/269/why-would-anyone-want-cisc">in and out of style</a>.</p></blockquote>
 
-</div>
-<blockquote><p> <strong>Note:</strong> The Intel x86 architecture has hundreds of instructions, while others such as ARM and LC-3 have very few. Small instruction sets are referred to as <a href="https://en.wikipedia.org/wiki/Reduced_instruction_set_computer">RISCs</a> while larger ones are called <a href="https://en.wikipedia.org/wiki/Complex_instruction_set_computer">CISCs</a>. Larger instruction sets typically do not provide any fundamentally new possibilities, but they <a href="https://cs.stanford.edu/people/eroberts/courses/soco/projects/risc/risccisc/">often make it more convenient</a> to write assembly for. A single instruction in CISC might take the place of several in RISC. However, they tend to be more complex and expensive for engineers to design and manufacture. This and other tradeoffs cause the designs to come <a href="https://cs.stackexchange.com/questions/269/why-would-anyone-want-cisc">in and out of style</a>.
-</p>
-</blockquote>
-<h3> Condition Flags</h3>
-<p>The <code>R_COND</code> register stores condition flags which provide information about the most recently executed calculation. This allows programs to check logical conditions such as <code>if (x &gt; 0) { ... }</code>.
-</p>
-<p>Each CPU has a variety of condition flags to signal various situations. The LC-3 uses only 3 condition flags which indicate the sign of the previous calculation.
-</p>
+<h3>Condition Flags</h3>
 
-<div class="codeblock">
-<span class="codeblock_name">{Condition Flags <a href="index.html#1:3">3</a>}</span>
-<pre class="prettyprint lang-c">
-enum
+<p>The <code>R_COND</code> register stores condition flags which provide information about the most recently executed calculation. This allows programs to check logical conditions such as <code>if (x &gt; 0) { ... }</code>.</p>
+
+<p>Each CPU has a variety of condition flags to signal various situations. The LC-3 uses only 3 condition flags which indicate the sign of the previous calculation.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bCondition_Flags:128" href="#bCondition_Flags:128">Condition Flags</a></em></strong></span>
+<pre class="prettyprint"><code class="">enum
 {
     FL_POS = 1 &lt;&lt; 0, /* P */
     FL_ZRO = 1 &lt;&lt; 1, /* Z */
     FL_NEG = 1 &lt;&lt; 2, /* N */
 };
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:141" title="line 142. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> <span title="line 1192. lc3-alt.cpp">3</span> <span title="line 1239. lc3-alt-win.cpp">4</span> </small></p></div>
+
+
+<blockquote><p><strong>Note:</strong> (The <code>&lt;&lt;</code> symbol is called the <a href="https://msdn.microsoft.com/en-us/library/336xbhcz.aspx">left bitshift operator</a>. <code>(n &lt;&lt; k)</code> shifts the bits of <code>n</code> to the left <code>k</code> places. Thus <code>1 &lt;&lt; 2</code> will equal <code>4</code>. Read that link if you are not familiar. It will be important.)</p></blockquote>
+
+<p>We are finished setting up the hardware components of our VM! After adding standard includes (see reference), your file should look something like this:</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="blc3.c:141" href="#blc3.c:141">lc3.c</a></em></strong></span>
+<pre class="prettyprint"><code class=""><em class="block-link nocode"title="line 935. index.lit"><a href="#bIncludes:935">@{Includes}</a></em>
+
+<em class="block-link nocode"title="line 67. index.lit"><a href="#bRegisters:67">@{Registers}</a></em>
+<em class="block-link nocode"title="line 98. index.lit"><a href="#bOpcodes:98">@{Opcodes}</a></em>
+<em class="block-link nocode"title="line 128. index.lit"><a href="#bCondition_Flags:128">@{Condition Flags}</a></em>
+</code></pre>
+</small></p></div>
 
 
 
-</div>
-<blockquote><p> <strong>Note:</strong> (The <code>&lt;&lt;</code> symbol is called the <a href="https://msdn.microsoft.com/en-us/library/336xbhcz.aspx">left bitshift operator</a>. <code>(n &lt;&lt; k)</code> shifts the bits of <code>n</code> to the left <code>k</code> places. Thus <code>1 &lt;&lt; 2</code> will equal <code>4</code>. Read that link if you are not familiar. It will be important.)
-</p>
-</blockquote>
-<p>We are finished setting up the hardware components of our VM! After adding standard includes (see reference), your file should look something like this:
-</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{<strong>lc3.c</strong> <a href="index.html#1:3">3</a>}</span>
-<pre class="prettyprint lang-c">
-<span class="nocode pln">{Includes, <a href="index.html#1:12">12</a>}</span>
-
-<span class="nocode pln">{Registers, <a href="index.html#1:3">3</a>}</span>
-<span class="nocode pln">{Opcodes, <a href="index.html#1:3">3</a>}</span>
-<span class="nocode pln">{Condition Flags, <a href="index.html#1:3">3</a>}</span>
-</pre>
-<p class="seealso">Added to in section <a href="index.html#1:11">11</a></p>
+<h2><a id="s0:2"></a>3. Assembly Examples</h2>
 
 
-</div>
-</div>
-<a name="1:4"><div class="section"><h4>4. Assembly Examples</h4></a>
-<p>Now let's look at an LC-3 assembly program to get an idea of what the VM actually runs. You don't need to know how to program assembly or understand everything that is going on. Just try to get a general idea of what is going on. Here is a simple "Hello World":
-</p>
+<p>Now let&rsquo;s look at an LC-3 assembly program to get an idea of what the VM actually runs. You don&rsquo;t need to know how to program assembly or understand everything that is going on. Just try to get a general idea of what is going on. Here is a simple &ldquo;Hello World&rdquo;:</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Hello World Assembly <a href="index.html#1:4">4</a>}</span>
-<pre class="prettyprint lang-c">
-.ORIG x3000                        ; this is the address in memory where the program will be loaded
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bHello_World_Assembly:153" href="#bHello_World_Assembly:153">Hello World Assembly</a></em></strong></span>
+<pre class="prettyprint"><code class="">.ORIG x3000                        ; this is the address in memory where the program will be loaded
 LEA R0, HELLO_STR                  ; load the address of the HELLO_STR string into R0
 PUTs                               ; output the string pointed to by R0 to the console
 HALT                               ; halt the program
 HELLO_STR .STRINGZ "Hello World!"  ; store this string here in the program
 .END                               ; mark the end of the file
-</pre>
+</code></pre>
+</small></p></div>
 
 
+<p>Just like in C, the program starts at the top and executes one statement at a time. However, unlike C, there are no nested scopes <code>{}</code> or control structures such as <code>if</code> or <code>while</code>; just a flat list of statements. This makes it much easier to execute.</p>
 
-</div>
-<p>Just like in C, the program starts at the top and executes one statement at a time. However, unlike C, there are no nested scopes <code>{}</code> or control structures such as <code>if</code> or <code>while</code>; just a flat list of statements. This makes it much easier to execute.
-</p>
-<p>Notice that some of the statements have names which match the opcodes we defined earlier. Previously, we learned that every instruction was 16 bits, but each line looks like it is a different number of characters. How is this inconsistency possible?
-</p>
-<p>This is because the code we are reading is written in <strong>assembly</strong> which is a human-readable and writable form, encoded in plain text. A tool called an <strong>assembler</strong> is used to transform each line of text into a 16-bit binary instruction the VM can understand. This binary form, which is essentially an array of 16-bit instructions, is called <strong>machine code</strong> and is what the VM actually runs.
-</p>
-<p><img src="img/assembler.gif" alt="assembler diagram">
-</p>
-<blockquote><p> <strong>Note:</strong> Although a compiler and an assembler play a similar role in development, they are not the same. An assembler simply encodes what the programmer has written in text into binary, replacing symbols with their binary representation and packing them into instructions.
-</p>
-</blockquote>
-<p>The commands <code>.ORIG</code> and <code>.STRINGZ</code> look like instructions but they aren't. They are assembler directives which generate a piece of code or data (like macros). For example, the <code>.STRINGZ</code> inserts a string of characters into the program binary at the location it is written.
-</p>
-<p>Loops and conditions are done with a <a href="https://en.wikipedia.org/wiki/Goto">goto</a>-like instruction. Here is another example which counts to 10.
-</p>
+<p>Notice that some of the statements have names which match the opcodes we defined earlier. Previously, we learned that every instruction was 16 bits, but each line looks like it is a different number of characters. How is this inconsistency possible?</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Loop Assembly <a href="index.html#1:4">4</a>}</span>
-<pre class="prettyprint lang-c">
-AND R0, R0, 0                      ; clear R0
+<p>This is because the code we are reading is written in <strong>assembly</strong> which is a human-readable and writable form, encoded in plain text. A tool called an <strong>assembler</strong> is used to transform each line of text into a 16-bit binary instruction the VM can understand. This binary form, which is essentially an array of 16-bit instructions, is called <strong>machine code</strong> and is what the VM actually runs.</p>
+
+<p><img src="img/assembler.gif" alt="assembler diagram" /></p>
+
+<blockquote><p><strong>Note:</strong> Although a compiler and an assembler play a similar role in development, they are not the same. An assembler simply encodes what the programmer has written in text into binary, replacing symbols with their binary representation and packing them into instructions.</p></blockquote>
+
+<p>The commands <code>.ORIG</code> and <code>.STRINGZ</code> look like instructions but they aren&rsquo;t. They are assembler directives which generate a piece of code or data (like macros). For example, the <code>.STRINGZ</code> inserts a string of characters into the program binary at the location it is written.</p>
+
+<p>Loops and conditions are done with a <a href="https://en.wikipedia.org/wiki/Goto">goto</a>-like instruction. Here is another example which counts to 10.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bLoop_Assembly:176" href="#bLoop_Assembly:176">Loop Assembly</a></em></strong></span>
+<pre class="prettyprint"><code class="">AND R0, R0, 0                      ; clear R0
 LOOP                               ; label at the top of our loop
 ADD R0, R0, 1                      ; add 1 to R0 and store back in R0
 ADD R1, R0, -10                    ; subtract 10 from R0 and store back in R1
 BRn LOOP                           ; go back to LOOP if the result was negative
 ... ; R0 is now 10!
-</pre>
+</code></pre>
+</small></p></div>
 
 
+<blockquote><p><strong>Note:</strong> Learning to write assembly is not necessary for this tutorial. However, if you are interested, you can write and assemble your own LC-3 programs using the <a href="http://highered.mheducation.com/sites/0072467509/student_view0/lc-3_simulator.html">LC-3 Tools</a>.</p></blockquote>
 
-</div>
-<blockquote><p> <strong>Note:</strong> Learning to write assembly is not necessary for this tutorial. However, if you are interested, you can write and assemble your own LC-3 programs using the <a href="http://highered.mheducation.com/sites/0072467509/student_view0/lc-3_simulator.html">LC-3 Tools</a>.
-</p>
-</blockquote>
+<h2><a id="s0:3"></a>4. Executing Programs</h2>
 
-</div>
-<a name="1:5"><div class="section"><h4>5. Executing Programs</h4></a>
-<p>Once again, the previous examples are just to give you an idea of what the VM does. To write a VM, you don't need to be fluent in assembly. As long as you follow the proper procedure for reading and executing instructions, <em>any</em> LC-3 program will run correctly, no matter how complicated it is. In theory, it could even run a web browser or an operating system like Linux!
-</p>
-<p>If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that we never anticipated and may not be able to understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works. Turing observed this marvelous idea:
-</p>
-<blockquote><p> "The view that machines cannot give rise to surprises is due, I believe, to a fallacy to which philosophers and mathematicians are particularly subject. This is the assumption that as soon as a fact is presented to a mind all consequences of that fact spring into the mind simultaneously with it. It is a very useful assumption under many circumstances, but one too easily forgets that it is false." — <a href="https://academic.oup.com/mind/article-pdf/LIX/236/433/9866119/433.pdf">Alan M. Turing</a>
-</p>
-</blockquote>
-<h3> Procedure</h3>
-<p>Here is the procedure we need to write:
-</p>
+
+<p>Once again, the previous examples are just to give you an idea of what the VM does. To write a VM, you don&rsquo;t need to be fluent in assembly. As long as you follow the proper procedure for reading and executing instructions, <em>any</em> LC-3 program will run correctly, no matter how complicated it is. In theory, it could even run a web browser or an operating system like Linux!</p>
+
+<p>If you think about this property deeply, it is a philosophically remarkable idea. The programs themselves can do all kinds of intelligent things that we never anticipated and may not be able to understand, but at the same time, everything they can do is limited to the simple code we will write! We simultaneously know everything and nothing about how each program works. Turing observed this marvelous idea:</p>
+
+<blockquote><p>&ldquo;The view that machines cannot give rise to surprises is due, I believe, to a fallacy to which philosophers and mathematicians are particularly subject. This is the assumption that as soon as a fact is presented to a mind all consequences of that fact spring into the mind simultaneously with it. It is a very useful assumption under many circumstances, but one too easily forgets that it is false.&rdquo; — <a href="https://academic.oup.com/mind/article-pdf/LIX/236/433/9866119/433.pdf">Alan M. Turing</a></p></blockquote>
+
+<h3>Procedure</h3>
+
+<p>Here is the procedure we need to write:</p>
+
 <ol>
-<li>Load one instruction from memory at the address of the <code>PC</code> register.
-</li>
-<li>Increment the <code>PC</code> register.
-</li>
-<li>Look at the <em>opcode</em> to determine which type of instruction it should perform.
-</li>
-<li>Perform the instruction using the parameters in the instruction.
-</li>
-<li>Go back to step 1.
-</li>
+<li>Load one instruction from memory at the address of the <code>PC</code> register.</li>
+<li>Increment the <code>PC</code> register.</li>
+<li>Look at the <em>opcode</em> to determine which type of instruction it should perform.</li>
+<li>Perform the instruction using the parameters in the instruction.</li>
+<li>Go back to step 1.</li>
 </ol>
-<p>You may be wondering, "if the loop keeps incrementing the <code>PC</code>, and we don't have <code>if</code> or <code>while</code>, won't it quickly run out of instructions?" No. As we mentioned before, some goto-like instructions change the execution flow by jumping the <code>PC</code> around.
-</p>
-<p>Let's start outlining this process in the main loop:
-</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Main Loop <a href="index.html#1:5">5</a>}</span>
-<pre class="prettyprint lang-c">
 
-int main(int argc, const char* argv[])
+<p>You may be wondering, &ldquo;if the loop keeps incrementing the <code>PC</code>, and we don&rsquo;t have <code>if</code> or <code>while</code>, won&rsquo;t it quickly run out of instructions?&rdquo; No. As we mentioned before, some goto-like instructions change the execution flow by jumping the <code>PC</code> around.</p>
+
+<p>Let&rsquo;s start outlining this process in the main loop:</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bMain_Loop:209" href="#bMain_Loop:209">Main Loop</a></em></strong></span>
+<pre class="prettyprint"><code class="">int main(int argc, const char* argv[])
 {
-<span class="nocode pln">    {Load Arguments, <a href="index.html#1:5">5</a>}</span>
-<span class="nocode pln">    {Setup, <a href="index.html#1:12">12</a>}</span>
+    <em class="block-link nocode"title="line 289. index.lit"><a href="#bLoad_Arguments:289">@{Load Arguments}</a></em>
+    <em class="block-link nocode"title="line 923. index.lit"><a href="#bSetup:923">@{Setup}</a></em>
 
     /* since exactly one condition flag should be set at any given time, set the Z flag */
     reg[R_COND] = FL_ZRO;
@@ -409,69 +293,67 @@ int main(int argc, const char* argv[])
         switch (op)
         {
             case OP_ADD:
-<span class="nocode pln">                {ADD, <a href="index.html#1:6">6</a>}</span>
+                <em class="block-link nocode"title="line 381. index.lit"><a href="#bADD:381">@{ADD}</a></em>
                 break;
             case OP_AND:
-<span class="nocode pln">                {AND, <a href="index.html#1:7">7</a>}</span>
+                <em class="block-link nocode"title="line 482. index.lit"><a href="#bAND:482">@{AND}</a></em>
                 break;
             case OP_NOT:
-<span class="nocode pln">                {NOT, <a href="index.html#1:7">7</a>}</span>
+                <em class="block-link nocode"title="line 503. index.lit"><a href="#bNOT:503">@{NOT}</a></em>
                 break;
             case OP_BR:
-<span class="nocode pln">                {BR, <a href="index.html#1:7">7</a>}</span>
+                <em class="block-link nocode"title="line 513. index.lit"><a href="#bBR:513">@{BR}</a></em>
                 break;
             case OP_JMP:
-<span class="nocode pln">                {JMP, <a href="index.html#1:7">7</a>}</span>
+                <em class="block-link nocode"title="line 526. index.lit"><a href="#bJMP:526">@{JMP}</a></em>
                 break;
             case OP_JSR:
-<span class="nocode pln">                {JSR, <a href="index.html#1:7">7</a>}</span>
+                <em class="block-link nocode"title="line 534. index.lit"><a href="#bJSR:534">@{JSR}</a></em>
                 break;
             case OP_LD:
-<span class="nocode pln">                {LD, <a href="index.html#1:7">7</a>}</span>
+                <em class="block-link nocode"title="line 552. index.lit"><a href="#bLD:552">@{LD}</a></em>
                 break;
             case OP_LDI:
-<span class="nocode pln">                {LDI, <a href="index.html#1:6">6</a>}</span>
+                <em class="block-link nocode"title="line 453. index.lit"><a href="#bLDI:453">@{LDI}</a></em>
                 break;
             case OP_LDR:
-<span class="nocode pln">                {LDR, <a href="index.html#1:7">7</a>}</span>
+                <em class="block-link nocode"title="line 562. index.lit"><a href="#bLDR:562">@{LDR}</a></em>
                 break;
             case OP_LEA:
-<span class="nocode pln">                {LEA, <a href="index.html#1:7">7</a>}</span>
+                <em class="block-link nocode"title="line 572. index.lit"><a href="#bLEA:572">@{LEA}</a></em>
                 break;
             case OP_ST:
-<span class="nocode pln">                {ST, <a href="index.html#1:7">7</a>}</span>
+                <em class="block-link nocode"title="line 581. index.lit"><a href="#bST:581">@{ST}</a></em>
                 break;
             case OP_STI:
-<span class="nocode pln">                {STI, <a href="index.html#1:7">7</a>}</span>
+                <em class="block-link nocode"title="line 589. index.lit"><a href="#bSTI:589">@{STI}</a></em>
                 break;
             case OP_STR:
-<span class="nocode pln">                {STR, <a href="index.html#1:7">7</a>}</span>
+                <em class="block-link nocode"title="line 597. index.lit"><a href="#bSTR:597">@{STR}</a></em>
                 break;
             case OP_TRAP:
-<span class="nocode pln">                {TRAP, <a href="index.html#1:8">8</a>}</span>
+                <em class="block-link nocode"title="line 645. index.lit"><a href="#bTRAP:645">@{TRAP}</a></em>
                 break;
             case OP_RES:
             case OP_RTI:
             default:
-<span class="nocode pln">                {BAD OPCODE, <a href="index.html#1:7">7</a>}</span>
+                <em class="block-link nocode"title="line 477. index.lit"><a href="#bBAD_OPCODE:477">@{BAD OPCODE}</a></em>
                 break;
         }
     }
-<span class="nocode pln">    {Shutdown, <a href="index.html#1:12">12</a>}</span>
+    <em class="block-link nocode"title="line 931. index.lit"><a href="#bShutdown:931">@{Shutdown}</a></em>
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:853" title="line 854. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
-</div>
-<p>While we are at the main loop let's handle command line input to make our program usable.
-We expect one or more paths to VM images and present a usage string if none are given.
-</p>
+<p>While we are at the main loop let&rsquo;s handle command line input to make our program usable.
+We expect one or more paths to VM images and present a usage string if none are given.</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Load Arguments <a href="index.html#1:5">5</a>}</span>
-<pre class="prettyprint lang-c">
-if (argc &lt; 2)
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bLoad_Arguments:289" href="#bLoad_Arguments:289">Load Arguments</a></em></strong></span>
+<pre class="prettyprint"><code class="">if (argc &lt; 2)
 {
     /* show usage string */
     printf("lc3 [image-file1] ...\n");
@@ -486,89 +368,82 @@ for (int j = 1; j &lt; argc; ++j)
         exit(1);
     }
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> <span title="line 1192. lc3-alt.cpp">2</span> <span title="line 1239. lc3-alt-win.cpp">3</span> </small></p></div>
 
 
 
-</div>
-</div>
-<a name="1:6"><div class="section"><h4>6. Implementing Instructions</h4></a>
-<p>Your task now is to fill in each opcode case with a correct implementation. This is easier than it sounds. A detailed specification for each instruction is included in the <a href="supplies/lc3-isa.pdf">project documents</a>. The specificiation for each translates pretty easily to several lines of codes. I will demonstrate how to implement two of them here. The code for the rest can be found in the next section.
-</p>
-<h3> ADD</h3>
-<p>The <code>ADD</code> instruction takes two numbers, adds them together, and stores the result in a register. Its specification is found on page 526. Each <code>ADD</code> instruction looks like the following:
-</p>
-<p><img src="img/add_layout.gif" alt="Add Encoding">
-</p>
-<p>The encoding shows two rows because there are two different "modes" for this instruction. Before I explain modes, let's try to find the similarities between them. In both rows, we can see that we start with 4 bits, <code>0001</code>. This is the opcode value for <code>OP_ADD</code>. The next 3 bits are marked <code>DR</code>. This stands for destination register. The destination register is where the added sum will be stored. The next 3 bits are <code>SR1</code>. This is the register containing the first number to add.
-</p>
-<p>So we know where we want to store the result and we know the first number to add. The last bit of information we need is the second number to add. At this point, the two rows start to look different. Notice that on the top row the 5th bit is a <code>0</code> and in the second row it is <code>1</code>. This bit indicates whether it is <em>immediate mode</em> or <em>register mode</em>. In <em>register mode</em>, the second number is stored in a register just like the first. This is marked <code>SR2</code> and is contained in bits 2-0. Bits 3 and 4 are unused. In assembly this would be written as:
-</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Add Register Assembly <a href="index.html#1:6">6</a>}</span>
-<pre class="prettyprint lang-c">
-ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
-</pre>
+<h2><a id="s0:4"></a>5. Implementing Instructions</h2>
 
 
+<p>Your task now is to fill in each opcode case with a correct implementation. This is easier than it sounds. A detailed specification for each instruction is included in the <a href="supplies/lc3-isa.pdf">project documents</a>. The specificiation for each translates pretty easily to several lines of codes. I will demonstrate how to implement two of them here. The code for the rest can be found in the next section.</p>
 
-</div>
+<h3>ADD</h3>
+
+<p>The <code>ADD</code> instruction takes two numbers, adds them together, and stores the result in a register. Its specification is found on page 526. Each <code>ADD</code> instruction looks like the following:</p>
+
+<p><img src="img/add_layout.gif" alt="Add Encoding" /></p>
+
+<p>The encoding shows two rows because there are two different &ldquo;modes&rdquo; for this instruction. Before I explain modes, let&rsquo;s try to find the similarities between them. In both rows, we can see that we start with 4 bits, <code>0001</code>. This is the opcode value for <code>OP_ADD</code>. The next 3 bits are marked <code>DR</code>. This stands for destination register. The destination register is where the added sum will be stored. The next 3 bits are <code>SR1</code>. This is the register containing the first number to add.</p>
+
+<p>So we know where we want to store the result and we know the first number to add. The last bit of information we need is the second number to add. At this point, the two rows start to look different. Notice that on the top row the 5th bit is a <code>0</code> and in the second row it is <code>1</code>. This bit indicates whether it is <em>immediate mode</em> or <em>register mode</em>. In <em>register mode</em>, the second number is stored in a register just like the first. This is marked <code>SR2</code> and is contained in bits 2-0. Bits 3 and 4 are unused. In assembly this would be written as:</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bAdd_Register_Assembly:321" href="#bAdd_Register_Assembly:321">Add Register Assembly</a></em></strong></span>
+<pre class="prettyprint"><code class="">ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
+</code></pre>
+</small></p></div>
+
+
 <p>Immediate mode is a convenience which reduces the length of a typical program.
 Instead of adding two values stored in separate registers, the second value is embedded in the instruction itself, marked
 <code>imm5</code> in the diagram.
 This removes the need to write instructions to load the value from memory.
 The tradeoff is that the instruction only has room for a small number, up to <code>2^5=32</code> (unsigned) to be exact,
-making immediate mode primarily useful for incrementing and decrementing. In assembly, it could be written as:
-</p>
+making immediate mode primarily useful for incrementing and decrementing. In assembly, it could be written as:</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Add Immediate Assembly <a href="index.html#1:6">6</a>}</span>
-<pre class="prettyprint lang-c">
-ADD R0 R0 1 ; add 1 to R0 and store back in R0
-</pre>
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bAdd_Immediate_Assembly:333" href="#bAdd_Immediate_Assembly:333">Add Immediate Assembly</a></em></strong></span>
+<pre class="prettyprint"><code class="">ADD R0 R0 1 ; add 1 to R0 and store back in R0
+</code></pre>
+</small></p></div>
 
 
+<p>Here is a summary from the specification:</p>
 
-</div>
-<p>Here is a summary from the specification:
-</p>
-<blockquote><p> If bit [5] is 0, the second source operand is obtained from SR2. If bit [5] is 1, the second source operand is obtained by sign-extending the imm5 field to 16 bits. In both cases, the second source operand is added to the contents of SR1 and the result stored in DR. (Pg. 526)
-</p>
-</blockquote>
-<p>That sounds just like the behaviour we discussed, but what is "sign-extending"? The immediate mode value has only 5 bits, but it needs to be added to a 16-bit number. To do the addition, those 5 bits need to be extended to 16 to match the other number. For positive numbers, we can simply fill in 0's for the additional bits. For negative numbers, this causes a problem. For example, -1 in 5 bits is <code>1 1111</code>. If we just extended it with 0's, this is <code>0000 0000 0001 1111</code> which is equal to 31. Sign extension corrects this problem by filling in 0's for positive numbers and 1's for negative numbers, so that original values are preserved.
-</p>
+<blockquote><p>If bit [5] is 0, the second source operand is obtained from SR2. If bit [5] is 1, the second source operand is obtained by sign-extending the imm5 field to 16 bits. In both cases, the second source operand is added to the contents of SR1 and the result stored in DR. (Pg. 526)</p></blockquote>
 
-<div class="codeblock">
-<span class="codeblock_name">{Sign Extend <a href="index.html#1:6">6</a>}</span>
-<pre class="prettyprint lang-c">
-uint16_t sign_extend(uint16_t x, int bit_count)
+<p>That sounds just like the behaviour we discussed, but what is &ldquo;sign-extending&rdquo;? The immediate mode value has only 5 bits, but it needs to be added to a 16-bit number. To do the addition, those 5 bits need to be extended to 16 to match the other number. For positive numbers, we can simply fill in 0&rsquo;s for the additional bits. For negative numbers, this causes a problem. For example, -1 in 5 bits is <code>1 1111</code>. If we just extended it with 0&rsquo;s, this is <code>0000 0000 0001 1111</code> which is equal to 31. Sign extension corrects this problem by filling in 0&rsquo;s for positive numbers and 1&rsquo;s for negative numbers, so that original values are preserved.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bSign_Extend:343" href="#bSign_Extend:343">Sign Extend</a></em></strong></span>
+<pre class="prettyprint"><code class="">uint16_t sign_extend(uint16_t x, int bit_count)
 {
     if ((x &gt;&gt; (bit_count - 1)) &amp; 1) {
         x |= (0xFFFF &lt;&lt; bit_count);
     }
     return x;
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:853" title="line 854. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> <span title="line 1192. lc3-alt.cpp">3</span> <span title="line 1239. lc3-alt-win.cpp">4</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
-</div>
-<blockquote><p> <strong>Note:</strong> If you are interested in exactly how negative numbers can be represented in binary, you can read about <a href="https://en.wikipedia.org/wiki/Two%27s_complement">Two's Complement</a>. However, this is not essential. You can just copy the code above and use it whenever the specification says to sign extend numbers.
-</p>
-</blockquote>
-<p>There is one last sentence in the specification:
-</p>
-<blockquote><p> The condition codes are set, based on whether the result is negative, zero, or positive. (Pg. 526)
-</p>
-</blockquote>
-<p>Earlier we defined a condition flags enum, and now it's time to use them. <em>Any time</em> a value is written to a register, we need to update the flags to indicate its sign. We will write a function so that this can be reused:
-</p>
+<blockquote><p><strong>Note:</strong> If you are interested in exactly how negative numbers can be represented in binary, you can read about <a href="https://en.wikipedia.org/wiki/Two%27s_complement">Two&rsquo;s Complement</a>. However, this is not essential. You can just copy the code above and use it whenever the specification says to sign extend numbers.</p></blockquote>
 
-<div class="codeblock">
-<span class="codeblock_name">{Update Flags <a href="index.html#1:6">6</a>}</span>
-<pre class="prettyprint lang-c">
-void update_flags(uint16_t r)
+<p>There is one last sentence in the specification:</p>
+
+<blockquote><p>The condition codes are set, based on whether the result is negative, zero, or positive. (Pg. 526)</p></blockquote>
+
+<p>Earlier we defined a condition flags enum, and now it&rsquo;s time to use them. <em>Any time</em> a value is written to a register, we need to update the flags to indicate its sign. We will write a function so that this can be reused:</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bUpdate_Flags:361" href="#bUpdate_Flags:361">Update Flags</a></em></strong></span>
+<pre class="prettyprint"><code class="">void update_flags(uint16_t r)
 {
     if (reg[r] == 0)
     {
@@ -583,18 +458,16 @@ void update_flags(uint16_t r)
         reg[R_COND] = FL_POS;
     }
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:853" title="line 854. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> <span title="line 1192. lc3-alt.cpp">3</span> <span title="line 1239. lc3-alt-win.cpp">4</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
-</div>
-<p>Now we are ready to write the code for the <code>ADD</code> case:
-</p>
+<p>Now we are ready to write the code for the <code>ADD</code> case:</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{ADD <a href="index.html#1:6">6</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bADD:381" href="#bADD:381">ADD</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     /* destination register (DR) */
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     /* first operand (SR1) */
@@ -615,48 +488,39 @@ void update_flags(uint16_t r)
 
     update_flags(r0);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
-<p>This section contained a lot of information, so let's summarize.
-</p>
-<ul>
-<li><code>ADD</code> takes two values and stores them in a register.
-</li>
-<li>In register mode, the second value to add is found in a register.
-</li>
-<li>In immediate mode, the second value is embedded in the right-most 5 bits of the instruction.
-</li>
-<li>Values which are shorter than 16 bits need to be sign extended.
-</li>
-<li>Any time an instruction modifies a register, the condition flags need to be updated.
-</li>
-</ul>
-<p>You may be feeling overwhelmed about writing 15 more instructions. However, all of what you learned here will be reused. Most of the instructions use some combination of sign extension, different modes, and updating flags.
-</p>
-<h3> LDI</h3>
-<p><code>LDI</code> stands for "load indirect." This instruction is used to load a value from a location in memory into a register. The specification is found on page 532.
-</p>
-<p>Here is what the binary layout looks like:
-</p>
-<p><img src="img/ldi_layout.gif" alt="LDI Encoding">
-</p>
-<p>In contrast to <code>ADD</code>, there are no modes and fewer parameters. This time, the opcode is <code>1010</code> which corresponds with the <code>OP_LDI</code> enum value. Just like <code>ADD</code>, it contains a 3-bit <code>DR</code> (the destination register) for storing the loaded value. The remaining bits are labeled <code>PCoffset9</code>. This is an immediate value embedded in the instruction (similar to <code>imm5</code>). Since this instruction loads from memory, we can guess that this number is some kind of address which tells us where to load from. The specification provides more detail:
-</p>
-<blockquote><p> An address is computed by sign-extending bits <code>[8:0]</code> to 16 bits and adding this value to the incremented <code>PC</code>. What is stored in memory at this address is the address of the data to be loaded into <code>DR</code>. (Pg. 532)
-</p>
-</blockquote>
-<p>Just like before, we need to sign extend this 9-bit value, but this time add it to the current <code>PC</code>. (If you look back at the execution loop, the <code>PC</code> was incremented right after this instruction was loaded.) The resulting sum is an address to a location in memory, and that address <em>contains, yet another</em> value which is the address of the value to load.
-</p>
-<p>This may seem like a roundabout way to read from memory, but it is indispensable. The <code>LD</code> instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. <code>LDI</code> is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data:
-</p>
+<p>This section contained a lot of information, so let&rsquo;s summarize.
+- <code>ADD</code> takes two values and stores them in a register.
+- In register mode, the second value to add is found in a register.
+- In immediate mode, the second value is embedded in the right-most 5 bits of the instruction.
+- Values which are shorter than 16 bits need to be sign extended.
+- Any time an instruction modifies a register, the condition flags need to be updated.</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{C LDI Sample <a href="index.html#1:6">6</a>}</span>
-<pre class="prettyprint lang-c">
-// the value of far_data is an address
+<p>You may be feeling overwhelmed about writing 15 more instructions. However, all of what you learned here will be reused. Most of the instructions use some combination of sign extension, different modes, and updating flags.</p>
+
+<h3>LDI</h3>
+
+<p><code>LDI</code> stands for &ldquo;load indirect.&rdquo; This instruction is used to load a value from a location in memory into a register. The specification is found on page 532.</p>
+
+<p>Here is what the binary layout looks like:</p>
+
+<p><img src="img/ldi_layout.gif" alt="LDI Encoding" /></p>
+
+<p>In contrast to <code>ADD</code>, there are no modes and fewer parameters. This time, the opcode is <code>1010</code> which corresponds with the <code>OP_LDI</code> enum value. Just like <code>ADD</code>, it contains a 3-bit <code>DR</code> (the destination register) for storing the loaded value. The remaining bits are labeled <code>PCoffset9</code>. This is an immediate value embedded in the instruction (similar to <code>imm5</code>). Since this instruction loads from memory, we can guess that this number is some kind of address which tells us where to load from. The specification provides more detail:</p>
+
+<blockquote><p>An address is computed by sign-extending bits <code>[8:0]</code> to 16 bits and adding this value to the incremented <code>PC</code>. What is stored in memory at this address is the address of the data to be loaded into <code>DR</code>. (Pg. 532)</p></blockquote>
+
+<p>Just like before, we need to sign extend this 9-bit value, but this time add it to the current <code>PC</code>. (If you look back at the execution loop, the <code>PC</code> was incremented right after this instruction was loaded.) The resulting sum is an address to a location in memory, and that address <em>contains, yet another</em> value which is the address of the value to load.</p>
+
+<p>This may seem like a roundabout way to read from memory, but it is indispensable. The <code>LD</code> instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. <code>LDI</code> is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data:</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bC_LDI_Sample:430" href="#bC_LDI_Sample:430">C LDI Sample</a></em></strong></span>
+<pre class="prettyprint"><code class="">// the value of far_data is an address
 // of course far_data itself (the location in memory containing the address) has an address
 char* far_data = "apple";
 
@@ -670,23 +534,20 @@ char* far_data = "apple";
 // if PC was at 0x100
 // LDI R0 0x023
 // would load 'a' into R0
-</pre>
+</code></pre>
+</small></p></div>
 
 
+<p>Same as before, the flags need to be updated after putting the value into <code>DR</code>:</p>
 
-</div>
-<p>Same as before, the flags need to be updated after putting the value into <code>DR</code>:
-</p>
-<blockquote><p> The condition codes are set based on whether the value loaded is negative, zero, or positive. (Pg. 532)
-</p>
-</blockquote>
-<p>Here is the code for this case: (<code>mem_read</code> will be discussed in a later section.)
-</p>
+<blockquote><p>The condition codes are set based on whether the value loaded is negative, zero, or positive. (Pg. 532)</p></blockquote>
 
-<div class="codeblock">
-<span class="codeblock_name">{LDI <a href="index.html#1:6">6</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<p>Here is the code for this case: (<code>mem_read</code> will be discussed in a later section.)</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bLDI:453" href="#bLDI:453">LDI</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     /* destination register (DR) */
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     /* PCoffset 9*/
@@ -695,39 +556,37 @@ char* far_data = "apple";
     reg[r0] = mem_read(mem_read(reg[R_PC] + pc_offset));
     update_flags(r0);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
-<p>As I said, this instruction shared a lot of the code and knowledge learned from <code>ADD</code>. You will find this is the case with the remaining instructions.
-</p>
-<p>You now need to go back and implement the rest of the switch cases for the instructions. Follow <a href="supplies/lc3-isa.pdf">the specification</a> and use the code listed here to complete the others. The code for all instructions is listed at the end of the tutorial. Two of the opcodes specified before will not be used, they are <code>OP_RTI</code> and <code>OP_RES</code>. You can ignore these cases or throw an error if they are executed. After you are done, the bulk of your VM will be completed!
-</p>
+<p>As I said, this instruction shared a lot of the code and knowledge learned from <code>ADD</code>. You will find this is the case with the remaining instructions.</p>
 
-</div>
-<a name="1:7"><div class="section"><h4>7. Instruction Cheat Sheet</h4></a>
-<p>This section contains the full implementations of the remaining instructions if you get stuck.
-</p>
-<h3> RTI & RES</h3>
-<p>(these are unused)
-</p>
+<p>You now need to go back and implement the rest of the switch cases for the instructions. Follow <a href="supplies/lc3-isa.pdf">the specification</a> and use the code listed here to complete the others. The code for all instructions is listed at the end of the tutorial. Two of the opcodes specified before will not be used, they are <code>OP_RTI</code> and <code>OP_RES</code>. You can ignore these cases or throw an error if they are executed. After you are done, the bulk of your VM will be completed!</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{BAD OPCODE <a href="index.html#1:7">7</a>}</span>
-<pre class="prettyprint lang-c">
-abort();
-</pre>
+<h2><a id="s0:5"></a>6. Instruction Cheat Sheet</h2>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
-<h3> <a href="https://en.wikipedia.org/wiki/Bitwise_operation#AND">Bitwise and</a></h3>
+<p>This section contains the full implementations of the remaining instructions if you get stuck.</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{AND <a href="index.html#1:7">7</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<h3>RTI &amp; RES</h3>
+
+<p>(these are unused)</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bBAD_OPCODE:477" href="#bBAD_OPCODE:477">BAD OPCODE</a></em></strong></span>
+<pre class="prettyprint"><code class="">abort();
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> </small></p></div>
+
+
+<h3><a href="https://en.wikipedia.org/wiki/Bitwise_operation#AND">Bitwise and</a></h3>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bAND:482" href="#bAND:482">AND</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t r1 = (instr &gt;&gt; 6) &amp; 0x7;
     uint16_t imm_flag = (instr &gt;&gt; 5) &amp; 0x1;
@@ -744,34 +603,32 @@ abort();
     }
     update_flags(r0);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
-<h3> <a href="https://en.wikipedia.org/wiki/Bitwise_operation#NOT">Bitwise not</a></h3>
+<h3><a href="https://en.wikipedia.org/wiki/Bitwise_operation#NOT">Bitwise not</a></h3>
 
-<div class="codeblock">
-<span class="codeblock_name">{NOT <a href="index.html#1:7">7</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bNOT:503" href="#bNOT:503">NOT</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t r1 = (instr &gt;&gt; 6) &amp; 0x7;
 
     reg[r0] = ~reg[r1];
     update_flags(r0);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
-<h3> Branch</h3>
+<h3>Branch</h3>
 
-<div class="codeblock">
-<span class="codeblock_name">{BR <a href="index.html#1:7">7</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bBR:513" href="#bBR:513">BR</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
     uint16_t cond_flag = (instr &gt;&gt; 9) &amp; 0x7;
     if (cond_flag &amp; reg[R_COND])
@@ -779,34 +636,32 @@ abort();
         reg[R_PC] += pc_offset;
     }
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
-<h3> Jump</h3>
-<p><code>RET</code> is listed as a separate instruction in the specification, since it is a different keyword in assembly. However, it is actually a special case of <code>JMP</code>. <code>RET</code> happens whenever <code>R1</code> is 7.
-</p>
+<h3>Jump</h3>
 
-<div class="codeblock">
-<span class="codeblock_name">{JMP <a href="index.html#1:7">7</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<p><code>RET</code> is listed as a separate instruction in the specification, since it is a different keyword in assembly. However, it is actually a special case of <code>JMP</code>. <code>RET</code> happens whenever <code>R1</code> is 7.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bJMP:526" href="#bJMP:526">JMP</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     /* Also handles RET */
     uint16_t r1 = (instr &gt;&gt; 6) &amp; 0x7;
     reg[R_PC] = reg[r1];
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
-<h3> Jump Register</h3>
+<h3>Jump Register</h3>
 
-<div class="codeblock">
-<span class="codeblock_name">{JSR <a href="index.html#1:7">7</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bJSR:534" href="#bJSR:534">JSR</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     uint16_t long_flag = (instr &gt;&gt; 11) &amp; 1;
     reg[R_R7] = reg[R_PC];
     if (long_flag)
@@ -821,119 +676,114 @@ abort();
     }
     break;
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
-<h3> Load</h3>
+<h3>Load</h3>
 
-<div class="codeblock">
-<span class="codeblock_name">{LD <a href="index.html#1:7">7</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bLD:552" href="#bLD:552">LD</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
     reg[r0] = mem_read(reg[R_PC] + pc_offset);
     update_flags(r0);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
-<h3> Load Register</h3>
+<h3>Load Register</h3>
 
-<div class="codeblock">
-<span class="codeblock_name">{LDR <a href="index.html#1:7">7</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bLDR:562" href="#bLDR:562">LDR</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t r1 = (instr &gt;&gt; 6) &amp; 0x7;
     uint16_t offset = sign_extend(instr &amp; 0x3F, 6);
     reg[r0] = mem_read(reg[r1] + offset);
     update_flags(r0);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
-<h3> Load Effective Address</h3>
+<h3>Load Effective Address</h3>
 
-<div class="codeblock">
-<span class="codeblock_name">{LEA <a href="index.html#1:7">7</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bLEA:572" href="#bLEA:572">LEA</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
     reg[r0] = reg[R_PC] + pc_offset;
     update_flags(r0);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
-<h3> Store</h3>
+<h3>Store</h3>
 
-<div class="codeblock">
-<span class="codeblock_name">{ST <a href="index.html#1:7">7</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bST:581" href="#bST:581">ST</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
     mem_write(reg[R_PC] + pc_offset, reg[r0]);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
-<h3> Store Indirect</h3>
+<h3>Store Indirect</h3>
 
-<div class="codeblock">
-<span class="codeblock_name">{STI <a href="index.html#1:7">7</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bSTI:589" href="#bSTI:589">STI</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
     mem_write(mem_read(reg[R_PC] + pc_offset), reg[r0]);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
-<h3> Store Register</h3>
+<h3>Store Register</h3>
 
-<div class="codeblock">
-<span class="codeblock_name">{STR <a href="index.html#1:7">7</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bSTR:597" href="#bSTR:597">STR</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t r1 = (instr &gt;&gt; 6) &amp; 0x7;
     uint16_t offset = sign_extend(instr &amp; 0x3F, 6);
     mem_write(reg[r1] + offset, reg[r0]);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
-</div>
-<a name="1:8"><div class="section"><h4>8. Trap Routines</h4></a>
-<p>The LC-3 provides a few predefined routines for performing common tasks and interacting with I/O devices. For example, there are routines for getting input from the keyboard and for displaying strings to the console. These are called <em>trap routines</em> which you can think of as the operating system or API for the LC-3. Each trap routine is assigned a <em>trap code</em> which identifies it (similar to an opcode). To execute one, the <code>TRAP</code> instruction is called with the trap code of the desired routine.
-</p>
-<p><img src="img/trap_layout.gif" alt="Trap Encoding">
-</p>
-<p>Define an enum for each trap code:
-</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{TRAP Codes <a href="index.html#1:8">8</a>}</span>
-<pre class="prettyprint lang-c">
-enum
+
+<h2><a id="s0:6"></a>7. Trap Routines</h2>
+
+
+<p>The LC-3 provides a few predefined routines for performing common tasks and interacting with I/O devices. For example, there are routines for getting input from the keyboard and for displaying strings to the console. These are called <em>trap routines</em> which you can think of as the operating system or API for the LC-3. Each trap routine is assigned a <em>trap code</em> which identifies it (similar to an opcode). To execute one, the <code>TRAP</code> instruction is called with the trap code of the desired routine.</p>
+
+<p><img src="img/trap_layout.gif" alt="Trap Encoding" /></p>
+
+<p>Define an enum for each trap code:</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bTRAP_Codes:614" href="#bTRAP_Codes:614">TRAP Codes</a></em></strong></span>
+<pre class="prettyprint"><code class="">enum
 {
     TRAP_GETC = 0x20,  /* get character from keyboard, not echoed onto the terminal */
     TRAP_OUT = 0x21,   /* output a character */
@@ -942,82 +792,76 @@ enum
     TRAP_PUTSP = 0x24, /* output a byte string */
     TRAP_HALT = 0x25   /* halt the program */
 };
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:853" title="line 854. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> <span title="line 1192. lc3-alt.cpp">3</span> <span title="line 1239. lc3-alt-win.cpp">4</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
-</div>
 <p>You may be wondering why the trap codes are not included in the instructions.
 This is because they do not actually introduce any new functionality to the LC-3, they just provide a convenient way to perform a task (similar to OS system calls).
 In the official LC-3 simulator, trap routines are <a href="supplies/os.asm">written in assembly</a>.
-When a trap code is called, the <code>PC</code> is moved to that code's address.
-The CPU executes the procedure's instructions, and when it is complete, the PC is reset to the location following the initial call.
-</p>
-<blockquote><p> <strong>Note:</strong> This is why programs start at address <code>0x3000</code> instead of <code>0x0</code>. The lower addresses are left empty to leave space for the trap routine code.
-</p>
-</blockquote>
+When a trap code is called, the <code>PC</code> is moved to that code&rsquo;s address.
+The CPU executes the procedure&rsquo;s instructions, and when it is complete, the PC is reset to the location following the initial call.</p>
+
+<blockquote><p><strong>Note:</strong> This is why programs start at address <code>0x3000</code> instead of <code>0x0</code>. The lower addresses are left empty to leave space for the trap routine code.</p></blockquote>
+
 <p>There is no specification for <em>how</em> trap routines must be implemented, only what they are supposed to do.
 In our VM, we are going to do things slightly differently by writing them in C.
 When a trap code is invoked, a C function will be called. When it is completed, execution will return to the instructions.
-(If you are curious about trap codes in assembly, see <a href="https://github.com/rpendleton/lc3sim-c">Ryan's implementation</a>.)
-</p>
-<p>Even though the trap routines can be written in assembly and this is what a physical LC-3 computer would do, it isn't the best fit for a VM. Instead of writing our own primitive I/O routines, we can take advantage of the ones available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability.
-</p>
-<blockquote><p> <strong>Note:</strong> Getting input from the keyboard is one specific example of this. The assembly version uses a loop to continuously check the keyboard for input. This consumes a lot of CPU time for nothing! Using a proper OS input function allows the program to sleep until input is received.
-</p>
-</blockquote>
-<p>In the switch case form the <code>TRAP</code> opcode, add another switch:
-</p>
+(If you are curious about trap codes in assembly, see <a href="https://github.com/rpendleton/lc3sim-c">Ryan&rsquo;s implementation</a>.)</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{TRAP <a href="index.html#1:8">8</a>}</span>
-<pre class="prettyprint lang-c">
-switch (instr &amp; 0xFF)
+<p>Even though the trap routines can be written in assembly and this is what a physical LC-3 computer would do, it isn&rsquo;t the best fit for a VM. Instead of writing our own primitive I/O routines, we can take advantage of the ones available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability.</p>
+
+<blockquote><p><strong>Note:</strong> Getting input from the keyboard is one specific example of this. The assembly version uses a loop to continuously check the keyboard for input. This consumes a lot of CPU time for nothing! Using a proper OS input function allows the program to sleep until input is received.</p></blockquote>
+
+<p>In the switch case form the <code>TRAP</code> opcode, add another switch:</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bTRAP:645" href="#bTRAP:645">TRAP</a></em></strong></span>
+<pre class="prettyprint"><code class="">switch (instr &amp; 0xFF)
 {
     case TRAP_GETC:
-<span class="nocode pln">        {TRAP GETC, <a href="index.html#1:9">9</a>}</span>
+        <em class="block-link nocode"title="line 704. index.lit"><a href="#bTRAP_GETC:704">@{TRAP GETC}</a></em>
         break;
     case TRAP_OUT:
-<span class="nocode pln">        {TRAP OUT, <a href="index.html#1:9">9</a>}</span>
+        <em class="block-link nocode"title="line 711. index.lit"><a href="#bTRAP_OUT:711">@{TRAP OUT}</a></em>
         break;
     case TRAP_PUTS:
-<span class="nocode pln">        {TRAP PUTS, <a href="index.html#1:8">8</a>}</span>
+        <em class="block-link nocode"title="line 684. index.lit"><a href="#bTRAP_PUTS:684">@{TRAP PUTS}</a></em>
         break;
     case TRAP_IN:
-<span class="nocode pln">        {TRAP IN, <a href="index.html#1:9">9</a>}</span>
+        <em class="block-link nocode"title="line 717. index.lit"><a href="#bTRAP_IN:717">@{TRAP IN}</a></em>
         break;
     case TRAP_PUTSP:
-<span class="nocode pln">        {TRAP PUTSP, <a href="index.html#1:9">9</a>}</span>
+        <em class="block-link nocode"title="line 729. index.lit"><a href="#bTRAP_PUTSP:729">@{TRAP PUTSP}</a></em>
         break;
     case TRAP_HALT:
-<span class="nocode pln">        {TRAP HALT, <a href="index.html#1:9">9</a>}</span>
+        <em class="block-link nocode"title="line 748. index.lit"><a href="#bTRAP_HALT:748">@{TRAP HALT}</a></em>
         break;
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> <a href="#bInstruction_C__:1083" title="line 1084. Instruction C++">2</a> </small></p></div>
 
 
-<p class="seealso">Used in sections <a href="index.html#1:5">5</a> and <a href="index.html#1:15">15</a></p>
-</div>
-<p>As with instructions, I will show you how to implement a single trap routine and leave the rest to you.
-</p>
-<h3> PUTS</h3>
-<p>The <code>PUTS</code> trap code is used to output a null-terminated string (similar to <code>printf</code> in C). The specification is found on page 543.
-</p>
-<p>To display a string, we must give the trap routine a string to display. This is done by storing the address of the first character in <code>R0</code> before beginning the trap.
-</p>
-<p>The specification says:
-</p>
-<blockquote><p> Write a string of ASCII characters to the console display. The characters are contained
- in consecutive memory locations, one character per memory location, starting with the address specified in <code>R0</code>. Writing terminates with the occurrence of <code>x0000</code> in a memory location. (Pg. 543)
-</p>
-</blockquote>
-<p>Notice that unlike C strings, characters are <em>not stored</em> in a single byte, but in a <em>single memory location</em>. Memory locations in LC-3 are 16 bits, so each character in the string is 16 bits wide. To display this with a C function, we will need to convert each value to a char and output them individually.
-</p>
+<p>As with instructions, I will show you how to implement a single trap routine and leave the rest to you.</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{TRAP PUTS <a href="index.html#1:8">8</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<h3>PUTS</h3>
+
+<p>The <code>PUTS</code> trap code is used to output a null-terminated string (similar to <code>printf</code> in C). The specification is found on page 543.</p>
+
+<p>To display a string, we must give the trap routine a string to display. This is done by storing the address of the first character in <code>R0</code> before beginning the trap.</p>
+
+<p>The specification says:</p>
+
+<blockquote><p>Write a string of ASCII characters to the console display. The characters are contained
+in consecutive memory locations, one character per memory location, starting with the address specified in <code>R0</code>. Writing terminates with the occurrence of <code>x0000</code> in a memory location. (Pg. 543)</p></blockquote>
+
+<p>Notice that unlike C strings, characters are <em>not stored</em> in a single byte, but in a <em>single memory location</em>. Memory locations in LC-3 are 16 bits, so each character in the string is 16 bits wide. To display this with a C function, we will need to convert each value to a char and output them individually.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bTRAP_PUTS:684" href="#bTRAP_PUTS:684">TRAP PUTS</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     /* one char per word */
     uint16_t* c = memory + reg[R_R0];
     while (*c)
@@ -1027,52 +871,46 @@ switch (instr &amp; 0xFF)
     }
     fflush(stdout);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bTRAP:645" title="line 646. TRAP">1</a> </small></p></div>
 
 
+<p>That&rsquo;s all for this routine. The trap routines are pretty straightforward if you are familiar with C. Go back to the specification and implement the others now. As with the instructions, the full code can be found at the end of the tutorial.</p>
 
-</div>
-<p>That's all for this routine. The trap routines are pretty straightforward if you are familiar with C. Go back to the specification and implement the others now. As with the instructions, the full code can be found at the end of the tutorial.
-</p>
+<h2><a id="s0:7"></a>8. Trap Routine Cheat Sheet</h2>
 
-</div>
-<a name="1:9"><div class="section"><h4>9. Trap Routine Cheat Sheet</h4></a>
-<p>This section contains the full implementations of the remaining trap routines.
-</p>
-<p>Input Character
-</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{TRAP GETC <a href="index.html#1:9">9</a>}</span>
-<pre class="prettyprint lang-c">
-/* read a single ASCII char */
+<p>This section contains the full implementations of the remaining trap routines.</p>
+
+<p>Input Character</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bTRAP_GETC:704" href="#bTRAP_GETC:704">TRAP GETC</a></em></strong></span>
+<pre class="prettyprint"><code class="">/* read a single ASCII char */
 reg[R_R0] = (uint16_t)getchar();
 update_flags(R_R0);
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bTRAP:645" title="line 646. TRAP">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:8">8</a></p>
-</div>
-<p>Output Character
-</p>
+<p>Output Character</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{TRAP OUT <a href="index.html#1:9">9</a>}</span>
-<pre class="prettyprint lang-c">
-putc((char)reg[R_R0], stdout);
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bTRAP_OUT:711" href="#bTRAP_OUT:711">TRAP OUT</a></em></strong></span>
+<pre class="prettyprint"><code class="">putc((char)reg[R_R0], stdout);
 fflush(stdout);
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bTRAP:645" title="line 646. TRAP">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:8">8</a></p>
-</div>
-<p>Prompt for Input Character
-</p>
+<p>Prompt for Input Character</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{TRAP IN <a href="index.html#1:9">9</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bTRAP_IN:717" href="#bTRAP_IN:717">TRAP IN</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     printf("Enter a character: ");
     char c = getchar();
     putc(c, stdout);
@@ -1080,18 +918,16 @@ fflush(stdout);
     reg[R_R0] = (uint16_t)c;
     update_flags(R_R0);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bTRAP:645" title="line 646. TRAP">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:8">8</a></p>
-</div>
-<p>Output String
-</p>
+<p>Output String</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{TRAP PUTSP <a href="index.html#1:9">9</a>}</span>
-<pre class="prettyprint lang-c">
-{
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bTRAP_PUTSP:729" href="#bTRAP_PUTSP:729">TRAP PUTSP</a></em></strong></span>
+<pre class="prettyprint"><code class="">{
     /* one char per byte (two bytes per word)
        here we need to swap back to
        big endian format */
@@ -1106,38 +942,37 @@ fflush(stdout);
     }
     fflush(stdout);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bTRAP:645" title="line 646. TRAP">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:8">8</a></p>
-</div>
-<p>Halt Program
-</p>
+<p>Halt Program</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{TRAP HALT <a href="index.html#1:9">9</a>}</span>
-<pre class="prettyprint lang-c">
-puts("HALT");
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bTRAP_HALT:748" href="#bTRAP_HALT:748">TRAP HALT</a></em></strong></span>
+<pre class="prettyprint"><code class="">puts("HALT");
 fflush(stdout);
 running = 0;
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bTRAP:645" title="line 646. TRAP">1</a> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:8">8</a></p>
-</div>
-</div>
-<a name="1:10"><div class="section"><h4>10. Loading Programs</h4></a>
-<p>We have mentioned a lot about loading and executing instructions from memory, but how do instructions get into memory in the first place? When an assembly program is converted to machine code, the result is a file containing an array of instructions and data. This can be loaded by just copying the contents right into an address in memory.
-</p>
-<p>The first 16 bits of the program file specify the address in memory where the program should start. This address is called the <strong>origin</strong>. It must be read first, after which the rest of the data can be read from the file into memory starting at the origin address.
-</p>
-<p>Here is the code for reading an LC-3 program into memory:
-</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Read Image File <a href="index.html#1:10">10</a>}</span>
-<pre class="prettyprint lang-c">
-void read_image_file(FILE* file)
+
+<h2><a id="s0:8"></a>9. Loading Programs</h2>
+
+
+<p>We have mentioned a lot about loading and executing instructions from memory, but how do instructions get into memory in the first place? When an assembly program is converted to machine code, the result is a file containing an array of instructions and data. This can be loaded by just copying the contents right into an address in memory.</p>
+
+<p>The first 16 bits of the program file specify the address in memory where the program should start. This address is called the <strong>origin</strong>. It must be read first, after which the rest of the data can be read from the file into memory starting at the origin address.</p>
+
+<p>Here is the code for reading an LC-3 program into memory:</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bRead_Image_File:762" href="#bRead_Image_File:762">Read Image File</a></em></strong></span>
+<pre class="prettyprint"><code class="">void read_image_file(FILE* file)
 {
     /* the origin tells us where in memory to place the image */
     uint16_t origin;
@@ -1156,36 +991,31 @@ void read_image_file(FILE* file)
         ++p;
     }
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:853" title="line 854. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> <span title="line 1192. lc3-alt.cpp">3</span> <span title="line 1239. lc3-alt-win.cpp">4</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
-</div>
-<p>Notice that <code>swap16</code> is called on each loaded value. LC-3 programs are big-endian, but most of the modern computers we use are little endian. As a result, we need to swap each <code>uint16</code> that is loaded. (If you happen to be using a <a href="https://en.wikipedia.org/wiki/Power_Mac_G4_Cube">strange computer</a>, like a <a href="https://en.wikipedia.org/wiki/PowerPC#Endian_modes">PPC</a> then you should not swap.)
-</p>
+<p>Notice that <code>swap16</code> is called on each loaded value. LC-3 programs are big-endian, but most of the modern computers we use are little endian. As a result, we need to swap each <code>uint16</code> that is loaded. (If you happen to be using a <a href="https://en.wikipedia.org/wiki/Power_Mac_G4_Cube">strange computer</a>, like a <a href="https://en.wikipedia.org/wiki/PowerPC#Endian_modes">PPC</a> then you should not swap.)</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Swap <a href="index.html#1:10">10</a>}</span>
-<pre class="prettyprint lang-c">
-uint16_t swap16(uint16_t x)
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bSwap:786" href="#bSwap:786">Swap</a></em></strong></span>
+<pre class="prettyprint"><code class="">uint16_t swap16(uint16_t x)
 {
     return (x &lt;&lt; 8) | (x &gt;&gt; 8);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:853" title="line 854. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> <span title="line 1192. lc3-alt.cpp">3</span> <span title="line 1239. lc3-alt-win.cpp">4</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
-</div>
-<blockquote><p> <strong>Note:</strong> <a href="https://en.wikipedia.org/wiki/Endianness">Endianness</a> refers to how bytes of an integer are interpreted. In little-endian, the first byte is the least significant digit, and in big-endian, it is reversed. As far as I know, the decision is <em>mostly</em> arbitrary. Different companies made different decisions, so now we are left with varying implementations. You do not need to know anything else about endianness for this project.
-</p>
-</blockquote>
-<p>Let's also add a convenience function for <code>read_image_file</code> which takes a path a string;
-</p>
+<blockquote><p><strong>Note:</strong> <a href="https://en.wikipedia.org/wiki/Endianness">Endianness</a> refers to how bytes of an integer are interpreted. In little-endian, the first byte is the least significant digit, and in big-endian, it is reversed. As far as I know, the decision is <em>mostly</em> arbitrary. Different companies made different decisions, so now we are left with varying implementations. You do not need to know anything else about endianness for this project.</p></blockquote>
 
-<div class="codeblock">
-<span class="codeblock_name">{Read Image <a href="index.html#1:10">10</a>}</span>
-<pre class="prettyprint lang-c">
-int read_image(const char* image_path)
+<p>Let&rsquo;s also add a convenience function for <code>read_image_file</code> which takes a path a string;</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bRead_Image:796" href="#bRead_Image:796">Read Image</a></em></strong></span>
+<pre class="prettyprint"><code class="">int read_image(const char* image_path)
 {
     FILE* file = fopen(image_path, "rb");
     if (!file) { return 0; };
@@ -1193,40 +1023,39 @@ int read_image(const char* image_path)
     fclose(file);
     return 1;
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:853" title="line 854. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> <span title="line 1192. lc3-alt.cpp">3</span> <span title="line 1239. lc3-alt-win.cpp">4</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
-</div>
-</div>
-<a name="1:11"><div class="section"><h4>11. Memory Mapped Registers</h4></a>
-<p>Some special registers are not accessible from the normal register table. Instead, a special address is reserved for them in memory. To read and write to these registers, you just read and write to their memory location. These are called <strong>memory mapped registers</strong>. They are commonly used to interact with special hardware devices.
-</p>
-<p>The LC-3 has two memory mapped registers that need to be implemented. They are the keyboard status register (<code>KBSR</code>) and keyboard data register (<code>KBDR</code>). The <code>KBSR</code> indicates whether a key has been pressed, and the <code>KBDR</code> identifies which key was pressed.
-</p>
-<p>Although you can request keyboard input using <code>GETC</code>, this blocks execution until input is received. <code>KBSR</code> and <code>KBDR</code> allows you to <a href="https://en.wikipedia.org/wiki/Polling_(computer_science)">poll the state</a> of the device and continue execution, so the program can stay responsive while waiting for input.
-</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Memory Mapped Registers <a href="index.html#1:11">11</a>}</span>
-<pre class="prettyprint lang-c">
-enum
+
+<h2><a id="s0:9"></a>10. Memory Mapped Registers</h2>
+
+
+<p>Some special registers are not accessible from the normal register table. Instead, a special address is reserved for them in memory. To read and write to these registers, you just read and write to their memory location. These are called <strong>memory mapped registers</strong>. They are commonly used to interact with special hardware devices.</p>
+
+<p>The LC-3 has two memory mapped registers that need to be implemented. They are the keyboard status register (<code>KBSR</code>) and keyboard data register (<code>KBDR</code>). The <code>KBSR</code> indicates whether a key has been pressed, and the <code>KBDR</code> identifies which key was pressed.</p>
+
+<p>Although you can request keyboard input using <code>GETC</code>, this blocks execution until input is received. <code>KBSR</code> and <code>KBDR</code> allows you to <a href="https://en.wikipedia.org/wiki/Polling_(computer_science">poll the state</a>) of the device and continue execution, so the program can stay responsive while waiting for input.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bMemory_Mapped_Registers:815" href="#bMemory_Mapped_Registers:815">Memory Mapped Registers</a></em></strong></span>
+<pre class="prettyprint"><code class="">enum
 {
     MR_KBSR = 0xFE00, /* keyboard status */
     MR_KBDR = 0xFE02  /* keyboard data */
 };
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:853" title="line 854. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> <span title="line 1192. lc3-alt.cpp">3</span> <span title="line 1239. lc3-alt-win.cpp">4</span> </small></p></div>
 
 
+<p>Memory mapped registers make memory access a bit more complicated. We can&rsquo;t read and write to the memory array directly, but must instead call setter and getter functions. When memory is read from <code>KBSR</code>, the getter will check the keyboard and update both memory locations.</p>
 
-</div>
-<p>Memory mapped registers make memory access a bit more complicated. We can't read and write to the memory array directly, but must instead call setter and getter functions. When memory is read from <code>KBSR</code>, the getter will check the keyboard and update both memory locations.
-</p>
-
-<div class="codeblock">
-<span class="codeblock_name">{Memory Access <a href="index.html#1:11">11</a>}</span>
-<pre class="prettyprint lang-c">
-void mem_write(uint16_t address, uint16_t val)
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bMemory_Access:825" href="#bMemory_Access:825">Memory Access</a></em></strong></span>
+<pre class="prettyprint"><code class="">void mem_write(uint16_t address, uint16_t val)
 {
     memory[address] = val;
 }
@@ -1247,53 +1076,52 @@ uint16_t mem_read(uint16_t address)
     }
     return memory[address];
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:853" title="line 854. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> <span title="line 1192. lc3-alt.cpp">3</span> <span title="line 1239. lc3-alt-win.cpp">4</span> </small></p></div>
 
 
+<p>That completes the last component of the VM! Provided that you implemented the rest of the trap routines and instructions, you are almost ready to try it out!</p>
 
+<p>All that we have written should have been added to the C file in the following order:</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="blc3.c:853" href="#blc3.c:853">lc3.c</a></em></strong> <a href="#blc3.c:141">+=</a></span>
+<pre class="prettyprint"><code class=""><em class="block-link nocode"title="line 815. index.lit"><a href="#bMemory_Mapped_Registers:815">@{Memory Mapped Registers}</a></em>
+<em class="block-link nocode"title="line 614. index.lit"><a href="#bTRAP_Codes:614">@{TRAP Codes}</a></em>
+
+<em class="block-link nocode"title="line 51. index.lit"><a href="#bMemory_Storage:51">@{Memory Storage}</a></em>
+<em class="block-link nocode"title="line 86. index.lit"><a href="#bRegister_Storage:86">@{Register Storage}</a></em>
+
+<em class="block-link nocode"title="line 343. index.lit"><a href="#bSign_Extend:343">@{Sign Extend}</a></em>
+<em class="block-link nocode"title="line 786. index.lit"><a href="#bSwap:786">@{Swap}</a></em>
+<em class="block-link nocode"title="line 361. index.lit"><a href="#bUpdate_Flags:361">@{Update Flags}</a></em>
+<em class="block-link nocode"title="line 762. index.lit"><a href="#bRead_Image_File:762">@{Read Image File}</a></em>
+<em class="block-link nocode"title="line 796. index.lit"><a href="#bRead_Image:796">@{Read Image}</a></em>
+<em class="block-link nocode"title="line 881. index.lit"><a href="#bCheck_Key:881">@{Check Key}</a></em>
+<em class="block-link nocode"title="line 825. index.lit"><a href="#bMemory_Access:825">@{Memory Access}</a></em>
+<em class="block-link nocode"title="line 897. index.lit"><a href="#bInput_Buffering:897">@{Input Buffering}</a></em>
+<em class="block-link nocode"title="line 914. index.lit"><a href="#bHandle_Interrupt:914">@{Handle Interrupt}</a></em>
+
+<em class="block-link nocode"title="line 209. index.lit"><a href="#bMain_Loop:209">@{Main Loop}</a></em>
+</code></pre>
 </div>
-<p>That completes the last component of the VM! Provided that you implemented the rest of the trap routines and instructions, you are almost ready to try it out!
-</p>
-<p>All that we have written should have been added to the C file in the following order:
-</p>
-
-<div class="codeblock">
-<span class="codeblock_name">{<strong>lc3.c</strong> <a href="index.html#1:3">3</a>} +=</span>
-<pre class="prettyprint lang-c">
-<span class="nocode pln">{Memory Mapped Registers, <a href="index.html#1:11">11</a>}</span>
-<span class="nocode pln">{TRAP Codes, <a href="index.html#1:8">8</a>}</span>
-
-<span class="nocode pln">{Memory Storage, <a href="index.html#1:3">3</a>}</span>
-<span class="nocode pln">{Register Storage, <a href="index.html#1:3">3</a>}</span>
-
-<span class="nocode pln">{Sign Extend, <a href="index.html#1:6">6</a>}</span>
-<span class="nocode pln">{Swap, <a href="index.html#1:10">10</a>}</span>
-<span class="nocode pln">{Update Flags, <a href="index.html#1:6">6</a>}</span>
-<span class="nocode pln">{Read Image File, <a href="index.html#1:10">10</a>}</span>
-<span class="nocode pln">{Read Image, <a href="index.html#1:10">10</a>}</span>
-<span class="nocode pln">{Check Key, <a href="index.html#1:12">12</a>}</span>
-<span class="nocode pln">{Memory Access, <a href="index.html#1:11">11</a>}</span>
-<span class="nocode pln">{Input Buffering, <a href="index.html#1:12">12</a>}</span>
-<span class="nocode pln">{Handle Interrupt, <a href="index.html#1:12">12</a>}</span>
-
-<span class="nocode pln">{Main Loop, <a href="index.html#1:5">5</a>}</span>
-</pre>
 
 
 
-</div>
-</div>
-<a name="1:12"><div class="section"><h4>12. Platform Specifics (Unix)</h4></a>
+
+<h2><a id="s0:10"></a>11. Platform Specifics (Unix)</h2>
+
+
 <p>This section contains some tedious details that are needed to access the keyboard and behave nicely.
-These are not insightful or relevant to learning about VMs. Feel free to copy paste!
-</p>
-<p>NOTE: Skip to the next section for the <strong>Windows</strong> versions of these functions.
-</p>
+These are not insightful or relevant to learning about VMs. Feel free to copy paste!</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Check Key <a href="index.html#1:12">12</a>}</span>
-<pre class="prettyprint lang-c">
-uint16_t check_key()
+<p>NOTE: Skip to the next section for the <strong>Windows</strong> versions of these functions.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bCheck_Key:881" href="#bCheck_Key:881">Check Key</a></em></strong></span>
+<pre class="prettyprint"><code class="">uint16_t check_key()
 {
     fd_set readfds;
     FD_ZERO(&amp;readfds);
@@ -1304,18 +1132,16 @@ uint16_t check_key()
     timeout.tv_usec = 0;
     return select(1, &amp;readfds, NULL, NULL, &amp;timeout) != 0;
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:853" title="line 854. lc3.c">1</a> <span title="line 1192. lc3-alt.cpp">2</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
-</div>
-<p>This is Unix specific code for setting up terminal input.
-</p>
+<p>This is Unix specific code for setting up terminal input.</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Input Buffering <a href="index.html#1:12">12</a>}</span>
-<pre class="prettyprint lang-c">
-struct termios original_tio;
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bInput_Buffering:897" href="#bInput_Buffering:897">Input Buffering</a></em></strong></span>
+<pre class="prettyprint"><code class="">struct termios original_tio;
 
 void disable_input_buffering()
 {
@@ -1329,55 +1155,53 @@ void restore_input_buffering()
 {
     tcsetattr(STDIN_FILENO, TCSANOW, &amp;original_tio);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:853" title="line 854. lc3.c">1</a> <span title="line 1192. lc3-alt.cpp">2</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
-</div>
 
-<div class="codeblock">
-<span class="codeblock_name">{Handle Interrupt <a href="index.html#1:12">12</a>}</span>
-<pre class="prettyprint lang-c">
-void handle_interrupt(int signal)
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bHandle_Interrupt:914" href="#bHandle_Interrupt:914">Handle Interrupt</a></em></strong></span>
+<pre class="prettyprint"><code class="">void handle_interrupt(int signal)
 {
     restore_input_buffering();
     printf("\n");
     exit(-2);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:853" title="line 854. lc3.c">1</a> <span title="line 1011. lc3-win.c">2</span> <span title="line 1192. lc3-alt.cpp">3</span> <span title="line 1239. lc3-alt-win.cpp">4</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:11">11</a></p>
-</div>
 
-<div class="codeblock">
-<span class="codeblock_name">{Setup <a href="index.html#1:12">12</a>}</span>
-<pre class="prettyprint lang-c">
-signal(SIGINT, handle_interrupt);
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bSetup:923" href="#bSetup:923">Setup</a></em></strong></span>
+<pre class="prettyprint"><code class="">signal(SIGINT, handle_interrupt);
 disable_input_buffering();
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> <span title="line 1192. lc3-alt.cpp">2</span> <span title="line 1239. lc3-alt-win.cpp">3</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
 <p>When the program is interrupted, we want to restore the terminal
-settings back to normal.
-</p>
+settings back to normal.</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Shutdown <a href="index.html#1:12">12</a>}</span>
-<pre class="prettyprint lang-c">
-restore_input_buffering();
-</pre>
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bShutdown:931" href="#bShutdown:931">Shutdown</a></em></strong></span>
+<pre class="prettyprint"><code class="">restore_input_buffering();
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="line 210. Main Loop">1</a> <span title="line 1192. lc3-alt.cpp">2</span> <span title="line 1239. lc3-alt-win.cpp">3</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:5">5</a></p>
-</div>
 
-<div class="codeblock">
-<span class="codeblock_name">{Includes <a href="index.html#1:12">12</a>}</span>
-<pre class="prettyprint lang-c">
-#include &lt;stdio.h&gt;
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bIncludes:935" href="#bIncludes:935">Includes</a></em></strong></span>
+<pre class="prettyprint"><code class="">#include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 #include &lt;stdint.h&gt;
 #include &lt;string.h&gt;
@@ -1390,36 +1214,37 @@ restore_input_buffering();
 #include &lt;sys/types.h&gt;
 #include &lt;sys/termios.h&gt;
 #include &lt;sys/mman.h&gt;
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#blc3.c:141" title="line 142. lc3.c">1</a> <span title="line 1192. lc3-alt.cpp">2</span> </small></p></div>
 
 
-<p class="seealso">Used in section <a href="index.html#1:3">3</a></p>
-</div>
-</div>
-<a name="1:13"><div class="section"><h4>13. Platform Specifics (Windows)</h4></a>
+
+
+<h2><a id="s0:11"></a>12. Platform Specifics (Windows)</h2>
+
+
 <p>This section contains some tedious details that are needed to access the keyboard and behave nicely.
-These are not insightful or relevant to learning about VMs. Feel free to copy paste!
-</p>
-<p>NOTE: If you already included the <strong>Unix</strong> versions don't add these!
-</p>
+These are not insightful or relevant to learning about VMs. Feel free to copy paste!</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Check Key Windows <a href="index.html#1:13">13</a>}</span>
-<pre class="prettyprint lang-c">
-uint16_t check_key()
+<p>NOTE: If you already included the <strong>Unix</strong> versions don&rsquo;t add these!</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bCheck_Key_Windows:958" href="#bCheck_Key_Windows:958">Check Key Windows</a></em></strong></span>
+<pre class="prettyprint"><code class="">uint16_t check_key()
 {
     return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 &amp;&amp; _kbhit();
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <span title="line 1011. lc3-win.c">1</span> <span title="line 1239. lc3-alt-win.cpp">2</span> </small></p></div>
 
 
 
-</div>
 
-<div class="codeblock">
-<span class="codeblock_name">{Input Buffering Windows <a href="index.html#1:13">13</a>}</span>
-<pre class="prettyprint lang-c">
-DWORD fdwMode, fdwOldMode;
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bInput_Buffering_Windows:966" href="#bInput_Buffering_Windows:966">Input Buffering Windows</a></em></strong></span>
+<pre class="prettyprint"><code class="">DWORD fdwMode, fdwOldMode;
 
 void disable_input_buffering()
 {
@@ -1437,40 +1262,38 @@ void restore_input_buffering()
 {
     SetConsoleMode(hStdin, fdwOldMode);
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <span title="line 1011. lc3-win.c">1</span> <span title="line 1239. lc3-alt-win.cpp">2</span> </small></p></div>
 
 
 
-</div>
 
-<div class="codeblock">
-<span class="codeblock_name">{Windows Setup <a href="index.html#1:13">13</a>}</span>
-<pre class="prettyprint lang-c">
-signal(SIGINT, handle_interrupt);
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bWindows_Setup:987" href="#bWindows_Setup:987">Windows Setup</a></em></strong></span>
+<pre class="prettyprint"><code class="">signal(SIGINT, handle_interrupt);
 disable_input_buffering();
-</pre>
+</code></pre>
+</small></p></div>
 
 
-
-</div>
 <p>When the program is interrupted, we want to restore the terminal
-settings back to normal.
-</p>
+settings back to normal.</p>
 
-<div class="codeblock">
-<span class="codeblock_name">{Windows Shutdown <a href="index.html#1:13">13</a>}</span>
-<pre class="prettyprint lang-c">
-restore_input_buffering();
-</pre>
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bWindows_Shutdown:995" href="#bWindows_Shutdown:995">Windows Shutdown</a></em></strong></span>
+<pre class="prettyprint"><code class="">restore_input_buffering();
+</code></pre>
+</small></p></div>
 
 
 
-</div>
 
-<div class="codeblock">
-<span class="codeblock_name">{Windows Includes <a href="index.html#1:13">13</a>}</span>
-<pre class="prettyprint lang-c">
-#include &lt;stdint.h&gt; // uint16_t
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bWindows_Includes:999" href="#bWindows_Includes:999">Windows Includes</a></em></strong></span>
+<pre class="prettyprint"><code class="">#include &lt;stdint.h&gt; // uint16_t
 #include &lt;stdio.h&gt;  // FILE
 #include &lt;signal.h&gt; // SIGINT
 /* windows only */
@@ -1478,40 +1301,34 @@ restore_input_buffering();
 #include &lt;conio.h&gt;  // _kbhit
 
 HANDLE hStdin = INVALID_HANDLE_VALUE;
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <span title="line 1011. lc3-win.c">1</span> <span title="line 1239. lc3-alt-win.cpp">2</span> </small></p></div>
 
 
 
-</div>
 
-</div>
-<a name="1:14"><div class="section"><h4>14. Running the VM</h4></a>
-<p>You can now build and run the LC-3 VM!
-</p>
+<h2><a id="s0:12"></a>13. Running the VM</h2>
+
+
+<p>You can now build and run the LC-3 VM!</p>
+
 <ol>
 <li><p>Compile your program] with your favorite C compiler.
-   (Final source for <a href="src/lc3.c">unix</a>, <a href="src/lc3-win.c">windows</a>).
-</p>
-<p>For gcc: <code>$ gcc lc3.c -o lc3</code>
-</p>
-</li>
-<li><p>Download the assembled version of <a href="supplies/2048.obj">2048</a> or <a href="supplies/rogue.obj">Rogue</a>.
-</p>
-</li>
-<li><p>Run the program with the obj file as an argument:
-</p>
-<p><code>$ lc3-vm path/to/2048.obj</code>
-</p>
-</li>
-<li><p>Play 2048!
-</p>
-</li>
+(Final source for <a href="src/lc3.c">unix</a>, <a href="src/lc3-win.c">windows</a>).</p>
+
+<p>For gcc: <code>$ gcc lc3.c -o lc3</code></p></li>
+<li><p>Download the assembled version of <a href="supplies/2048.obj">2048</a> or <a href="supplies/rogue.obj">Rogue</a>.</p></li>
+<li><p>Run the program with the obj file as an argument:</p>
+
+<p><code>$ lc3-vm path/to/2048.obj</code></p></li>
+<li><p>Play 2048!</p></li>
 </ol>
 
-<div class="codeblock">
-<span class="codeblock_name">{2048 Example <a href="index.html#1:14">14</a>}</span>
-<pre class="prettyprint lang-c">
-Control the game using WASD keys.
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="b2048_Example:1053" href="#b2048_Example:1053">2048 Example</a></em></strong></span>
+<pre class="prettyprint"><code class="">Control the game using WASD keys.
 Are you on an ANSI terminal (y/n)? y
 +--------------------------+
 |                          |
@@ -1524,30 +1341,29 @@ Are you on an ANSI terminal (y/n)? y
 |                          |
 |                          |
 +--------------------------+
-</pre>
+</code></pre>
+</small></p></div>
 
 
+<h3>Debugging</h3>
 
-</div>
-<h3> Debugging</h3>
-<p>If the program doesn't work correctly, it is likely because you programmed an instruction incorrectly. This can be tricky to debug. I recommend reading through the assembly source code of an LC-3 program while simultaneously using a debugger to step through the VM instructions one at a time. As you read the assembly, make sure the VM goes to the instruction that you expect it to. If a discrepancy occurs, you will then know which instruction caused the issue. Reread its specification and double check your code.
-</p>
+<p>If the program doesn&rsquo;t work correctly, it is likely because you programmed an instruction incorrectly. This can be tricky to debug. I recommend reading through the assembly source code of an LC-3 program while simultaneously using a debugger to step through the VM instructions one at a time. As you read the assembly, make sure the VM goes to the instruction that you expect it to. If a discrepancy occurs, you will then know which instruction caused the issue. Reread its specification and double check your code.</p>
 
-</div>
-<a name="1:15"><div class="section"><h4>15. Alternate C++ Technique</h4></a>
-<p>This section shows an advanced way of executing instructions that makes the code a whole lot smaller. This section is entirely optional.
-</p>
-<p>Since C++ has powerful compile-time generics, we can use the compiler to generate parts of the instructions for us. This method reduces code duplication and is actually closer to how the computer would be wired in hardware.
-</p>
-<p>The idea here is to reuse the steps common to each instruction. For example, several of the instructions use indirect addressing or sign extend a value and add it to the current PC value. Wouldn't it be nice if we could write this code once for all instructions?
-</p>
-<p>By thinking of the instruction as a pipeline of steps we can see that each instruction is just a permutation of several of the smaller steps. We will use bitwise flags to mark which steps to perform for each instruction. A <code>1</code> in the bit corresponding to the instruction number indicates the compiler should include this section of code for that instruction.
-</p>
+<h2><a id="s0:13"></a>14. Alternate C++ Technique</h2>
 
-<div class="codeblock">
-<span class="codeblock_name">{Instruction C++ <a href="index.html#1:15">15</a>}</span>
-<pre class="prettyprint lang-c">
-template &lt;unsigned op&gt;
+
+<p>This section shows an advanced way of executing instructions that makes the code a whole lot smaller. This section is entirely optional.</p>
+
+<p>Since C++ has powerful compile-time generics, we can use the compiler to generate parts of the instructions for us. This method reduces code duplication and is actually closer to how the computer would be wired in hardware.</p>
+
+<p>The idea here is to reuse the steps common to each instruction. For example, several of the instructions use indirect addressing or sign extend a value and add it to the current PC value. Wouldn&rsquo;t it be nice if we could write this code once for all instructions?</p>
+
+<p>By thinking of the instruction as a pipeline of steps we can see that each instruction is just a permutation of several of the smaller steps. We will use bitwise flags to mark which steps to perform for each instruction. A <code>1</code> in the bit corresponding to the instruction number indicates the compiler should include this section of code for that instruction.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bInstruction_C__:1083" href="#bInstruction_C__:1083">Instruction C++</a></em></strong></span>
+<pre class="prettyprint"><code class="">template &lt;unsigned op&gt;
 void ins(uint16_t instr)
 {
     uint16_t r0, r1, r2, imm5, imm_flag;
@@ -1632,89 +1448,71 @@ void ins(uint16_t instr)
     if (0x0080 &amp; opbit) { mem_write(base_plus_off, reg[r0]); } // STR
     if (0x8000 &amp; opbit)  // TRAP
     {
-<span class="nocode pln">         {TRAP, <a href="index.html#1:8">8</a>}</span>
+         <em class="block-link nocode"title="line 645. index.lit"><a href="#bTRAP:645">@{TRAP}</a></em>
     }
     //if (0x0100 &amp; opbit) { } // RTI
     if (0x4666 &amp; opbit) { update_flags(r0); }
 }
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <span title="line 1192. lc3-alt.cpp">1</span> <span title="line 1239. lc3-alt-win.cpp">2</span> </small></p></div>
 
 
 
-</div>
 
-<div class="codeblock">
-<span class="codeblock_name">{Op Table <a href="index.html#1:15">15</a>}</span>
-<pre class="prettyprint lang-c">
-static void (*op_table[16])(uint16_t) = {
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="bOp_Table:1176" href="#bOp_Table:1176">Op Table</a></em></strong></span>
+<pre class="prettyprint"><code class="">static void (*op_table[16])(uint16_t) = {
     ins&lt;0&gt;, ins&lt;1&gt;, ins&lt;2&gt;, ins&lt;3&gt;,
     ins&lt;4&gt;, ins&lt;5&gt;, ins&lt;6&gt;, ins&lt;7&gt;,
     NULL, ins&lt;9&gt;, ins&lt;10&gt;, ins&lt;11&gt;,
     ins&lt;12&gt;, NULL, ins&lt;14&gt;, ins&lt;15&gt;
 };
-</pre>
+</code></pre>
+<p class="block-usages"><small>Used by <span title="line 1192. lc3-alt.cpp">1</span> <span title="line 1239. lc3-alt-win.cpp">2</span> </small></p></div>
 
 
+<blockquote><p><strong>Note:</strong> I learned about this technique from <a href="https://www.youtube.com/watch?v=QIUVSD3yqqE">Bisqwit&rsquo;s NES emulator</a>.
+If you are interested in emulation, or the NES, I highly recommend his videos.</p></blockquote>
 
-</div>
-<blockquote><p> <strong>Note:</strong> I learned about this technique from <a href="https://www.youtube.com/watch?v=QIUVSD3yqqE">Bisqwit's NES emulator</a>.
- If you are interested in emulation, or the NES, I highly recommend his videos.
-</p>
-</blockquote>
 <p>The rest of the C++ version uses the code we already wrote!
-The full source is here: <a href="src/lc3-alt.cpp">unix</a>, <a href="src/lc3-alt-win.cpp">windows</a>.
-</p>
+The full source is here: <a href="src/lc3-alt.cpp">unix</a>, <a href="src/lc3-alt-win.cpp">windows</a>.</p>
+
+<h2><a id="s0:14"></a>15. Contributions</h2>
 
 
-</div>
-<a name="1:16"><div class="section"><h4>16. Contributions</h4></a>
 <p><a href="https://github.com/atul-g/rust_vm">atul-g</a> has contributed a handy <a href="supplies/lc3-ref-card.png">reference card</a>
-that summarizes how the whole system works.
-</p>
+that summarizes how the whole system works.</p>
+
 <p>Many programmers have completed this tutorial and shared their implementations in various languages.
 A selection of these used to be listed, but since there were so many,
-we decided to utilize GitHub tags to organize them.
-</p>
-<ul>
-<li><a href="https://github.com/topics/lc3?l=c">C</a>
-</li>
-<li><a href="https://github.com/topics/lc3?l=c%2B%2B">C++</a>
-</li>
-<li><a href="https://github.com/topics/lc3?l=common-lisp">Common Lisp</a>
-</li>
-<li><a href="https://github.com/topics/lc3?l=crystal">Crystal</a>
-</li>
-<li><a href="https://github.com/topics/lc3?l=f%23">F#</a>
-</li>
-<li><a href="https://github.com/topics/lc3?l=go">Go</a>
-</li>
-<li><a href="https://github.com/topics/lc3?l=haskell">Haskell</a>
-</li>
-<li><a href="https://github.com/topics/lc3?l=javascript">JavaScript</a>
-</li>
-<li><a href="https://github.com/topics/lc3?l=kotlin">Kotlin</a>
-</li>
-<li><a href="https://github.com/topics/lc3?l=python">Python</a>
-</li>
-<li><a href="https://github.com/topics/lc3?l=racket">Racket</a>
-</li>
-<li><a href="https://github.com/topics/lc3?l=rust">Rust</a>
-</li>
-<li><a href="https://github.com/topics/lc3?l=scala">Scala</a>
-</li>
-<li><a href="https://github.com/topics/lc3?l=swift">Swift</a>
-</li>
-<li><a href="https://github.com/topics/lc3?l=typescript">TypeScript</a>
-</li>
-</ul>
-<p>To list your own project, just make sure it is tagged with the GitHub topic <code>lc3</code>.
-If your language is missing, feel free to submit a pull request.
-</p>
-<p>Special thanks to <a href="https://github.com/inkydragon">inkydragon</a> for contributing Windows platform support.
-</p>
-<p>Want to contribute? We need help with an integration test.
-This is a good <a href="https://github.com/justinmeiners/lc3-vm/issues/13">first issue</a> to learn from.
-</p>
+we decided to utilize GitHub tags to organize them.</p>
 
-</div>
+<ul>
+<li><a href="https://github.com/topics/lc3?l=c">C</a></li>
+<li><a href="https://github.com/topics/lc3?l=c%2B%2B">C++</a></li>
+<li><a href="https://github.com/topics/lc3?l=common-lisp">Common Lisp</a></li>
+<li><a href="https://github.com/topics/lc3?l=crystal">Crystal</a></li>
+<li><a href="https://github.com/topics/lc3?l=f%23">F#</a></li>
+<li><a href="https://github.com/topics/lc3?l=go">Go</a></li>
+<li><a href="https://github.com/topics/lc3?l=haskell">Haskell</a></li>
+<li><a href="https://github.com/topics/lc3?l=javascript">JavaScript</a></li>
+<li><a href="https://github.com/topics/lc3?l=kotlin">Kotlin</a></li>
+<li><a href="https://github.com/topics/lc3?l=python">Python</a></li>
+<li><a href="https://github.com/topics/lc3?l=racket">Racket</a></li>
+<li><a href="https://github.com/topics/lc3?l=rust">Rust</a></li>
+<li><a href="https://github.com/topics/lc3?l=scala">Scala</a></li>
+<li><a href="https://github.com/topics/lc3?l=swift">Swift</a></li>
+<li><a href="https://github.com/topics/lc3?l=typescript">TypeScript</a></li>
+</ul>
+
+
+<p>To list your own project, just make sure it is tagged with the GitHub topic <code>lc3</code>.
+If your language is missing, feel free to submit a pull request.</p>
+
+<p>Special thanks to <a href="https://github.com/inkydragon">inkydragon</a> for contributing Windows platform support.</p>
+
+<p>Want to contribute? We need help with an integration test.
+This is a good <a href="https://github.com/justinmeiners/lc3-vm/issues/13">first issue</a> to learn from.</p>
 </body>
+</html>

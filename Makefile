@@ -1,10 +1,13 @@
-all: docs/src/lc3.c docs/src/lc3-win.c docs/src/lc3-alt.cpp docs/src/lc3-alt-win.cpp docs/index.html
+all: docs/katex docs/src/lc3.c docs/src/lc3-win.c docs/src/lc3-alt.cpp docs/src/lc3-alt-win.cpp docs/index.html
+
+docs/katex:
+	srcweave-format-init docs
 
 docs/src/lc3.c docs/src/lc3-win.c docs/src/lc3-alt.cpp docs/src/lc3-alt-win.cpp: index.lit
-	lit --tangle --out-dir ./docs/src/ $<
+	srcweave --tangle ./docs/src/ $<
 
 docs/index.html: index.lit main.css
-	lit --weave --out-dir ./docs/ $<
+	srcweave --weave ./docs/ --formatter srcweave-format $<
 
 .PHONY:
 clean:
