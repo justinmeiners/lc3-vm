@@ -59,11 +59,11 @@ a:visited {
 /* code blocks */
 
 code, .block-header {
-    font-size: 10pt;
+    font-size: 12pt;
     font-family: Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;
 }
 
-.block-header, .block-header + pre {
+.block-header, .block-header + pre.prettyprint {
     background-color: #f9f8f4;
     border: 1px solid #c7c4b4;
     box-sizing: border-box;
@@ -101,13 +101,13 @@ code, .block-header {
     color: #737372;
 }
 
-.code-block pre {
+.code-block pre.prettyprint {
     padding: 0.6rem;
     white-space: pre-wrap;
     border-radius: 0.6rem;
 }
 
-.code-block .block-header + pre {
+.code-block .block-header + pre.prettyprint {
     /* overlap to the top 1px of the code block with the header so that the top border is partially obscured */
     position: relative;
     z-index: 5;
@@ -149,4 +149,8 @@ code, .block-header {
     text-decoration: none;
     background-color: #f9f9f7;
     color: #a6a28d;
+}
+
+h1 + p, h1 + p + p {
+    text-align: center;
 }

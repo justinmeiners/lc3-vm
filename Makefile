@@ -6,7 +6,7 @@ docs/katex:
 docs/src/lc3.c docs/src/lc3-win.c docs/src/lc3-alt.cpp docs/src/lc3-alt-win.cpp: index.lit
 	srcweave --tangle ./docs/src/ $<
 
-docs/index.html: index.lit main.css
+docs/index.html: index.lit
 	srcweave --weave ./docs/ --formatter srcweave-format $<
 
 .PHONY:
