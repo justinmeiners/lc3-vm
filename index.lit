@@ -15,7 +15,10 @@ In this tutorial, I will teach you how to write your own virtual machine (VM) th
 The final code is about 250 lines of C ([unix](src/lc3.c), [windows](src/lc3-win.c)).
 All you need to know is how to read basic C or C++ and how to do [binary arithmetic](https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html).
 
-> **Note:** This VM is a [literate program](https://en.wikipedia.org/wiki/Literate_programming). This means you are reading the source code right now! Each piece of code from the project will be shown and explained thoroughly, so you can be sure nothing is left out. The final code was created by ["weaving"](https://github.com/zyedidia/Literate) the blocks of code together.
+> **Note:** This VM is a [literate program](https://en.wikipedia.org/wiki/Literate_programming).
+> This means you are reading the source code right now!
+> Each piece of code from the project will be shown and explained thoroughly, so you can be sure nothing is left out.
+> The final code was created by ["tangling"](https://github.com/justinmeiners/srcweave) the blocks of code together.
 
 ### What is a virtual machine?
 
@@ -479,7 +482,9 @@ This section contains the full implementations of the remaining instructions if 
 abort();
 ---
 
-### [Bitwise and](https://en.wikipedia.org/wiki/Bitwise_operation#AND)
+### Bitwise and
+
+[More info](https://en.wikipedia.org/wiki/Bitwise_operation#AND).
 --- AND
 {
     uint16_t r0 = (instr >> 9) & 0x7;
@@ -500,7 +505,9 @@ abort();
 }
 ---
 
-### [Bitwise not](https://en.wikipedia.org/wiki/Bitwise_operation#NOT)
+### Bitwise not
+
+[More info](https://en.wikipedia.org/wiki/Bitwise_operation#NOT).
 --- NOT
 {
     uint16_t r0 = (instr >> 9) & 0x7;
@@ -510,6 +517,7 @@ abort();
     update_flags(r0);
 }
 ---
+
 ### Branch
 --- BR
 {
@@ -521,6 +529,7 @@ abort();
     }
 }
 ---
+
 ### Jump
 
 `RET` is listed as a separate instruction in the specification, since it is a different keyword in assembly. However, it is actually a special case of `JMP`. `RET` happens whenever `R1` is 7.
@@ -531,6 +540,7 @@ abort();
     reg[R_PC] = reg[r1];
 }
 ---
+
 ### Jump Register
 --- JSR
 {
@@ -549,6 +559,7 @@ abort();
     break;
 }
 ---
+
 ### Load
 --- LD
 {
@@ -569,6 +580,7 @@ abort();
     update_flags(r0);
 }
 ---
+
 ### Load Effective Address
 --- LEA
 {
@@ -578,6 +590,7 @@ abort();
     update_flags(r0);
 }
 ---
+
 ### Store
 --- ST
 {
@@ -586,6 +599,7 @@ abort();
     mem_write(reg[R_PC] + pc_offset, reg[r0]);
 }
 ---
+
 ### Store Indirect
 --- STI
 {
@@ -594,6 +608,7 @@ abort();
     mem_write(mem_read(reg[R_PC] + pc_offset), reg[r0]);
 }
 ---
+
 ### Store Register
 --- STR
 {
@@ -962,7 +977,6 @@ uint16_t check_key()
     return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 && _kbhit();
 }
 ---
-
 
 --- Input Buffering Windows
 DWORD fdwMode, fdwOldMode;
