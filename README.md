@@ -10,6 +10,12 @@ This applies to the instructional text of the tutorial and the figures.
 
 [CC BY-NC-SA 4.0](http://creativecommons.org/licenses/by-nc-sa/4.0/)
 
+## Editing
+
+The documentation and source are generated from the `.lit` file using [srcweave](https://github.com/justinmeiners/srcweave).
+If you don't want to go through the trouble of setting it up, your contributions are welcome.
+Just make your edits the `.lit` file, and we can regenerate it for you.
+
 ## Code License
 
 This applies to all code snippets and the generated lc3.c and lc3.cpp.
