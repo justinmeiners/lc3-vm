@@ -1,5 +1,3 @@
-/* lc3-alt.cpp */
-/* Includes */
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -14,8 +12,6 @@
 #include <sys/termios.h>
 #include <sys/mman.h>
 
-
-/* Registers */
 enum
 {
     R_R0 = 0,
@@ -30,16 +26,12 @@ enum
     R_COND,
     R_COUNT
 };
-
-/* Condition Flags */
 enum
 {
     FL_POS = 1 << 0, /* P */
     FL_ZRO = 1 << 1, /* Z */
     FL_NEG = 1 << 2, /* N */
 };
-
-/* Opcodes */
 enum
 {
     OP_BR = 0, /* branch */
@@ -60,15 +52,11 @@ enum
     OP_TRAP    /* execute trap */
 };
 
-
-/* Memory Mapped Registers */
 enum
 {
     MR_KBSR = 0xFE00, /* keyboard status */
     MR_KBDR = 0xFE02  /* keyboard data */
 };
-
-/* TRAP Codes */
 enum
 {
     TRAP_GETC = 0x20,  /* get character from keyboard, not echoed onto the terminal */
@@ -79,16 +67,10 @@ enum
     TRAP_HALT = 0x25   /* halt the program */
 };
 
-
-/* Memory Storage */
 /* 65536 locations */
 uint16_t memory[UINT16_MAX];
-
-/* Register Storage */
 uint16_t reg[R_COUNT];
 
-
-/* Sign Extend */
 uint16_t sign_extend(uint16_t x, int bit_count)
 {
     if ((x >> (bit_count - 1)) & 1) {
@@ -96,14 +78,10 @@ uint16_t sign_extend(uint16_t x, int bit_count)
     }
     return x;
 }
-
-/* Swap */
 uint16_t swap16(uint16_t x)
 {
     return (x << 8) | (x >> 8);
 }
-
-/* Update Flags */
 void update_flags(uint16_t r)
 {
     if (reg[r] == 0)
@@ -119,8 +97,6 @@ void update_flags(uint16_t r)
         reg[R_COND] = FL_POS;
     }
 }
-
-/* Read Image File */
 void read_image_file(FILE* file)
 {
     /* the origin tells us where in memory to place the image */
@@ -140,8 +116,6 @@ void read_image_file(FILE* file)
         ++p;
     }
 }
-
-/* Read Image */
 int read_image(const char* image_path)
 {
     FILE* file = fopen(image_path, "rb");
@@ -150,8 +124,6 @@ int read_image(const char* image_path)
     fclose(file);
     return 1;
 }
-
-/* Check Key */
 uint16_t check_key()
 {
     fd_set readfds;
@@ -163,8 +135,6 @@ uint16_t check_key()
     timeout.tv_usec = 0;
     return select(1, &readfds, NULL, NULL, &timeout) != 0;
 }
-
-/* Memory Access */
 void mem_write(uint16_t address, uint16_t val)
 {
     memory[address] = val;
@@ -186,8 +156,6 @@ uint16_t mem_read(uint16_t address)
     }
     return memory[address];
 }
-
-/* Input Buffering */
 struct termios original_tio;
 
 void disable_input_buffering()
@@ -202,8 +170,6 @@ void restore_input_buffering()
 {
     tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
 }
-
-/* Handle Interrupt */
 void handle_interrupt(int signal)
 {
     restore_input_buffering();
@@ -211,9 +177,7 @@ void handle_interrupt(int signal)
     exit(-2);
 }
 
-
 int running = 1;
-/* Instruction C++ */
 template <unsigned op>
 void ins(uint16_t instr)
 {
@@ -299,24 +263,18 @@ void ins(uint16_t instr)
     if (0x0080 & opbit) { mem_write(base_plus_off, reg[r0]); } // STR
     if (0x8000 & opbit)  // TRAP
     {
-         /* TRAP */
          switch (instr & 0xFF)
          {
              case TRAP_GETC:
-                 /* TRAP GETC */
                  /* read a single ASCII char */
                  reg[R_R0] = (uint16_t)getchar();
                  update_flags(R_R0);
-
                  break;
              case TRAP_OUT:
-                 /* TRAP OUT */
                  putc((char)reg[R_R0], stdout);
                  fflush(stdout);
-
                  break;
              case TRAP_PUTS:
-                 /* TRAP PUTS */
                  {
                      /* one char per word */
                      uint16_t* c = memory + reg[R_R0];
@@ -327,10 +285,8 @@ void ins(uint16_t instr)
                      }
                      fflush(stdout);
                  }
-
                  break;
              case TRAP_IN:
-                 /* TRAP IN */
                  {
                      printf("Enter a character: ");
                      char c = getchar();
@@ -339,10 +295,8 @@ void ins(uint16_t instr)
                      reg[R_R0] = (uint16_t)c;
                      update_flags(R_R0);
                  }
-
                  break;
              case TRAP_PUTSP:
-                 /* TRAP PUTSP */
                  {
                      /* one char per byte (two bytes per word)
                         here we need to swap back to
@@ -358,23 +312,17 @@ void ins(uint16_t instr)
                      }
                      fflush(stdout);
                  }
-
                  break;
              case TRAP_HALT:
-                 /* TRAP HALT */
                  puts("HALT");
                  fflush(stdout);
                  running = 0;
-
                  break;
          }
-
     }
     //if (0x0100 & opbit) { } // RTI
     if (0x4666 & opbit) { update_flags(r0); }
 }
-
-/* Op Table */
 static void (*op_table[16])(uint16_t) = {
     ins<0>, ins<1>, ins<2>, ins<3>,
     ins<4>, ins<5>, ins<6>, ins<7>,
@@ -382,10 +330,8 @@ static void (*op_table[16])(uint16_t) = {
     ins<12>, NULL, ins<14>, ins<15>
 };
 
-
 int main(int argc, const char* argv[])
 {
-    /* Load Arguments */
     if (argc < 2)
     {
         /* show usage string */
@@ -401,11 +347,8 @@ int main(int argc, const char* argv[])
             exit(1);
         }
     }
-
-    /* Setup */
     signal(SIGINT, handle_interrupt);
     disable_input_buffering();
-
 
     reg[R_COND] = FL_ZRO;
 
@@ -418,8 +361,5 @@ int main(int argc, const char* argv[])
         uint16_t op = instr >> 12;
         op_table[op](instr);
     }
-    /* Shutdown */
     restore_input_buffering();
-
 }
-
