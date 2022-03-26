@@ -1,6 +1,6 @@
-all: docs/katex docs/src/lc3.c docs/src/lc3-win.c docs/src/lc3-alt.cpp docs/src/lc3-alt-win.cpp docs/index.html
+all: docs/google-code-prettify docs/src/lc3.c docs/src/lc3-win.c docs/src/lc3-alt.cpp docs/src/lc3-alt-win.cpp docs/index.html
 
-docs/katex:
+docs/google-code-prettify:
 	srcweave-format-init docs
 
 docs/src/lc3.c docs/src/lc3-win.c docs/src/lc3-alt.cpp docs/src/lc3-alt-win.cpp: index.lit
