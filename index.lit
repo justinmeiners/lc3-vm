@@ -1053,13 +1053,13 @@ HANDLE hStdin = INVALID_HANDLE_VALUE;
 
 You can now build and run the LC-3 VM!
 
-1. Compile your program] with your favorite C compiler.
+1. Compile the VM with your favorite C compiler.
    (Final source for [unix](src/lc3.c), [windows](src/lc3-win.c)).
 
-   For gcc: `$ gcc lc3.c -o lc3`
+        $ gcc lc3.c -o lc3-vm
 
 2. Download the assembled version of [2048](supplies/2048.obj) or [Rogue](supplies/rogue.obj).
-3. Run the program with the obj file as an argument:
+3. Run the VM with the .obj file as an argument:
 
         $ lc3-vm path/to/2048.obj
 

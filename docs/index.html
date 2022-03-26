@@ -1318,12 +1318,13 @@ HANDLE hStdin = INVALID_HANDLE_VALUE;
 <p>You can now build and run the LC-3 VM!</p>
 
 <ol>
-<li><p>Compile your program] with your favorite C compiler.
+<li><p>Compile the VM with your favorite C compiler.
 (Final source for <a href="src/lc3.c">unix</a>, <a href="src/lc3-win.c">windows</a>).</p>
 
-<p>For gcc: <code>$ gcc lc3.c -o lc3</code></p></li>
+<pre><code> $ gcc lc3.c -o lc3-vm
+</code></pre></li>
 <li><p>Download the assembled version of <a href="supplies/2048.obj">2048</a> or <a href="supplies/rogue.obj">Rogue</a>.</p></li>
-<li><p>Run the program with the obj file as an argument:</p>
+<li><p>Run the VM with the .obj file as an argument:</p>
 
 <pre><code> $ lc3-vm path/to/2048.obj
 </code></pre></li>
