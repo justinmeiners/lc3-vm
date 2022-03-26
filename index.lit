@@ -142,7 +142,7 @@ enum
 
 We are finished setting up the hardware components of our VM! After adding standard includes (see reference), your file should look something like this:
 
---- lc3.c
+--- /lc3.c
 @{Includes}
 
 @{Registers}
@@ -866,7 +866,7 @@ That completes the last component of the VM! Provided that you implemented the r
 
 All that we have written should have been added to the C file in the following order:
 
---- lc3.c +=
+--- /lc3.c +=
 @{Memory Mapped Registers}
 @{TRAP Codes}
 
@@ -1022,7 +1022,7 @@ restore_input_buffering();
 HANDLE hStdin = INVALID_HANDLE_VALUE;
 ---
 
---- lc3-win.c --- noWeave
+--- /lc3-win.c --- noWeave
 @{Windows Includes}
 
 @{Registers}
@@ -1203,7 +1203,7 @@ static void (*op_table[16])(uint16_t) = {
 The rest of the C++ version uses the code we already wrote!
 The full source is here: [unix](src/lc3-alt.cpp), [windows](src/lc3-alt-win.cpp).
 
---- lc3-alt.cpp --- noWeave
+--- /lc3-alt.cpp --- noWeave
 @{Includes}
 
 @{Registers}
@@ -1250,7 +1250,7 @@ int main(int argc, const char* argv[])
 }
 ---
 
---- lc3-alt-win.cpp --- noWeave
+--- /lc3-alt-win.cpp --- noWeave
 @{Windows Includes}
 
 @{Registers}
