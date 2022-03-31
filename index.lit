@@ -54,7 +54,7 @@ The LC-3 has 65,536 memory locations (the maximum that is addressable by a 16-bi
 
 --- Memory Storage
 /* 65536 locations */
-uint16_t memory[UINT16_MAX];
+uint16_t memory[UINT16_MAX + 1];
 ---
 
 ### Registers

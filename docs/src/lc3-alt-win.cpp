@@ -63,7 +63,7 @@ enum
 };
 
 /* 65536 locations */
-uint16_t memory[UINT16_MAX];
+uint16_t memory[UINT16_MAX + 1];
 uint16_t reg[R_COUNT];
 
 uint16_t sign_extend(uint16_t x, int bit_count)
