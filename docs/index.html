@@ -74,8 +74,8 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 <div class="code-block">
 <span class="block-header">
 <strong class="block-title"><em><a id="bMemory_Storage:55" href="#bMemory_Storage:55">Memory Storage</a></em></strong></span>
-<pre class="prettyprint"><code class="">/* 65536 locations */
-uint16_t memory[UINT16_MAX + 1];
+<pre class="prettyprint"><code class="">#define MEMORY_MAX (1 &lt;&lt; 16) 
+uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 </code></pre>
 <p class="block-usages"><small>Used by <a href="#b/lc3.c:869" title="index.lit:870 /lc3.c">1</a> <span title="index.lit:1026 /lc3-win.c">2</span> <span title="index.lit:1205 /lc3-alt.cpp">3</span> <span title="index.lit:1252 /lc3-alt-win.cpp">4</span> </small></p></div>
 
@@ -985,7 +985,7 @@ running = 0;
     origin = swap16(origin);
 
     /* we know the maximum file size so we only need one fread */
-    uint16_t max_read = UINT16_MAX - origin;
+    uint16_t max_read = MEMORY_MAX - origin;
     uint16_t* p = memory + origin;
     size_t read = fread(p, sizeof(uint16_t), max_read, file);
 

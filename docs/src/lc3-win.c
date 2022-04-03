@@ -62,8 +62,8 @@ enum
     TRAP_HALT = 0x25   /* halt the program */
 };
 
-/* 65536 locations */
-uint16_t memory[UINT16_MAX + 1];
+#define MEMORY_MAX (1 << 16) 
+uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 uint16_t reg[R_COUNT];
 
 uint16_t sign_extend(uint16_t x, int bit_count)
@@ -100,7 +100,7 @@ void read_image_file(FILE* file)
     origin = swap16(origin);
 
     /* we know the maximum file size so we only need one fread */
-    uint16_t max_read = UINT16_MAX - origin;
+    uint16_t max_read = MEMORY_MAX - origin;
     uint16_t* p = memory + origin;
     size_t read = fread(p, sizeof(uint16_t), max_read, file);
 
