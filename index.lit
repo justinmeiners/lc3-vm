@@ -793,7 +793,7 @@ void read_image_file(FILE* file)
 }
 ---
 
-Notice that `swap16` is called on each loaded value. LC-3 programs are big-endian, but most modern computers are little-endian. So, we need to swap each `uint16` that is loaded. (If you happen to be using an obscure big-endian computer, like an old [PPC](https://en.wikipedia.org/wiki/PowerPC#Endian_modes) [Mac](https://en.wikipedia.org/wiki/Power_Mac_G4_Cube), then do not swap.)
+Notice that `swap16` is called on each loaded value. LC-3 programs are big-endian, but most modern computers are little-endian. So, we need to swap each `uint16` that is loaded. (If you happen to be using an obscure computer, like an old [PPC](https://en.wikipedia.org/wiki/PowerPC#Endian_modes) [Mac](https://en.wikipedia.org/wiki/Power_Mac_G4_Cube), then do not swap.)
 
 --- Swap
 uint16_t swap16(uint16_t x)
