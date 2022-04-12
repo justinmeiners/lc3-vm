@@ -4,23 +4,19 @@ By: [**Justin Meiners**](https://github.com/justinmeiners) and [**Ryan Pendleton
 
 View the final code and other resources in the [GitHub repo](https://github.com/justinmeiners/lc3-vm).
 
-#### Contents
-
-@toc
-
-## Introduction
-
 In this tutorial, I will teach you how to write your own virtual machine (VM) that can run assembly language programs, such as my friend's [2048](https://github.com/rpendleton/lc3-2048) or my [Roguelike](https://github.com/justinmeiners/lc3-rogue). If you know how to program, but would like to gain a deeper understanding of what is going on inside a computer and better understand how programming languages work, then this project is for you. Writing your own VM may sound a little scary, but I promise that you will find it to be surprisingly simple and enlightening.
 
 The final code is about 250 lines of C ([unix](src/lc3.c), [windows](src/lc3-win.c)).
 All you need to know is how to read basic C or C++ and how to do [binary arithmetic](https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html).
 
-> **Note:** This VM is a [literate program](https://en.wikipedia.org/wiki/Literate_programming).
+@toc
+
+> **Note:** This tutorial is a [literate program](https://en.wikipedia.org/wiki/Literate_programming).
 > This means you are reading the source code right now!
-> Each piece of code from the project will be shown and explained thoroughly, so you can be sure nothing is left out.
+> Each piece of code from the VM project will be shown and explained thoroughly, so you can be sure nothing is left out.
 > The final code was created by ["tangling"](https://github.com/justinmeiners/srcweave) the blocks of code together.
 
-### What is a virtual machine?
+## What is a virtual machine?
 
 A VM is a program that acts like a computer. It simulates a CPU along with a few other hardware components, allowing it to perform arithmetic, read and write to memory, and interact with I/O devices, just like a physical computer. Most importantly, it can understand a machine language which you can use to program it.
 
@@ -797,7 +793,7 @@ void read_image_file(FILE* file)
 }
 ---
 
-Notice that `swap16` is called on each loaded value. LC-3 programs are big-endian, but most of the modern computers we use are little endian. As a result, we need to swap each `uint16` that is loaded. (If you happen to be using a [strange computer](https://en.wikipedia.org/wiki/Power_Mac_G4_Cube), like a [PPC](https://en.wikipedia.org/wiki/PowerPC#Endian_modes) then you should not swap.)
+Notice that `swap16` is called on each loaded value. LC-3 programs are big-endian, but most modern computers are little-endian. So, we need to swap each `uint16` that is loaded. (If you happen to be using an obscure computer, like an old [PPC](https://en.wikipedia.org/wiki/PowerPC#Endian_modes) [Mac](https://en.wikipedia.org/wiki/Power_Mac_G4_Cube), then do not swap.)
 
 --- Swap
 uint16_t swap16(uint16_t x)
