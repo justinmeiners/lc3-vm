@@ -49,7 +49,7 @@ First, we need to simulate the essential hardware components of the machine. Try
 The LC-3 has 65,536 memory locations (the maximum that is addressable by a 16-bit unsigned integer `2^16`), each of which stores a 16-bit value. This means it can store a total of only 128kb, which is a lot smaller than you may be used to! In our program, this memory will be stored in a simple array:
 
 --- Memory Storage
-#define MEMORY_MAX (1 << 16) 
+#define MEMORY_MAX (1 << 16)
 uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 ---
 
@@ -652,9 +652,11 @@ Even though the trap routines can be written in assembly and this is what a phys
 
 > **Note:** Getting input from the keyboard is one specific example of this. The assembly version uses a loop to continuously check the keyboard for input. This consumes a lot of CPU time for nothing! Using a proper OS input function allows the program to sleep until input is received.
 
-In the switch case form the `TRAP` opcode, add another switch:
+In the switch case for the `TRAP` opcode, add another switch:
 
 --- TRAP
+reg[R_R7] = reg[R_PC];
+
 switch (instr & 0xFF)
 {
     case TRAP_GETC:
