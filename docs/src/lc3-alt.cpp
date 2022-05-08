@@ -67,7 +67,7 @@ enum
     TRAP_HALT = 0x25   /* halt the program */
 };
 
-#define MEMORY_MAX (1 << 16) 
+#define MEMORY_MAX (1 << 16)
 uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 uint16_t reg[R_COUNT];
 
@@ -263,6 +263,8 @@ void ins(uint16_t instr)
     if (0x0080 & opbit) { mem_write(base_plus_off, reg[r0]); } // STR
     if (0x8000 & opbit)  // TRAP
     {
+         reg[R_R7] = reg[R_PC];
+         
          switch (instr & 0xFF)
          {
              case TRAP_GETC:
