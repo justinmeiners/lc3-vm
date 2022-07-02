@@ -46,7 +46,7 @@ First, we need to simulate the essential hardware components of the machine. Try
 
 ### Memory
 
-The LC-3 has 65,536 memory locations (the maximum that is addressable by a 16-bit unsigned integer `2^16`), each of which stores a 16-bit value. This means it can store a total of only 128kB, which is a lot smaller than you may be used to! In our program, this memory will be stored in a simple array:
+The LC-3 has 65,536 memory locations (the maximum that is addressable by a 16-bit unsigned integer `2^16`), each of which stores a 16-bit value. This means it can store a total of only 128kiB, which is a lot smaller than you may be used to! In our program, this memory will be stored in a simple array:
 
 --- Memory Storage
 #define MEMORY_MAX (1 << 16)
