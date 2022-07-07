@@ -289,7 +289,6 @@ int main(int argc, const char* argv[])
                         uint16_t r1 = (instr >> 6) & 0x7;
                         reg[R_PC] = reg[r1]; /* JSRR */
                     }
-                    break;
                 }
                 break;
             case OP_LD:
