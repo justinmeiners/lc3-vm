@@ -68,11 +68,11 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bMemory_Storage:51" href="#bMemory_Storage:51">Memory Storage</a></em></strong></span>
+<strong class="block-title"><em><a id="Memory-Storage-block-1" href="#Memory-Storage-block-1">Memory Storage</a></em></strong></span>
 <pre class="prettyprint"><code class="">#define MEMORY_MAX (1 &lt;&lt; 16)
 uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:866" title="index.lit:867 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> <span title="index.lit:1202 /lc3-alt.cpp">3</span> <span title="index.lit:1249 /lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <h3>Registers</h3>
@@ -88,7 +88,7 @@ uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bRegisters:67" href="#bRegisters:67">Registers</a></em></strong></span>
+<strong class="block-title"><em><a id="Registers-block-3" href="#Registers-block-3">Registers</a></em></strong></span>
 <pre class="prettyprint"><code class="">enum
 {
     R_R0 = 0,
@@ -104,17 +104,17 @@ uint16_t memory[MEMORY_MAX];  /* 65536 locations */
     R_COUNT
 };
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:141" title="index.lit:142 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> <span title="index.lit:1202 /lc3-alt.cpp">3</span> <span title="index.lit:1249 /lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-11" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <p>Just like the memory, we will store the registers in an array:</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bRegister_Storage:86" href="#bRegister_Storage:86">Register Storage</a></em></strong></span>
+<strong class="block-title"><em><a id="Register-Storage-block-5" href="#Register-Storage-block-5">Register Storage</a></em></strong></span>
 <pre class="prettyprint"><code class="">uint16_t reg[R_COUNT];
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:866" title="index.lit:867 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> <span title="index.lit:1202 /lc3-alt.cpp">3</span> <span title="index.lit:1249 /lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <h3>Instruction Set</h3>
@@ -127,7 +127,7 @@ uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bOpcodes:98" href="#bOpcodes:98">Opcodes</a></em></strong></span>
+<strong class="block-title"><em><a id="Opcodes-block-7" href="#Opcodes-block-7">Opcodes</a></em></strong></span>
 <pre class="prettyprint"><code class="">enum
 {
     OP_BR = 0, /* branch */
@@ -148,7 +148,7 @@ uint16_t memory[MEMORY_MAX];  /* 65536 locations */
     OP_TRAP    /* execute trap */
 };
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:141" title="index.lit:142 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> <span title="index.lit:1202 /lc3-alt.cpp">3</span> <span title="index.lit:1249 /lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-11" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <blockquote><p><strong>Note:</strong> The Intel x86 architecture has hundreds of instructions, while others such as ARM and LC-3 have very few. Small instruction sets are referred to as <a href="https://en.wikipedia.org/wiki/Reduced_instruction_set_computer">RISCs</a> while larger ones are called <a href="https://en.wikipedia.org/wiki/Complex_instruction_set_computer">CISCs</a>. Larger instruction sets typically do not provide any fundamentally new possibilities, but they <a href="https://cs.stanford.edu/people/eroberts/courses/soco/projects/risc/risccisc/">often make it more convenient</a> to write assembly for. A single instruction in CISC might take the place of several in RISC. However, they tend to be more complex and expensive for engineers to design and manufacture. This and other tradeoffs cause the designs to come <a href="https://cs.stackexchange.com/questions/269/why-would-anyone-want-cisc">in and out of style</a>.</p></blockquote>
@@ -161,7 +161,7 @@ uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bCondition_Flags:128" href="#bCondition_Flags:128">Condition Flags</a></em></strong></span>
+<strong class="block-title"><em><a id="Condition-Flags-block-9" href="#Condition-Flags-block-9">Condition Flags</a></em></strong></span>
 <pre class="prettyprint"><code class="">enum
 {
     FL_POS = 1 &lt;&lt; 0, /* P */
@@ -169,7 +169,7 @@ uint16_t memory[MEMORY_MAX];  /* 65536 locations */
     FL_NEG = 1 &lt;&lt; 2, /* N */
 };
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:141" title="index.lit:142 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> <span title="index.lit:1202 /lc3-alt.cpp">3</span> <span title="index.lit:1249 /lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-11" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <blockquote><p><strong>Note:</strong> (The <code>&lt;&lt;</code> symbol is called the <a href="https://msdn.microsoft.com/en-us/library/336xbhcz.aspx">left bitshift operator</a>. <code>(n &lt;&lt; k)</code> shifts the bits of <code>n</code> to the left <code>k</code> places. Thus <code>1 &lt;&lt; 2</code> will equal <code>4</code>. Read that link if you are not familiar. It will be important.)</p></blockquote>
@@ -178,12 +178,12 @@ uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="b/lc3.c:141" href="#b/lc3.c:141">/lc3.c</a></em></strong></span>
-<pre class="prettyprint"><code class=""><em class="block-link nocode" title="index.lit:949"><a href="#bIncludes:948">@{Includes}</a></em>
+<strong class="block-title"><em><a id="-lc3.c-block-11" href="#-lc3.c-block-11">/lc3.c</a></em></strong></span>
+<pre class="prettyprint"><code class=""><em class="block-link nocode" title=""><a href="#Includes-block-97">@{Includes}</a></em>
 
-<em class="block-link nocode" title="index.lit:68"><a href="#bRegisters:67">@{Registers}</a></em>
-<em class="block-link nocode" title="index.lit:99"><a href="#bOpcodes:98">@{Opcodes}</a></em>
-<em class="block-link nocode" title="index.lit:129"><a href="#bCondition_Flags:128">@{Condition Flags}</a></em>
+<em class="block-link nocode" title=""><a href="#Registers-block-3">@{Registers}</a></em>
+<em class="block-link nocode" title=""><a href="#Opcodes-block-7">@{Opcodes}</a></em>
+<em class="block-link nocode" title=""><a href="#Condition-Flags-block-9">@{Condition Flags}</a></em>
 </code></pre>
 </div>
 
@@ -197,7 +197,7 @@ uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bHello_World_Assembly:153" href="#bHello_World_Assembly:153">Hello World Assembly</a></em></strong></span>
+<strong class="block-title"><em><a id="Hello-World-Assembly-block-13" href="#Hello-World-Assembly-block-13">Hello World Assembly</a></em></strong></span>
 <pre class="prettyprint"><code class="">.ORIG x3000                        ; this is the address in memory where the program will be loaded
 LEA R0, HELLO_STR                  ; load the address of the HELLO_STR string into R0
 PUTs                               ; output the string pointed to by R0 to the console
@@ -224,7 +224,7 @@ HELLO_STR .STRINGZ "Hello World!"  ; store this string here in the program
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bLoop_Assembly:176" href="#bLoop_Assembly:176">Loop Assembly</a></em></strong></span>
+<strong class="block-title"><em><a id="Loop-Assembly-block-15" href="#Loop-Assembly-block-15">Loop Assembly</a></em></strong></span>
 <pre class="prettyprint"><code class="">AND R0, R0, 0                      ; clear R0
 LOOP                               ; label at the top of our loop
 ADD R0, R0, 1                      ; add 1 to R0 and store back in R0
@@ -265,11 +265,11 @@ BRn LOOP                           ; go back to LOOP if the result was negative
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bMain_Loop:209" href="#bMain_Loop:209">Main Loop</a></em></strong></span>
+<strong class="block-title"><em><a id="Main-Loop-block-17" href="#Main-Loop-block-17">Main Loop</a></em></strong></span>
 <pre class="prettyprint"><code class="">int main(int argc, const char* argv[])
 {
-    <em class="block-link nocode" title="index.lit:290"><a href="#bLoad_Arguments:289">@{Load Arguments}</a></em>
-    <em class="block-link nocode" title="index.lit:937"><a href="#bSetup:936">@{Setup}</a></em>
+    <em class="block-link nocode" title=""><a href="#Load-Arguments-block-19">@{Load Arguments}</a></em>
+    <em class="block-link nocode" title=""><a href="#Setup-block-75">@{Setup}</a></em>
 
     /* since exactly one condition flag should be set at any given time, set the Z flag */
     reg[R_COND] = FL_ZRO;
@@ -289,58 +289,58 @@ BRn LOOP                           ; go back to LOOP if the result was negative
         switch (op)
         {
             case OP_ADD:
-                <em class="block-link nocode" title="index.lit:382"><a href="#bADD:381">@{ADD}</a></em>
+                <em class="block-link nocode" title=""><a href="#ADD-block-29">@{ADD}</a></em>
                 break;
             case OP_AND:
-                <em class="block-link nocode" title="index.lit:485"><a href="#bAND:484">@{AND}</a></em>
+                <em class="block-link nocode" title=""><a href="#AND-block-37">@{AND}</a></em>
                 break;
             case OP_NOT:
-                <em class="block-link nocode" title="index.lit:508"><a href="#bNOT:507">@{NOT}</a></em>
+                <em class="block-link nocode" title=""><a href="#NOT-block-39">@{NOT}</a></em>
                 break;
             case OP_BR:
-                <em class="block-link nocode" title="index.lit:519"><a href="#bBR:518">@{BR}</a></em>
+                <em class="block-link nocode" title=""><a href="#BR-block-41">@{BR}</a></em>
                 break;
             case OP_JMP:
-                <em class="block-link nocode" title="index.lit:533"><a href="#bJMP:532">@{JMP}</a></em>
+                <em class="block-link nocode" title=""><a href="#JMP-block-43">@{JMP}</a></em>
                 break;
             case OP_JSR:
-                <em class="block-link nocode" title="index.lit:542"><a href="#bJSR:541">@{JSR}</a></em>
+                <em class="block-link nocode" title=""><a href="#JSR-block-45">@{JSR}</a></em>
                 break;
             case OP_LD:
-                <em class="block-link nocode" title="index.lit:560"><a href="#bLD:559">@{LD}</a></em>
+                <em class="block-link nocode" title=""><a href="#LD-block-47">@{LD}</a></em>
                 break;
             case OP_LDI:
-                <em class="block-link nocode" title="index.lit:454"><a href="#bLDI:453">@{LDI}</a></em>
+                <em class="block-link nocode" title=""><a href="#LDI-block-33">@{LDI}</a></em>
                 break;
             case OP_LDR:
-                <em class="block-link nocode" title="index.lit:570"><a href="#bLDR:569">@{LDR}</a></em>
+                <em class="block-link nocode" title=""><a href="#LDR-block-49">@{LDR}</a></em>
                 break;
             case OP_LEA:
-                <em class="block-link nocode" title="index.lit:581"><a href="#bLEA:580">@{LEA}</a></em>
+                <em class="block-link nocode" title=""><a href="#LEA-block-51">@{LEA}</a></em>
                 break;
             case OP_ST:
-                <em class="block-link nocode" title="index.lit:591"><a href="#bST:590">@{ST}</a></em>
+                <em class="block-link nocode" title=""><a href="#ST-block-53">@{ST}</a></em>
                 break;
             case OP_STI:
-                <em class="block-link nocode" title="index.lit:600"><a href="#bSTI:599">@{STI}</a></em>
+                <em class="block-link nocode" title=""><a href="#STI-block-55">@{STI}</a></em>
                 break;
             case OP_STR:
-                <em class="block-link nocode" title="index.lit:609"><a href="#bSTR:608">@{STR}</a></em>
+                <em class="block-link nocode" title=""><a href="#STR-block-57">@{STR}</a></em>
                 break;
             case OP_TRAP:
-                <em class="block-link nocode" title="index.lit:657"><a href="#bTRAP:656">@{TRAP}</a></em>
+                <em class="block-link nocode" title=""><a href="#TRAP-block-61">@{TRAP}</a></em>
                 break;
             case OP_RES:
             case OP_RTI:
             default:
-                <em class="block-link nocode" title="index.lit:478"><a href="#bBAD_OPCODE:477">@{BAD OPCODE}</a></em>
+                <em class="block-link nocode" title=""><a href="#BAD-OPCODE-block-35">@{BAD OPCODE}</a></em>
                 break;
         }
     }
-    <em class="block-link nocode" title="index.lit:945"><a href="#bShutdown:944">@{Shutdown}</a></em>
+    <em class="block-link nocode" title=""><a href="#Shutdown-block-79">@{Shutdown}</a></em>
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:866" title="index.lit:867 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> </small></p></div>
 
 
 <p>While we are at the main loop let&rsquo;s handle command line input to make our program usable.
@@ -348,7 +348,7 @@ We expect one or more paths to VM images and present a usage string if none are 
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bLoad_Arguments:289" href="#bLoad_Arguments:289">Load Arguments</a></em></strong></span>
+<strong class="block-title"><em><a id="Load-Arguments-block-19" href="#Load-Arguments-block-19">Load Arguments</a></em></strong></span>
 <pre class="prettyprint"><code class="">if (argc &lt; 2)
 {
     /* show usage string */
@@ -365,7 +365,7 @@ for (int j = 1; j &lt; argc; ++j)
     }
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> <span title="index.lit:1202 /lc3-alt.cpp">2</span> <span title="index.lit:1249 /lc3-alt-win.cpp">3</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> <span title="/lc3-alt.cpp">2</span> <span title="/lc3-alt-win.cpp">3</span> </small></p></div>
 
 
 
@@ -387,7 +387,7 @@ for (int j = 1; j &lt; argc; ++j)
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bAdd_Register_Assembly:321" href="#bAdd_Register_Assembly:321">Add Register Assembly</a></em></strong></span>
+<strong class="block-title"><em><a id="Add-Register-Assembly-block-21" href="#Add-Register-Assembly-block-21">Add Register Assembly</a></em></strong></span>
 <pre class="prettyprint"><code class="">ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
 </code></pre>
 </div>
@@ -402,7 +402,7 @@ making immediate mode primarily useful for incrementing and decrementing. In ass
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bAdd_Immediate_Assembly:333" href="#bAdd_Immediate_Assembly:333">Add Immediate Assembly</a></em></strong></span>
+<strong class="block-title"><em><a id="Add-Immediate-Assembly-block-23" href="#Add-Immediate-Assembly-block-23">Add Immediate Assembly</a></em></strong></span>
 <pre class="prettyprint"><code class="">ADD R0 R0 1 ; add 1 to R0 and store back in R0
 </code></pre>
 </div>
@@ -416,7 +416,7 @@ making immediate mode primarily useful for incrementing and decrementing. In ass
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bSign_Extend:343" href="#bSign_Extend:343">Sign Extend</a></em></strong></span>
+<strong class="block-title"><em><a id="Sign-Extend-block-25" href="#Sign-Extend-block-25">Sign Extend</a></em></strong></span>
 <pre class="prettyprint"><code class="">uint16_t sign_extend(uint16_t x, int bit_count)
 {
     if ((x &gt;&gt; (bit_count - 1)) &amp; 1) {
@@ -425,7 +425,7 @@ making immediate mode primarily useful for incrementing and decrementing. In ass
     return x;
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:866" title="index.lit:867 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> <span title="index.lit:1202 /lc3-alt.cpp">3</span> <span title="index.lit:1249 /lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <blockquote><p><strong>Note:</strong> If you are interested in exactly how negative numbers can be represented in binary, you can read about <a href="https://en.wikipedia.org/wiki/Two%27s_complement">Two&rsquo;s Complement</a>. However, this is not essential. You can just copy the code above and use it whenever the specification says to sign extend numbers.</p></blockquote>
@@ -438,7 +438,7 @@ making immediate mode primarily useful for incrementing and decrementing. In ass
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bUpdate_Flags:361" href="#bUpdate_Flags:361">Update Flags</a></em></strong></span>
+<strong class="block-title"><em><a id="Update-Flags-block-27" href="#Update-Flags-block-27">Update Flags</a></em></strong></span>
 <pre class="prettyprint"><code class="">void update_flags(uint16_t r)
 {
     if (reg[r] == 0)
@@ -455,14 +455,14 @@ making immediate mode primarily useful for incrementing and decrementing. In ass
     }
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:866" title="index.lit:867 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> <span title="index.lit:1202 /lc3-alt.cpp">3</span> <span title="index.lit:1249 /lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <p>Now we are ready to write the code for the <code>ADD</code> case:</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bADD:381" href="#bADD:381">ADD</a></em></strong></span>
+<strong class="block-title"><em><a id="ADD-block-29" href="#ADD-block-29">ADD</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     /* destination register (DR) */
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -485,7 +485,7 @@ making immediate mode primarily useful for incrementing and decrementing. In ass
     update_flags(r0);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> </small></p></div>
 
 
 <p>This section contained a lot of information, so let&rsquo;s summarize.
@@ -515,7 +515,7 @@ making immediate mode primarily useful for incrementing and decrementing. In ass
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bC_LDI_Sample:430" href="#bC_LDI_Sample:430">C LDI Sample</a></em></strong></span>
+<strong class="block-title"><em><a id="C-LDI-Sample-block-31" href="#C-LDI-Sample-block-31">C LDI Sample</a></em></strong></span>
 <pre class="prettyprint"><code class="">// the value of far_data is an address
 // of course far_data itself (the location in memory containing the address) has an address
 char* far_data = "apple";
@@ -542,7 +542,7 @@ char* far_data = "apple";
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bLDI:453" href="#bLDI:453">LDI</a></em></strong></span>
+<strong class="block-title"><em><a id="LDI-block-33" href="#LDI-block-33">LDI</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     /* destination register (DR) */
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
@@ -553,7 +553,7 @@ char* far_data = "apple";
     update_flags(r0);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> </small></p></div>
 
 
 <p>As I said, this instruction shared a lot of the code and knowledge learned from <code>ADD</code>. You will find this is the case with the remaining instructions.</p>
@@ -571,10 +571,10 @@ char* far_data = "apple";
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bBAD_OPCODE:477" href="#bBAD_OPCODE:477">BAD OPCODE</a></em></strong></span>
+<strong class="block-title"><em><a id="BAD-OPCODE-block-35" href="#BAD-OPCODE-block-35">BAD OPCODE</a></em></strong></span>
 <pre class="prettyprint"><code class="">abort();
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> </small></p></div>
 
 
 <h3>Bitwise and</h3>
@@ -583,7 +583,7 @@ char* far_data = "apple";
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bAND:484" href="#bAND:484">AND</a></em></strong></span>
+<strong class="block-title"><em><a id="AND-block-37" href="#AND-block-37">AND</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t r1 = (instr &gt;&gt; 6) &amp; 0x7;
@@ -602,7 +602,7 @@ char* far_data = "apple";
     update_flags(r0);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> </small></p></div>
 
 
 <h3>Bitwise not</h3>
@@ -611,7 +611,7 @@ char* far_data = "apple";
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bNOT:507" href="#bNOT:507">NOT</a></em></strong></span>
+<strong class="block-title"><em><a id="NOT-block-39" href="#NOT-block-39">NOT</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t r1 = (instr &gt;&gt; 6) &amp; 0x7;
@@ -620,14 +620,14 @@ char* far_data = "apple";
     update_flags(r0);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> </small></p></div>
 
 
 <h3>Branch</h3>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bBR:518" href="#bBR:518">BR</a></em></strong></span>
+<strong class="block-title"><em><a id="BR-block-41" href="#BR-block-41">BR</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
     uint16_t cond_flag = (instr &gt;&gt; 9) &amp; 0x7;
@@ -637,7 +637,7 @@ char* far_data = "apple";
     }
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> </small></p></div>
 
 
 <h3>Jump</h3>
@@ -646,21 +646,21 @@ char* far_data = "apple";
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bJMP:532" href="#bJMP:532">JMP</a></em></strong></span>
+<strong class="block-title"><em><a id="JMP-block-43" href="#JMP-block-43">JMP</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     /* Also handles RET */
     uint16_t r1 = (instr &gt;&gt; 6) &amp; 0x7;
     reg[R_PC] = reg[r1];
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> </small></p></div>
 
 
 <h3>Jump Register</h3>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bJSR:541" href="#bJSR:541">JSR</a></em></strong></span>
+<strong class="block-title"><em><a id="JSR-block-45" href="#JSR-block-45">JSR</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     uint16_t long_flag = (instr &gt;&gt; 11) &amp; 1;
     reg[R_R7] = reg[R_PC];
@@ -676,14 +676,14 @@ char* far_data = "apple";
     }
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> </small></p></div>
 
 
 <h3>Load</h3>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bLD:559" href="#bLD:559">LD</a></em></strong></span>
+<strong class="block-title"><em><a id="LD-block-47" href="#LD-block-47">LD</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
@@ -691,14 +691,14 @@ char* far_data = "apple";
     update_flags(r0);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> </small></p></div>
 
 
 <h3>Load Register</h3>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bLDR:569" href="#bLDR:569">LDR</a></em></strong></span>
+<strong class="block-title"><em><a id="LDR-block-49" href="#LDR-block-49">LDR</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t r1 = (instr &gt;&gt; 6) &amp; 0x7;
@@ -707,14 +707,14 @@ char* far_data = "apple";
     update_flags(r0);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> </small></p></div>
 
 
 <h3>Load Effective Address</h3>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bLEA:580" href="#bLEA:580">LEA</a></em></strong></span>
+<strong class="block-title"><em><a id="LEA-block-51" href="#LEA-block-51">LEA</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
@@ -722,42 +722,42 @@ char* far_data = "apple";
     update_flags(r0);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> </small></p></div>
 
 
 <h3>Store</h3>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bST:590" href="#bST:590">ST</a></em></strong></span>
+<strong class="block-title"><em><a id="ST-block-53" href="#ST-block-53">ST</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
     mem_write(reg[R_PC] + pc_offset, reg[r0]);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> </small></p></div>
 
 
 <h3>Store Indirect</h3>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bSTI:599" href="#bSTI:599">STI</a></em></strong></span>
+<strong class="block-title"><em><a id="STI-block-55" href="#STI-block-55">STI</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t pc_offset = sign_extend(instr &amp; 0x1FF, 9);
     mem_write(mem_read(reg[R_PC] + pc_offset), reg[r0]);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> </small></p></div>
 
 
 <h3>Store Register</h3>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bSTR:608" href="#bSTR:608">STR</a></em></strong></span>
+<strong class="block-title"><em><a id="STR-block-57" href="#STR-block-57">STR</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     uint16_t r0 = (instr &gt;&gt; 9) &amp; 0x7;
     uint16_t r1 = (instr &gt;&gt; 6) &amp; 0x7;
@@ -765,7 +765,7 @@ char* far_data = "apple";
     mem_write(reg[r1] + offset, reg[r0]);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> </small></p></div>
 
 
 
@@ -781,7 +781,7 @@ char* far_data = "apple";
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bTRAP_Codes:625" href="#bTRAP_Codes:625">TRAP Codes</a></em></strong></span>
+<strong class="block-title"><em><a id="TRAP-Codes-block-59" href="#TRAP-Codes-block-59">TRAP Codes</a></em></strong></span>
 <pre class="prettyprint"><code class="">enum
 {
     TRAP_GETC = 0x20,  /* get character from keyboard, not echoed onto the terminal */
@@ -792,7 +792,7 @@ char* far_data = "apple";
     TRAP_HALT = 0x25   /* halt the program */
 };
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:866" title="index.lit:867 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> <span title="index.lit:1202 /lc3-alt.cpp">3</span> <span title="index.lit:1249 /lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <p>You may be wondering why the trap codes are not included in the instructions.
@@ -816,32 +816,32 @@ When a trap code is invoked, a C function will be called. When it is completed, 
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bTRAP:656" href="#bTRAP:656">TRAP</a></em></strong></span>
+<strong class="block-title"><em><a id="TRAP-block-61" href="#TRAP-block-61">TRAP</a></em></strong></span>
 <pre class="prettyprint"><code class="">reg[R_R7] = reg[R_PC];
 
 switch (instr &amp; 0xFF)
 {
     case TRAP_GETC:
-        <em class="block-link nocode" title="index.lit:718"><a href="#bTRAP_GETC:717">@{TRAP GETC}</a></em>
+        <em class="block-link nocode" title=""><a href="#TRAP-GETC-block-65">@{TRAP GETC}</a></em>
         break;
     case TRAP_OUT:
-        <em class="block-link nocode" title="index.lit:725"><a href="#bTRAP_OUT:724">@{TRAP OUT}</a></em>
+        <em class="block-link nocode" title=""><a href="#TRAP-OUT-block-67">@{TRAP OUT}</a></em>
         break;
     case TRAP_PUTS:
-        <em class="block-link nocode" title="index.lit:698"><a href="#bTRAP_PUTS:697">@{TRAP PUTS}</a></em>
+        <em class="block-link nocode" title=""><a href="#TRAP-PUTS-block-63">@{TRAP PUTS}</a></em>
         break;
     case TRAP_IN:
-        <em class="block-link nocode" title="index.lit:731"><a href="#bTRAP_IN:730">@{TRAP IN}</a></em>
+        <em class="block-link nocode" title=""><a href="#TRAP-IN-block-69">@{TRAP IN}</a></em>
         break;
     case TRAP_PUTSP:
-        <em class="block-link nocode" title="index.lit:743"><a href="#bTRAP_PUTSP:742">@{TRAP PUTSP}</a></em>
+        <em class="block-link nocode" title=""><a href="#TRAP-PUTSP-block-71">@{TRAP PUTSP}</a></em>
         break;
     case TRAP_HALT:
-        <em class="block-link nocode" title="index.lit:762"><a href="#bTRAP_HALT:761">@{TRAP HALT}</a></em>
+        <em class="block-link nocode" title=""><a href="#TRAP-HALT-block-73">@{TRAP HALT}</a></em>
         break;
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> <a href="#bInstruction_C__:1093" title="index.lit:1094 Instruction C++">2</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> <a href="#Instruction-C---block-107" title="Instruction C++">2</a> </small></p></div>
 
 
 <p>As with instructions, I will show you how to implement a single trap routine and leave the rest to you.</p>
@@ -861,7 +861,7 @@ in consecutive memory locations, one character per memory location, starting wit
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bTRAP_PUTS:697" href="#bTRAP_PUTS:697">TRAP PUTS</a></em></strong></span>
+<strong class="block-title"><em><a id="TRAP-PUTS-block-63" href="#TRAP-PUTS-block-63">TRAP PUTS</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     /* one char per word */
     uint16_t* c = memory + reg[R_R0];
@@ -873,7 +873,7 @@ in consecutive memory locations, one character per memory location, starting wit
     fflush(stdout);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bTRAP:656" title="index.lit:657 TRAP">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#TRAP-block-61" title="TRAP">1</a> </small></p></div>
 
 
 <p>That&rsquo;s all for this routine. The trap routines are pretty straightforward if you are familiar with C. Go back to the specification and implement the others now. As with the instructions, the full code can be found at the end of the tutorial.</p>
@@ -887,30 +887,30 @@ in consecutive memory locations, one character per memory location, starting wit
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bTRAP_GETC:717" href="#bTRAP_GETC:717">TRAP GETC</a></em></strong></span>
+<strong class="block-title"><em><a id="TRAP-GETC-block-65" href="#TRAP-GETC-block-65">TRAP GETC</a></em></strong></span>
 <pre class="prettyprint"><code class="">/* read a single ASCII char */
 reg[R_R0] = (uint16_t)getchar();
 update_flags(R_R0);
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bTRAP:656" title="index.lit:657 TRAP">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#TRAP-block-61" title="TRAP">1</a> </small></p></div>
 
 
 <p>Output Character</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bTRAP_OUT:724" href="#bTRAP_OUT:724">TRAP OUT</a></em></strong></span>
+<strong class="block-title"><em><a id="TRAP-OUT-block-67" href="#TRAP-OUT-block-67">TRAP OUT</a></em></strong></span>
 <pre class="prettyprint"><code class="">putc((char)reg[R_R0], stdout);
 fflush(stdout);
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bTRAP:656" title="index.lit:657 TRAP">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#TRAP-block-61" title="TRAP">1</a> </small></p></div>
 
 
 <p>Prompt for Input Character</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bTRAP_IN:730" href="#bTRAP_IN:730">TRAP IN</a></em></strong></span>
+<strong class="block-title"><em><a id="TRAP-IN-block-69" href="#TRAP-IN-block-69">TRAP IN</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     printf("Enter a character: ");
     char c = getchar();
@@ -920,14 +920,14 @@ fflush(stdout);
     update_flags(R_R0);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bTRAP:656" title="index.lit:657 TRAP">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#TRAP-block-61" title="TRAP">1</a> </small></p></div>
 
 
 <p>Output String</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bTRAP_PUTSP:742" href="#bTRAP_PUTSP:742">TRAP PUTSP</a></em></strong></span>
+<strong class="block-title"><em><a id="TRAP-PUTSP-block-71" href="#TRAP-PUTSP-block-71">TRAP PUTSP</a></em></strong></span>
 <pre class="prettyprint"><code class="">{
     /* one char per byte (two bytes per word)
        here we need to swap back to
@@ -944,19 +944,56 @@ fflush(stdout);
     fflush(stdout);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bTRAP:656" title="index.lit:657 TRAP">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#TRAP-block-61" title="TRAP">1</a> </small></p></div>
 
 
 <p>Halt Program</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bTRAP_HALT:761" href="#bTRAP_HALT:761">TRAP HALT</a></em></strong></span>
+<strong class="block-title"><em><a id="TRAP-HALT-block-73" href="#TRAP-HALT-block-73">TRAP HALT</a></em></strong></span>
 <pre class="prettyprint"><code class="">puts("HALT");
 fflush(stdout);
 running = 0;
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#bTRAP:656" title="index.lit:657 TRAP">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#TRAP-block-61" title="TRAP">1</a> </small></p></div>
+
+
+<p>To properly handle  trap inputs in the terminal we need to adjust some settings.
+The implementation varies for each platform and will be shown later.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="Setup-block-75" href="#Setup-block-75">Setup</a></em></strong></span>
+<pre class="prettyprint"><code class="">signal(SIGINT, handle_interrupt);
+disable_input_buffering();
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> <span title="/lc3-alt.cpp">2</span> <span title="/lc3-alt-win.cpp">3</span> </small></p></div>
+
+
+<p>When the program is interrupted, we want to restore the terminal settings back to normal.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="Handle-Interrupt-block-77" href="#Handle-Interrupt-block-77">Handle Interrupt</a></em></strong></span>
+<pre class="prettyprint"><code class="">void handle_interrupt(int signal)
+{
+    restore_input_buffering();
+    printf("\n");
+    exit(-2);
+}
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
+
+
+
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="Shutdown-block-79" href="#Shutdown-block-79">Shutdown</a></em></strong></span>
+<pre class="prettyprint"><code class="">restore_input_buffering();
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> <span title="/lc3-alt.cpp">2</span> <span title="/lc3-alt-win.cpp">3</span> </small></p></div>
 
 
 
@@ -972,7 +1009,7 @@ running = 0;
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bRead_Image_File:775" href="#bRead_Image_File:775">Read Image File</a></em></strong></span>
+<strong class="block-title"><em><a id="Read-Image-File-block-81" href="#Read-Image-File-block-81">Read Image File</a></em></strong></span>
 <pre class="prettyprint"><code class="">void read_image_file(FILE* file)
 {
     /* the origin tells us where in memory to place the image */
@@ -993,20 +1030,20 @@ running = 0;
     }
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:866" title="index.lit:867 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> <span title="index.lit:1202 /lc3-alt.cpp">3</span> <span title="index.lit:1249 /lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <p>Notice that <code>swap16</code> is called on each loaded value. LC-3 programs are big-endian, but most modern computers are little-endian. So, we need to swap each <code>uint16</code> that is loaded. (If you happen to be using an obscure computer, like an old <a href="https://en.wikipedia.org/wiki/PowerPC#Endian_modes">PPC</a> <a href="https://en.wikipedia.org/wiki/Power_Mac_G4_Cube">Mac</a>, then do not swap.)</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bSwap:799" href="#bSwap:799">Swap</a></em></strong></span>
+<strong class="block-title"><em><a id="Swap-block-83" href="#Swap-block-83">Swap</a></em></strong></span>
 <pre class="prettyprint"><code class="">uint16_t swap16(uint16_t x)
 {
     return (x &lt;&lt; 8) | (x &gt;&gt; 8);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:866" title="index.lit:867 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> <span title="index.lit:1202 /lc3-alt.cpp">3</span> <span title="index.lit:1249 /lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <blockquote><p><strong>Note:</strong> <a href="https://en.wikipedia.org/wiki/Endianness">Endianness</a> refers to how bytes of an integer are interpreted. In little-endian, the first byte is the least significant digit, and in big-endian, it is reversed. As far as I know, the decision is <em>mostly</em> arbitrary. Different companies made different decisions, so now we are left with varying implementations. You do not need to know anything else about endianness for this project.</p></blockquote>
@@ -1015,7 +1052,7 @@ running = 0;
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bRead_Image:809" href="#bRead_Image:809">Read Image</a></em></strong></span>
+<strong class="block-title"><em><a id="Read-Image-block-85" href="#Read-Image-block-85">Read Image</a></em></strong></span>
 <pre class="prettyprint"><code class="">int read_image(const char* image_path)
 {
     FILE* file = fopen(image_path, "rb");
@@ -1025,7 +1062,7 @@ running = 0;
     return 1;
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:866" title="index.lit:867 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> <span title="index.lit:1202 /lc3-alt.cpp">3</span> <span title="index.lit:1249 /lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 
@@ -1041,21 +1078,21 @@ running = 0;
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bMemory_Mapped_Registers:828" href="#bMemory_Mapped_Registers:828">Memory Mapped Registers</a></em></strong></span>
+<strong class="block-title"><em><a id="Memory-Mapped-Registers-block-87" href="#Memory-Mapped-Registers-block-87">Memory Mapped Registers</a></em></strong></span>
 <pre class="prettyprint"><code class="">enum
 {
     MR_KBSR = 0xFE00, /* keyboard status */
     MR_KBDR = 0xFE02  /* keyboard data */
 };
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:866" title="index.lit:867 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> <span title="index.lit:1202 /lc3-alt.cpp">3</span> <span title="index.lit:1249 /lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <p>Memory mapped registers make memory access a bit more complicated. We can&rsquo;t read and write to the memory array directly, but must instead call setter and getter functions. When memory is read from <code>KBSR</code>, the getter will check the keyboard and update both memory locations.</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bMemory_Access:838" href="#bMemory_Access:838">Memory Access</a></em></strong></span>
+<strong class="block-title"><em><a id="Memory-Access-block-89" href="#Memory-Access-block-89">Memory Access</a></em></strong></span>
 <pre class="prettyprint"><code class="">void mem_write(uint16_t address, uint16_t val)
 {
     memory[address] = val;
@@ -1078,7 +1115,7 @@ uint16_t mem_read(uint16_t address)
     return memory[address];
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:866" title="index.lit:867 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> <span title="index.lit:1202 /lc3-alt.cpp">3</span> <span title="index.lit:1249 /lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <p>That completes the last component of the VM! Provided that you implemented the rest of the trap routines and instructions, you are almost ready to try it out!</p>
@@ -1087,24 +1124,24 @@ uint16_t mem_read(uint16_t address)
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="b/lc3.c:866" href="#b/lc3.c:866">/lc3.c</a></em></strong> <a href="#b/lc3.c:141">+=</a></span>
-<pre class="prettyprint"><code class=""><em class="block-link nocode" title="index.lit:829"><a href="#bMemory_Mapped_Registers:828">@{Memory Mapped Registers}</a></em>
-<em class="block-link nocode" title="index.lit:626"><a href="#bTRAP_Codes:625">@{TRAP Codes}</a></em>
+<strong class="block-title"><em><a id="-lc3.c-block-91" href="#-lc3.c-block-91">/lc3.c</a></em></strong> <a href="#-lc3.c-block-11">+=</a></span>
+<pre class="prettyprint"><code class=""><em class="block-link nocode" title=""><a href="#Memory-Mapped-Registers-block-87">@{Memory Mapped Registers}</a></em>
+<em class="block-link nocode" title=""><a href="#TRAP-Codes-block-59">@{TRAP Codes}</a></em>
 
-<em class="block-link nocode" title="index.lit:52"><a href="#bMemory_Storage:51">@{Memory Storage}</a></em>
-<em class="block-link nocode" title="index.lit:87"><a href="#bRegister_Storage:86">@{Register Storage}</a></em>
+<em class="block-link nocode" title=""><a href="#Memory-Storage-block-1">@{Memory Storage}</a></em>
+<em class="block-link nocode" title=""><a href="#Register-Storage-block-5">@{Register Storage}</a></em>
 
-<em class="block-link nocode" title="index.lit:344"><a href="#bSign_Extend:343">@{Sign Extend}</a></em>
-<em class="block-link nocode" title="index.lit:800"><a href="#bSwap:799">@{Swap}</a></em>
-<em class="block-link nocode" title="index.lit:362"><a href="#bUpdate_Flags:361">@{Update Flags}</a></em>
-<em class="block-link nocode" title="index.lit:776"><a href="#bRead_Image_File:775">@{Read Image File}</a></em>
-<em class="block-link nocode" title="index.lit:810"><a href="#bRead_Image:809">@{Read Image}</a></em>
-<em class="block-link nocode" title="index.lit:895"><a href="#bCheck_Key:894">@{Check Key}</a></em>
-<em class="block-link nocode" title="index.lit:839"><a href="#bMemory_Access:838">@{Memory Access}</a></em>
-<em class="block-link nocode" title="index.lit:911"><a href="#bInput_Buffering:910">@{Input Buffering}</a></em>
-<em class="block-link nocode" title="index.lit:928"><a href="#bHandle_Interrupt:927">@{Handle Interrupt}</a></em>
+<em class="block-link nocode" title=""><a href="#Sign-Extend-block-25">@{Sign Extend}</a></em>
+<em class="block-link nocode" title=""><a href="#Swap-block-83">@{Swap}</a></em>
+<em class="block-link nocode" title=""><a href="#Update-Flags-block-27">@{Update Flags}</a></em>
+<em class="block-link nocode" title=""><a href="#Read-Image-File-block-81">@{Read Image File}</a></em>
+<em class="block-link nocode" title=""><a href="#Read-Image-block-85">@{Read Image}</a></em>
+<em class="block-link nocode" title=""><a href="#Check-Key-block-93">@{Check Key}</a></em>
+<em class="block-link nocode" title=""><a href="#Memory-Access-block-89">@{Memory Access}</a></em>
+<em class="block-link nocode" title=""><a href="#Input-Buffering-block-95">@{Input Buffering}</a></em>
+<em class="block-link nocode" title=""><a href="#Handle-Interrupt-block-77">@{Handle Interrupt}</a></em>
 
-<em class="block-link nocode" title="index.lit:210"><a href="#bMain_Loop:209">@{Main Loop}</a></em>
+<em class="block-link nocode" title=""><a href="#Main-Loop-block-17">@{Main Loop}</a></em>
 </code></pre>
 </div>
 
@@ -1121,7 +1158,7 @@ These are not insightful or relevant to learning about VMs. Feel free to copy pa
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bCheck_Key:894" href="#bCheck_Key:894">Check Key</a></em></strong></span>
+<strong class="block-title"><em><a id="Check-Key-block-93" href="#Check-Key-block-93">Check Key</a></em></strong></span>
 <pre class="prettyprint"><code class="">uint16_t check_key()
 {
     fd_set readfds;
@@ -1134,14 +1171,14 @@ These are not insightful or relevant to learning about VMs. Feel free to copy pa
     return select(1, &amp;readfds, NULL, NULL, &amp;timeout) != 0;
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:866" title="index.lit:867 /lc3.c">1</a> <span title="index.lit:1202 /lc3-alt.cpp">2</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-alt.cpp">2</span> </small></p></div>
 
 
 <p>This is Unix specific code for setting up terminal input.</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bInput_Buffering:910" href="#bInput_Buffering:910">Input Buffering</a></em></strong></span>
+<strong class="block-title"><em><a id="Input-Buffering-block-95" href="#Input-Buffering-block-95">Input Buffering</a></em></strong></span>
 <pre class="prettyprint"><code class="">struct termios original_tio;
 
 void disable_input_buffering()
@@ -1157,51 +1194,14 @@ void restore_input_buffering()
     tcsetattr(STDIN_FILENO, TCSANOW, &amp;original_tio);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:866" title="index.lit:867 /lc3.c">1</a> <span title="index.lit:1202 /lc3-alt.cpp">2</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-alt.cpp">2</span> </small></p></div>
 
 
 
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bHandle_Interrupt:927" href="#bHandle_Interrupt:927">Handle Interrupt</a></em></strong></span>
-<pre class="prettyprint"><code class="">void handle_interrupt(int signal)
-{
-    restore_input_buffering();
-    printf("\n");
-    exit(-2);
-}
-</code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:866" title="index.lit:867 /lc3.c">1</a> <span title="index.lit:1023 /lc3-win.c">2</span> <span title="index.lit:1202 /lc3-alt.cpp">3</span> <span title="index.lit:1249 /lc3-alt-win.cpp">4</span> </small></p></div>
-
-
-
-
-<div class="code-block">
-<span class="block-header">
-<strong class="block-title"><em><a id="bSetup:936" href="#bSetup:936">Setup</a></em></strong></span>
-<pre class="prettyprint"><code class="">signal(SIGINT, handle_interrupt);
-disable_input_buffering();
-</code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> <span title="index.lit:1202 /lc3-alt.cpp">2</span> <span title="index.lit:1249 /lc3-alt-win.cpp">3</span> </small></p></div>
-
-
-<p>When the program is interrupted, we want to restore the terminal
-settings back to normal.</p>
-
-<div class="code-block">
-<span class="block-header">
-<strong class="block-title"><em><a id="bShutdown:944" href="#bShutdown:944">Shutdown</a></em></strong></span>
-<pre class="prettyprint"><code class="">restore_input_buffering();
-</code></pre>
-<p class="block-usages"><small>Used by <a href="#bMain_Loop:209" title="index.lit:210 Main Loop">1</a> <span title="index.lit:1202 /lc3-alt.cpp">2</span> <span title="index.lit:1249 /lc3-alt-win.cpp">3</span> </small></p></div>
-
-
-
-
-<div class="code-block">
-<span class="block-header">
-<strong class="block-title"><em><a id="bIncludes:948" href="#bIncludes:948">Includes</a></em></strong></span>
+<strong class="block-title"><em><a id="Includes-block-97" href="#Includes-block-97">Includes</a></em></strong></span>
 <pre class="prettyprint"><code class="">#include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 #include &lt;stdint.h&gt;
@@ -1216,7 +1216,7 @@ settings back to normal.</p>
 #include &lt;sys/termios.h&gt;
 #include &lt;sys/mman.h&gt;
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#b/lc3.c:141" title="index.lit:142 /lc3.c">1</a> <span title="index.lit:1202 /lc3-alt.cpp">2</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-11" title="/lc3.c">1</a> <span title="/lc3-alt.cpp">2</span> </small></p></div>
 
 
 
@@ -1231,20 +1231,20 @@ These are not insightful or relevant to learning about VMs. Feel free to copy pa
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bCheck_Key_Windows:971" href="#bCheck_Key_Windows:971">Check Key Windows</a></em></strong></span>
+<strong class="block-title"><em><a id="Check-Key-Windows-block-99" href="#Check-Key-Windows-block-99">Check Key Windows</a></em></strong></span>
 <pre class="prettyprint"><code class="">uint16_t check_key()
 {
     return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 &amp;&amp; _kbhit();
 }
 </code></pre>
-<p class="block-usages"><small>Used by <span title="index.lit:1023 /lc3-win.c">1</span> <span title="index.lit:1249 /lc3-alt-win.cpp">2</span> </small></p></div>
+<p class="block-usages"><small>Used by <span title="/lc3-win.c">1</span> <span title="/lc3-alt-win.cpp">2</span> </small></p></div>
 
 
 
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bInput_Buffering_Windows:978" href="#bInput_Buffering_Windows:978">Input Buffering Windows</a></em></strong></span>
+<strong class="block-title"><em><a id="Input-Buffering-Windows-block-101" href="#Input-Buffering-Windows-block-101">Input Buffering Windows</a></em></strong></span>
 <pre class="prettyprint"><code class="">DWORD fdwMode, fdwOldMode;
 
 void disable_input_buffering()
@@ -1264,36 +1264,14 @@ void restore_input_buffering()
     SetConsoleMode(hStdin, fdwOldMode);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <span title="index.lit:1023 /lc3-win.c">1</span> <span title="index.lit:1249 /lc3-alt-win.cpp">2</span> </small></p></div>
+<p class="block-usages"><small>Used by <span title="/lc3-win.c">1</span> <span title="/lc3-alt-win.cpp">2</span> </small></p></div>
 
 
 
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bWindows_Setup:999" href="#bWindows_Setup:999">Windows Setup</a></em></strong></span>
-<pre class="prettyprint"><code class="">signal(SIGINT, handle_interrupt);
-disable_input_buffering();
-</code></pre>
-</div>
-
-
-<p>When the program is interrupted, we want to restore the terminal
-settings back to normal.</p>
-
-<div class="code-block">
-<span class="block-header">
-<strong class="block-title"><em><a id="bWindows_Shutdown:1007" href="#bWindows_Shutdown:1007">Windows Shutdown</a></em></strong></span>
-<pre class="prettyprint"><code class="">restore_input_buffering();
-</code></pre>
-</div>
-
-
-
-
-<div class="code-block">
-<span class="block-header">
-<strong class="block-title"><em><a id="bWindows_Includes:1011" href="#bWindows_Includes:1011">Windows Includes</a></em></strong></span>
+<strong class="block-title"><em><a id="Windows-Includes-block-103" href="#Windows-Includes-block-103">Windows Includes</a></em></strong></span>
 <pre class="prettyprint"><code class="">#include &lt;stdint.h&gt; // uint16_t
 #include &lt;stdio.h&gt;  // FILE
 #include &lt;signal.h&gt; // SIGINT
@@ -1303,7 +1281,7 @@ settings back to normal.</p>
 
 HANDLE hStdin = INVALID_HANDLE_VALUE;
 </code></pre>
-<p class="block-usages"><small>Used by <span title="index.lit:1023 /lc3-win.c">1</span> <span title="index.lit:1249 /lc3-alt-win.cpp">2</span> </small></p></div>
+<p class="block-usages"><small>Used by <span title="/lc3-win.c">1</span> <span title="/lc3-alt-win.cpp">2</span> </small></p></div>
 
 
 
@@ -1360,7 +1338,7 @@ HANDLE hStdin = INVALID_HANDLE_VALUE;
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bInstruction_C__:1093" href="#bInstruction_C__:1093">Instruction C++</a></em></strong></span>
+<strong class="block-title"><em><a id="Instruction-C---block-107" href="#Instruction-C---block-107">Instruction C++</a></em></strong></span>
 <pre class="prettyprint"><code class="">template &lt;unsigned op&gt;
 void ins(uint16_t instr)
 {
@@ -1446,20 +1424,20 @@ void ins(uint16_t instr)
     if (0x0080 &amp; opbit) { mem_write(base_plus_off, reg[r0]); } // STR
     if (0x8000 &amp; opbit)  // TRAP
     {
-         <em class="block-link nocode" title="index.lit:657"><a href="#bTRAP:656">@{TRAP}</a></em>
+         <em class="block-link nocode" title=""><a href="#TRAP-block-61">@{TRAP}</a></em>
     }
     //if (0x0100 &amp; opbit) { } // RTI
     if (0x4666 &amp; opbit) { update_flags(r0); }
 }
 </code></pre>
-<p class="block-usages"><small>Used by <span title="index.lit:1202 /lc3-alt.cpp">1</span> <span title="index.lit:1249 /lc3-alt-win.cpp">2</span> </small></p></div>
+<p class="block-usages"><small>Used by <span title="/lc3-alt.cpp">1</span> <span title="/lc3-alt-win.cpp">2</span> </small></p></div>
 
 
 
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="bOp_Table:1186" href="#bOp_Table:1186">Op Table</a></em></strong></span>
+<strong class="block-title"><em><a id="Op-Table-block-109" href="#Op-Table-block-109">Op Table</a></em></strong></span>
 <pre class="prettyprint"><code class="">static void (*op_table[16])(uint16_t) = {
     ins&lt;0&gt;, ins&lt;1&gt;, ins&lt;2&gt;, ins&lt;3&gt;,
     ins&lt;4&gt;, ins&lt;5&gt;, ins&lt;6&gt;, ins&lt;7&gt;,
@@ -1467,7 +1445,7 @@ void ins(uint16_t instr)
     ins&lt;12&gt;, NULL, ins&lt;14&gt;, ins&lt;15&gt;
 };
 </code></pre>
-<p class="block-usages"><small>Used by <span title="index.lit:1202 /lc3-alt.cpp">1</span> <span title="index.lit:1249 /lc3-alt-win.cpp">2</span> </small></p></div>
+<p class="block-usages"><small>Used by <span title="/lc3-alt.cpp">1</span> <span title="/lc3-alt-win.cpp">2</span> </small></p></div>
 
 
 <blockquote><p><strong>Note:</strong> I learned about this technique from <a href="https://www.youtube.com/watch?v=QIUVSD3yqqE">Bisqwit&rsquo;s NES emulator</a>.

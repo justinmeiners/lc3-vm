@@ -764,6 +764,29 @@ fflush(stdout);
 running = 0;
 ---
 
+To properly handle  trap inputs in the terminal we need to adjust some settings.
+The implementation varies for each platform and will be shown later.
+
+--- Setup
+signal(SIGINT, handle_interrupt);
+disable_input_buffering();
+---
+
+When the program is interrupted, we want to restore the terminal settings back to normal.
+
+--- Handle Interrupt
+void handle_interrupt(int signal)
+{
+    restore_input_buffering();
+    printf("\n");
+    exit(-2);
+}
+---
+
+--- Shutdown
+restore_input_buffering();
+---
+
 ## Loading Programs
 
 We have mentioned a lot about loading and executing instructions from memory, but how do instructions get into memory in the first place? When an assembly program is converted to machine code, the result is a file containing an array of instructions and data. This can be loaded by just copying the contents right into an address in memory.
@@ -924,27 +947,6 @@ void restore_input_buffering()
 }
 ---
 
---- Handle Interrupt
-void handle_interrupt(int signal)
-{
-    restore_input_buffering();
-    printf("\n");
-    exit(-2);
-}
----
-
---- Setup
-signal(SIGINT, handle_interrupt);
-disable_input_buffering();
----
-
-When the program is interrupted, we want to restore the terminal
-settings back to normal.
-
---- Shutdown
-restore_input_buffering();
----
-
 --- Includes
 #include <stdio.h>
 #include <stdlib.h>
@@ -994,18 +996,6 @@ void restore_input_buffering()
 {
     SetConsoleMode(hStdin, fdwOldMode);
 }
----
-
---- Windows Setup
-signal(SIGINT, handle_interrupt);
-disable_input_buffering();
----
-
-When the program is interrupted, we want to restore the terminal
-settings back to normal.
-
---- Windows Shutdown
-restore_input_buffering();
 ---
 
 --- Windows Includes
