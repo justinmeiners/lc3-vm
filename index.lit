@@ -764,29 +764,6 @@ fflush(stdout);
 running = 0;
 ---
 
-To properly handle  trap inputs in the terminal we need to adjust some settings.
-The implementation varies for each platform and will be shown later.
-
---- Setup
-signal(SIGINT, handle_interrupt);
-disable_input_buffering();
----
-
-When the program is interrupted, we want to restore the terminal settings back to normal.
-
---- Handle Interrupt
-void handle_interrupt(int signal)
-{
-    restore_input_buffering();
-    printf("\n");
-    exit(-2);
-}
----
-
---- Shutdown
-restore_input_buffering();
----
-
 ## Loading Programs
 
 We have mentioned a lot about loading and executing instructions from memory, but how do instructions get into memory in the first place? When an assembly program is converted to machine code, the result is a file containing an array of instructions and data. This can be loaded by just copying the contents right into an address in memory.
@@ -883,29 +860,6 @@ uint16_t mem_read(uint16_t address)
 ---
 
 That completes the last component of the VM! Provided that you implemented the rest of the trap routines and instructions, you are almost ready to try it out!
-
-All that we have written should have been added to the C file in the following order:
-
---- /lc3.c +=
-@{Memory Mapped Registers}
-@{TRAP Codes}
-
-@{Memory Storage}
-@{Register Storage}
-
-@{Sign Extend}
-@{Swap}
-@{Update Flags}
-@{Read Image File}
-@{Read Image}
-@{Check Key}
-@{Memory Access}
-@{Input Buffering}
-@{Handle Interrupt}
-
-@{Main Loop}
----
-
 
 ## Platform Specifics (Unix)
 
@@ -1009,6 +963,54 @@ void restore_input_buffering()
 HANDLE hStdin = INVALID_HANDLE_VALUE;
 ---
 
+## Final details
+
+To properly handle inputs in the terminal we need to adjust some settings.
+The implementation varies for each platform and was defined above. 
+
+--- Setup
+signal(SIGINT, handle_interrupt);
+disable_input_buffering();
+---
+
+When the program is interrupted, we want to restore the terminal settings back to normal.
+
+--- Handle Interrupt
+void handle_interrupt(int signal)
+{
+    restore_input_buffering();
+    printf("\n");
+    exit(-2);
+}
+---
+
+--- Shutdown
+restore_input_buffering();
+---
+
+All that we have written should have been added to the C file in the following order:
+
+--- /lc3.c +=
+@{Memory Mapped Registers}
+@{TRAP Codes}
+
+@{Memory Storage}
+@{Register Storage}
+
+@{Sign Extend}
+@{Swap}
+@{Update Flags}
+@{Read Image File}
+@{Read Image}
+@{Check Key}
+@{Memory Access}
+@{Input Buffering}
+@{Handle Interrupt}
+
+@{Main Loop}
+---
+
+
 --- /lc3-win.c --- noWeave
 @{Windows Includes}
 
@@ -1034,7 +1036,6 @@ HANDLE hStdin = INVALID_HANDLE_VALUE;
 
 @{Main Loop}
 ---
-
 
 ## Running the VM
 

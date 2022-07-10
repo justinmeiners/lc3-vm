@@ -24,7 +24,7 @@
 <p>The final code is about 250 lines of C (<a href="src/lc3.c">unix</a>, <a href="src/lc3-win.c">windows</a>).
 All you need to know is how to read basic C or C++ and how to do <a href="https://www.swarthmore.edu/NatSci/echeeve1/Ref/BinaryMath/BinaryMath.html">binary arithmetic</a>.</p>
 
-<ol><li><a href="#s0:0">What is a virtual machine?</a></li><li><a href="#s0:1">LC-3 Architecture</a></li><li><a href="#s0:2">Assembly Examples</a></li><li><a href="#s0:3">Executing Programs</a></li><li><a href="#s0:4">Implementing Instructions</a></li><li><a href="#s0:5">Instruction Cheat Sheet</a></li><li><a href="#s0:6">Trap Routines</a></li><li><a href="#s0:7">Trap Routine Cheat Sheet</a></li><li><a href="#s0:8">Loading Programs</a></li><li><a href="#s0:9">Memory Mapped Registers</a></li><li><a href="#s0:10">Platform Specifics (Unix)</a></li><li><a href="#s0:11">Platform Specifics (Windows)</a></li><li><a href="#s0:12">Running the VM</a></li><li><a href="#s0:13">Alternate C++ Technique</a></li><li><a href="#s0:14">Contributions</a></li></ol>
+<ol><li><a href="#s0:0">What is a virtual machine?</a></li><li><a href="#s0:1">LC-3 Architecture</a></li><li><a href="#s0:2">Assembly Examples</a></li><li><a href="#s0:3">Executing Programs</a></li><li><a href="#s0:4">Implementing Instructions</a></li><li><a href="#s0:5">Instruction Cheat Sheet</a></li><li><a href="#s0:6">Trap Routines</a></li><li><a href="#s0:7">Trap Routine Cheat Sheet</a></li><li><a href="#s0:8">Loading Programs</a></li><li><a href="#s0:9">Memory Mapped Registers</a></li><li><a href="#s0:10">Platform Specifics (Unix)</a></li><li><a href="#s0:11">Platform Specifics (Windows)</a></li><li><a href="#s0:12">Final details</a></li><li><a href="#s0:13">Running the VM</a></li><li><a href="#s0:14">Alternate C++ Technique</a></li><li><a href="#s0:15">Contributions</a></li></ol>
 
 
 <blockquote><p><strong>Note:</strong> This tutorial is a <a href="https://en.wikipedia.org/wiki/Literate_programming">literate program</a>.
@@ -72,7 +72,7 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 <pre class="prettyprint"><code class="">#define MEMORY_MAX (1 &lt;&lt; 16)
 uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <h3>Registers</h3>
@@ -114,7 +114,7 @@ uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 <strong class="block-title"><em><a id="Register-Storage-block-5" href="#Register-Storage-block-5">Register Storage</a></em></strong></span>
 <pre class="prettyprint"><code class="">uint16_t reg[R_COUNT];
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <h3>Instruction Set</h3>
@@ -179,7 +179,7 @@ uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 <div class="code-block">
 <span class="block-header">
 <strong class="block-title"><em><a id="-lc3.c-block-11" href="#-lc3.c-block-11">/lc3.c</a></em></strong></span>
-<pre class="prettyprint"><code class=""><em class="block-link nocode" title=""><a href="#Includes-block-97">@{Includes}</a></em>
+<pre class="prettyprint"><code class=""><em class="block-link nocode" title=""><a href="#Includes-block-89">@{Includes}</a></em>
 
 <em class="block-link nocode" title=""><a href="#Registers-block-3">@{Registers}</a></em>
 <em class="block-link nocode" title=""><a href="#Opcodes-block-7">@{Opcodes}</a></em>
@@ -269,7 +269,7 @@ BRn LOOP                           ; go back to LOOP if the result was negative
 <pre class="prettyprint"><code class="">int main(int argc, const char* argv[])
 {
     <em class="block-link nocode" title=""><a href="#Load-Arguments-block-19">@{Load Arguments}</a></em>
-    <em class="block-link nocode" title=""><a href="#Setup-block-75">@{Setup}</a></em>
+    <em class="block-link nocode" title=""><a href="#Setup-block-97">@{Setup}</a></em>
 
     /* since exactly one condition flag should be set at any given time, set the Z flag */
     reg[R_COND] = FL_ZRO;
@@ -337,10 +337,10 @@ BRn LOOP                           ; go back to LOOP if the result was negative
                 break;
         }
     }
-    <em class="block-link nocode" title=""><a href="#Shutdown-block-79">@{Shutdown}</a></em>
+    <em class="block-link nocode" title=""><a href="#Shutdown-block-101">@{Shutdown}</a></em>
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> </small></p></div>
 
 
 <p>While we are at the main loop let&rsquo;s handle command line input to make our program usable.
@@ -425,7 +425,7 @@ making immediate mode primarily useful for incrementing and decrementing. In ass
     return x;
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <blockquote><p><strong>Note:</strong> If you are interested in exactly how negative numbers can be represented in binary, you can read about <a href="https://en.wikipedia.org/wiki/Two%27s_complement">Two&rsquo;s Complement</a>. However, this is not essential. You can just copy the code above and use it whenever the specification says to sign extend numbers.</p></blockquote>
@@ -455,7 +455,7 @@ making immediate mode primarily useful for incrementing and decrementing. In ass
     }
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <p>Now we are ready to write the code for the <code>ADD</code> case:</p>
@@ -792,7 +792,7 @@ char* far_data = "apple";
     TRAP_HALT = 0x25   /* halt the program */
 };
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <p>You may be wondering why the trap codes are not included in the instructions.
@@ -959,43 +959,6 @@ running = 0;
 <p class="block-usages"><small>Used by <a href="#TRAP-block-61" title="TRAP">1</a> </small></p></div>
 
 
-<p>To properly handle  trap inputs in the terminal we need to adjust some settings.
-The implementation varies for each platform and will be shown later.</p>
-
-<div class="code-block">
-<span class="block-header">
-<strong class="block-title"><em><a id="Setup-block-75" href="#Setup-block-75">Setup</a></em></strong></span>
-<pre class="prettyprint"><code class="">signal(SIGINT, handle_interrupt);
-disable_input_buffering();
-</code></pre>
-<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> <span title="/lc3-alt.cpp">2</span> <span title="/lc3-alt-win.cpp">3</span> </small></p></div>
-
-
-<p>When the program is interrupted, we want to restore the terminal settings back to normal.</p>
-
-<div class="code-block">
-<span class="block-header">
-<strong class="block-title"><em><a id="Handle-Interrupt-block-77" href="#Handle-Interrupt-block-77">Handle Interrupt</a></em></strong></span>
-<pre class="prettyprint"><code class="">void handle_interrupt(int signal)
-{
-    restore_input_buffering();
-    printf("\n");
-    exit(-2);
-}
-</code></pre>
-<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
-
-
-
-
-<div class="code-block">
-<span class="block-header">
-<strong class="block-title"><em><a id="Shutdown-block-79" href="#Shutdown-block-79">Shutdown</a></em></strong></span>
-<pre class="prettyprint"><code class="">restore_input_buffering();
-</code></pre>
-<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> <span title="/lc3-alt.cpp">2</span> <span title="/lc3-alt-win.cpp">3</span> </small></p></div>
-
-
 
 
 <h2>9. Loading Programs<a id="s0:8"></a></h2>
@@ -1009,7 +972,7 @@ disable_input_buffering();
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="Read-Image-File-block-81" href="#Read-Image-File-block-81">Read Image File</a></em></strong></span>
+<strong class="block-title"><em><a id="Read-Image-File-block-75" href="#Read-Image-File-block-75">Read Image File</a></em></strong></span>
 <pre class="prettyprint"><code class="">void read_image_file(FILE* file)
 {
     /* the origin tells us where in memory to place the image */
@@ -1030,20 +993,20 @@ disable_input_buffering();
     }
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <p>Notice that <code>swap16</code> is called on each loaded value. LC-3 programs are big-endian, but most modern computers are little-endian. So, we need to swap each <code>uint16</code> that is loaded. (If you happen to be using an obscure computer, like an old <a href="https://en.wikipedia.org/wiki/PowerPC#Endian_modes">PPC</a> <a href="https://en.wikipedia.org/wiki/Power_Mac_G4_Cube">Mac</a>, then do not swap.)</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="Swap-block-83" href="#Swap-block-83">Swap</a></em></strong></span>
+<strong class="block-title"><em><a id="Swap-block-77" href="#Swap-block-77">Swap</a></em></strong></span>
 <pre class="prettyprint"><code class="">uint16_t swap16(uint16_t x)
 {
     return (x &lt;&lt; 8) | (x &gt;&gt; 8);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <blockquote><p><strong>Note:</strong> <a href="https://en.wikipedia.org/wiki/Endianness">Endianness</a> refers to how bytes of an integer are interpreted. In little-endian, the first byte is the least significant digit, and in big-endian, it is reversed. As far as I know, the decision is <em>mostly</em> arbitrary. Different companies made different decisions, so now we are left with varying implementations. You do not need to know anything else about endianness for this project.</p></blockquote>
@@ -1052,7 +1015,7 @@ disable_input_buffering();
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="Read-Image-block-85" href="#Read-Image-block-85">Read Image</a></em></strong></span>
+<strong class="block-title"><em><a id="Read-Image-block-79" href="#Read-Image-block-79">Read Image</a></em></strong></span>
 <pre class="prettyprint"><code class="">int read_image(const char* image_path)
 {
     FILE* file = fopen(image_path, "rb");
@@ -1062,7 +1025,7 @@ disable_input_buffering();
     return 1;
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 
@@ -1078,21 +1041,21 @@ disable_input_buffering();
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="Memory-Mapped-Registers-block-87" href="#Memory-Mapped-Registers-block-87">Memory Mapped Registers</a></em></strong></span>
+<strong class="block-title"><em><a id="Memory-Mapped-Registers-block-81" href="#Memory-Mapped-Registers-block-81">Memory Mapped Registers</a></em></strong></span>
 <pre class="prettyprint"><code class="">enum
 {
     MR_KBSR = 0xFE00, /* keyboard status */
     MR_KBDR = 0xFE02  /* keyboard data */
 };
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <p>Memory mapped registers make memory access a bit more complicated. We can&rsquo;t read and write to the memory array directly, but must instead call setter and getter functions. When memory is read from <code>KBSR</code>, the getter will check the keyboard and update both memory locations.</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="Memory-Access-block-89" href="#Memory-Access-block-89">Memory Access</a></em></strong></span>
+<strong class="block-title"><em><a id="Memory-Access-block-83" href="#Memory-Access-block-83">Memory Access</a></em></strong></span>
 <pre class="prettyprint"><code class="">void mem_write(uint16_t address, uint16_t val)
 {
     memory[address] = val;
@@ -1115,38 +1078,10 @@ uint16_t mem_read(uint16_t address)
     return memory[address];
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
 
 
 <p>That completes the last component of the VM! Provided that you implemented the rest of the trap routines and instructions, you are almost ready to try it out!</p>
-
-<p>All that we have written should have been added to the C file in the following order:</p>
-
-<div class="code-block">
-<span class="block-header">
-<strong class="block-title"><em><a id="-lc3.c-block-91" href="#-lc3.c-block-91">/lc3.c</a></em></strong> <a href="#-lc3.c-block-11">+=</a></span>
-<pre class="prettyprint"><code class=""><em class="block-link nocode" title=""><a href="#Memory-Mapped-Registers-block-87">@{Memory Mapped Registers}</a></em>
-<em class="block-link nocode" title=""><a href="#TRAP-Codes-block-59">@{TRAP Codes}</a></em>
-
-<em class="block-link nocode" title=""><a href="#Memory-Storage-block-1">@{Memory Storage}</a></em>
-<em class="block-link nocode" title=""><a href="#Register-Storage-block-5">@{Register Storage}</a></em>
-
-<em class="block-link nocode" title=""><a href="#Sign-Extend-block-25">@{Sign Extend}</a></em>
-<em class="block-link nocode" title=""><a href="#Swap-block-83">@{Swap}</a></em>
-<em class="block-link nocode" title=""><a href="#Update-Flags-block-27">@{Update Flags}</a></em>
-<em class="block-link nocode" title=""><a href="#Read-Image-File-block-81">@{Read Image File}</a></em>
-<em class="block-link nocode" title=""><a href="#Read-Image-block-85">@{Read Image}</a></em>
-<em class="block-link nocode" title=""><a href="#Check-Key-block-93">@{Check Key}</a></em>
-<em class="block-link nocode" title=""><a href="#Memory-Access-block-89">@{Memory Access}</a></em>
-<em class="block-link nocode" title=""><a href="#Input-Buffering-block-95">@{Input Buffering}</a></em>
-<em class="block-link nocode" title=""><a href="#Handle-Interrupt-block-77">@{Handle Interrupt}</a></em>
-
-<em class="block-link nocode" title=""><a href="#Main-Loop-block-17">@{Main Loop}</a></em>
-</code></pre>
-</div>
-
-
-
 
 <h2>11. Platform Specifics (Unix)<a id="s0:10"></a></h2>
 
@@ -1158,7 +1093,7 @@ These are not insightful or relevant to learning about VMs. Feel free to copy pa
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="Check-Key-block-93" href="#Check-Key-block-93">Check Key</a></em></strong></span>
+<strong class="block-title"><em><a id="Check-Key-block-85" href="#Check-Key-block-85">Check Key</a></em></strong></span>
 <pre class="prettyprint"><code class="">uint16_t check_key()
 {
     fd_set readfds;
@@ -1171,14 +1106,14 @@ These are not insightful or relevant to learning about VMs. Feel free to copy pa
     return select(1, &amp;readfds, NULL, NULL, &amp;timeout) != 0;
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-alt.cpp">2</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-alt.cpp">2</span> </small></p></div>
 
 
 <p>This is Unix specific code for setting up terminal input.</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="Input-Buffering-block-95" href="#Input-Buffering-block-95">Input Buffering</a></em></strong></span>
+<strong class="block-title"><em><a id="Input-Buffering-block-87" href="#Input-Buffering-block-87">Input Buffering</a></em></strong></span>
 <pre class="prettyprint"><code class="">struct termios original_tio;
 
 void disable_input_buffering()
@@ -1194,14 +1129,14 @@ void restore_input_buffering()
     tcsetattr(STDIN_FILENO, TCSANOW, &amp;original_tio);
 }
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lc3.c-block-91" title="/lc3.c">1</a> <span title="/lc3-alt.cpp">2</span> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-alt.cpp">2</span> </small></p></div>
 
 
 
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="Includes-block-97" href="#Includes-block-97">Includes</a></em></strong></span>
+<strong class="block-title"><em><a id="Includes-block-89" href="#Includes-block-89">Includes</a></em></strong></span>
 <pre class="prettyprint"><code class="">#include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 #include &lt;stdint.h&gt;
@@ -1231,7 +1166,7 @@ These are not insightful or relevant to learning about VMs. Feel free to copy pa
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="Check-Key-Windows-block-99" href="#Check-Key-Windows-block-99">Check Key Windows</a></em></strong></span>
+<strong class="block-title"><em><a id="Check-Key-Windows-block-91" href="#Check-Key-Windows-block-91">Check Key Windows</a></em></strong></span>
 <pre class="prettyprint"><code class="">uint16_t check_key()
 {
     return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 &amp;&amp; _kbhit();
@@ -1244,7 +1179,7 @@ These are not insightful or relevant to learning about VMs. Feel free to copy pa
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="Input-Buffering-Windows-block-101" href="#Input-Buffering-Windows-block-101">Input Buffering Windows</a></em></strong></span>
+<strong class="block-title"><em><a id="Input-Buffering-Windows-block-93" href="#Input-Buffering-Windows-block-93">Input Buffering Windows</a></em></strong></span>
 <pre class="prettyprint"><code class="">DWORD fdwMode, fdwOldMode;
 
 void disable_input_buffering()
@@ -1271,7 +1206,7 @@ void restore_input_buffering()
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="Windows-Includes-block-103" href="#Windows-Includes-block-103">Windows Includes</a></em></strong></span>
+<strong class="block-title"><em><a id="Windows-Includes-block-95" href="#Windows-Includes-block-95">Windows Includes</a></em></strong></span>
 <pre class="prettyprint"><code class="">#include &lt;stdint.h&gt; // uint16_t
 #include &lt;stdio.h&gt;  // FILE
 #include &lt;signal.h&gt; // SIGINT
@@ -1286,7 +1221,75 @@ HANDLE hStdin = INVALID_HANDLE_VALUE;
 
 
 
-<h2>13. Running the VM<a id="s0:12"></a></h2>
+<h2>13. Final details<a id="s0:12"></a></h2>
+
+
+<p>To properly handle inputs in the terminal we need to adjust some settings.
+The implementation varies for each platform and was defined above.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="Setup-block-97" href="#Setup-block-97">Setup</a></em></strong></span>
+<pre class="prettyprint"><code class="">signal(SIGINT, handle_interrupt);
+disable_input_buffering();
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> <span title="/lc3-alt.cpp">2</span> <span title="/lc3-alt-win.cpp">3</span> </small></p></div>
+
+
+<p>When the program is interrupted, we want to restore the terminal settings back to normal.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="Handle-Interrupt-block-99" href="#Handle-Interrupt-block-99">Handle Interrupt</a></em></strong></span>
+<pre class="prettyprint"><code class="">void handle_interrupt(int signal)
+{
+    restore_input_buffering();
+    printf("\n");
+    exit(-2);
+}
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
+
+
+
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="Shutdown-block-101" href="#Shutdown-block-101">Shutdown</a></em></strong></span>
+<pre class="prettyprint"><code class="">restore_input_buffering();
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#Main-Loop-block-17" title="Main Loop">1</a> <span title="/lc3-alt.cpp">2</span> <span title="/lc3-alt-win.cpp">3</span> </small></p></div>
+
+
+<p>All that we have written should have been added to the C file in the following order:</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="-lc3.c-block-103" href="#-lc3.c-block-103">/lc3.c</a></em></strong> <a href="#-lc3.c-block-11">+=</a></span>
+<pre class="prettyprint"><code class=""><em class="block-link nocode" title=""><a href="#Memory-Mapped-Registers-block-81">@{Memory Mapped Registers}</a></em>
+<em class="block-link nocode" title=""><a href="#TRAP-Codes-block-59">@{TRAP Codes}</a></em>
+
+<em class="block-link nocode" title=""><a href="#Memory-Storage-block-1">@{Memory Storage}</a></em>
+<em class="block-link nocode" title=""><a href="#Register-Storage-block-5">@{Register Storage}</a></em>
+
+<em class="block-link nocode" title=""><a href="#Sign-Extend-block-25">@{Sign Extend}</a></em>
+<em class="block-link nocode" title=""><a href="#Swap-block-77">@{Swap}</a></em>
+<em class="block-link nocode" title=""><a href="#Update-Flags-block-27">@{Update Flags}</a></em>
+<em class="block-link nocode" title=""><a href="#Read-Image-File-block-75">@{Read Image File}</a></em>
+<em class="block-link nocode" title=""><a href="#Read-Image-block-79">@{Read Image}</a></em>
+<em class="block-link nocode" title=""><a href="#Check-Key-block-85">@{Check Key}</a></em>
+<em class="block-link nocode" title=""><a href="#Memory-Access-block-83">@{Memory Access}</a></em>
+<em class="block-link nocode" title=""><a href="#Input-Buffering-block-87">@{Input Buffering}</a></em>
+<em class="block-link nocode" title=""><a href="#Handle-Interrupt-block-99">@{Handle Interrupt}</a></em>
+
+<em class="block-link nocode" title=""><a href="#Main-Loop-block-17">@{Main Loop}</a></em>
+</code></pre>
+</div>
+
+
+
+
+<h2>14. Running the VM<a id="s0:13"></a></h2>
 
 
 <p>You can now build and run the LC-3 VM!</p>
@@ -1325,7 +1328,7 @@ HANDLE hStdin = INVALID_HANDLE_VALUE;
 
 <p>If the program doesn&rsquo;t work correctly, it is likely because you programmed an instruction incorrectly. This can be tricky to debug. I recommend reading through the assembly source code of an LC-3 program while simultaneously using a debugger to step through the VM instructions one at a time. As you read the assembly, make sure the VM goes to the instruction that you expect it to. If a discrepancy occurs, you will then know which instruction caused the issue. Reread its specification and double check your code.</p>
 
-<h2>14. Alternate C++ Technique<a id="s0:13"></a></h2>
+<h2>15. Alternate C++ Technique<a id="s0:14"></a></h2>
 
 
 <p>This section shows an advanced way of executing instructions that makes the code a whole lot smaller. This section is entirely optional.</p>
@@ -1454,7 +1457,7 @@ If you are interested in emulation, or the NES, I highly recommend his videos.</
 <p>The rest of the C++ version uses the code we already wrote!
 The full source is here: <a href="src/lc3-alt.cpp">unix</a>, <a href="src/lc3-alt-win.cpp">windows</a>.</p>
 
-<h2>15. Contributions<a id="s0:14"></a></h2>
+<h2>16. Contributions<a id="s0:15"></a></h2>
 
 
 <p><a href="https://github.com/atul-g/rust_vm">atul-g</a> has contributed a handy <a href="supplies/lc3-ref-card.png">reference card</a>
