@@ -965,8 +965,8 @@ HANDLE hStdin = INVALID_HANDLE_VALUE;
 
 ## Final details
 
-To properly handle inputs in the terminal we need to adjust some settings.
-The implementation varies for each platform and was defined above. 
+To properly handle input to the terminal we need to adjust some buffering settings.
+The implementation for these varies for each platform and should have been defined abo ve.
 
 --- Setup
 signal(SIGINT, handle_interrupt);
