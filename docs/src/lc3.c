@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
 #include <signal.h>
 /* unix only */
+#include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/time.h>
@@ -121,17 +121,6 @@ int read_image(const char* image_path)
     fclose(file);
     return 1;
 }
-uint16_t check_key()
-{
-    fd_set readfds;
-    FD_ZERO(&readfds);
-    FD_SET(STDIN_FILENO, &readfds);
-
-    struct timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 0;
-    return select(1, &readfds, NULL, NULL, &timeout) != 0;
-}
 void mem_write(uint16_t address, uint16_t val)
 {
     memory[address] = val;
@@ -166,6 +155,18 @@ void disable_input_buffering()
 void restore_input_buffering()
 {
     tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
+}
+
+uint16_t check_key()
+{
+    fd_set readfds;
+    FD_ZERO(&readfds);
+    FD_SET(STDIN_FILENO, &readfds);
+
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
+    return select(1, &readfds, NULL, NULL, &timeout) != 0;
 }
 void handle_interrupt(int signal)
 {

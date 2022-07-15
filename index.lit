@@ -865,27 +865,11 @@ That completes the last component of the VM! Provided that you implemented the r
 
 This section contains some tedious details that are needed to access the keyboard and behave nicely.
 These are not insightful or relevant to learning about VMs. Feel free to copy paste!
-These functions should be declared somewhere above your main function.
+These functions should be declared above your main function.
 
 ### Linux/macOS/UNIX
 
 NOTE: Skip to the next section for the **Windows** versions of these functions.
-
---- Check Key
-uint16_t check_key()
-{
-    fd_set readfds;
-    FD_ZERO(&readfds);
-    FD_SET(STDIN_FILENO, &readfds);
-
-    struct timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 0;
-    return select(1, &readfds, NULL, NULL, &timeout) != 0;
-}
----
-
-This is Unix specific code for setting up terminal input.
 
 --- Input Buffering
 struct termios original_tio;
@@ -902,14 +886,26 @@ void restore_input_buffering()
 {
     tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
 }
+
+uint16_t check_key()
+{
+    fd_set readfds;
+    FD_ZERO(&readfds);
+    FD_SET(STDIN_FILENO, &readfds);
+
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
+    return select(1, &readfds, NULL, NULL, &timeout) != 0;
+}
 ---
 
 --- Includes
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
 #include <signal.h>
 /* unix only */
+#include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/time.h>
@@ -922,16 +918,16 @@ void restore_input_buffering()
 
 NOTE: If you already included the **Unix** versions don't add these!
 
---- Check Key Windows
+--- Input Buffering Windows
+
+HANDLE hStdin = INVALID_HANDLE_VALUE;
 uint16_t check_key()
 {
     return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 && _kbhit();
 }
----
 
---- Input Buffering Windows
+
 DWORD fdwMode, fdwOldMode;
-
 void disable_input_buffering()
 {
     hStdin = GetStdHandle(STD_INPUT_HANDLE);
@@ -952,14 +948,11 @@ void restore_input_buffering()
 
 --- Windows Includes
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
 #include <signal.h>
 /* windows only */
 #include <Windows.h>
 #include <conio.h>  // _kbhit
-
-HANDLE hStdin = INVALID_HANDLE_VALUE;
 ---
 
 ### All platforms
@@ -992,7 +985,7 @@ void handle_interrupt(int signal)
 }
 ---
 
-All that we have written should have been added to the C file in the following order:
+Everything we have written so far should have been added to the C file in the following order:
 
 --- /lc3.c +=
 @{Memory Mapped Registers}
@@ -1006,7 +999,6 @@ All that we have written should have been added to the C file in the following o
 @{Update Flags}
 @{Read Image File}
 @{Read Image}
-@{Check Key}
 @{Memory Access}
 @{Input Buffering}
 @{Handle Interrupt}
@@ -1033,7 +1025,6 @@ All that we have written should have been added to the C file in the following o
 @{Update Flags}
 @{Read Image File}
 @{Read Image}
-@{Check Key Windows}
 @{Memory Access}
 @{Input Buffering Windows}
 @{Handle Interrupt}
@@ -1211,7 +1202,6 @@ The full source is here: [unix](src/lc3-alt.cpp), [windows](src/lc3-alt-win.cpp)
 @{Update Flags}
 @{Read Image File}
 @{Read Image}
-@{Check Key}
 @{Memory Access}
 @{Input Buffering}
 @{Handle Interrupt}
@@ -1258,7 +1248,6 @@ int main(int argc, const char* argv[])
 @{Update Flags}
 @{Read Image File}
 @{Read Image}
-@{Check Key Windows}
 @{Memory Access}
 @{Input Buffering Windows}
 @{Handle Interrupt}

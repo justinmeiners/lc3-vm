@@ -1,12 +1,9 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
 #include <signal.h>
 /* windows only */
 #include <Windows.h>
 #include <conio.h>  // _kbhit
-
-HANDLE hStdin = INVALID_HANDLE_VALUE;
 
 enum
 {
@@ -120,10 +117,6 @@ int read_image(const char* image_path)
     fclose(file);
     return 1;
 }
-uint16_t check_key()
-{
-    return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 && _kbhit();
-}
 void mem_write(uint16_t address, uint16_t val)
 {
     memory[address] = val;
@@ -145,8 +138,15 @@ uint16_t mem_read(uint16_t address)
     }
     return memory[address];
 }
-DWORD fdwMode, fdwOldMode;
 
+HANDLE hStdin = INVALID_HANDLE_VALUE;
+uint16_t check_key()
+{
+    return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 && _kbhit();
+}
+
+
+DWORD fdwMode, fdwOldMode;
 void disable_input_buffering()
 {
     hStdin = GetStdHandle(STD_INPUT_HANDLE);
