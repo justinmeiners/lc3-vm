@@ -865,6 +865,7 @@ That completes the last component of the VM! Provided that you implemented the r
 
 This section contains some tedious details that are needed to access the keyboard and behave nicely.
 These are not insightful or relevant to learning about VMs. Feel free to copy paste!
+These functions should be declared somewhere above your main function.
 
 ### Linux/macOS/UNIX
 
@@ -907,12 +908,10 @@ void restore_input_buffering()
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <string.h>
 #include <signal.h>
-/* unix */
+/* unix only */
 #include <unistd.h>
 #include <fcntl.h>
-
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/termios.h>
@@ -920,9 +919,6 @@ void restore_input_buffering()
 ---
 
 ### Windows
-
-This section contains some tedious details that are needed to access the keyboard and behave nicely.
-These are not insightful or relevant to learning about VMs. Feel free to copy paste!
 
 NOTE: If you already included the **Unix** versions don't add these!
 
@@ -955,9 +951,10 @@ void restore_input_buffering()
 ---
 
 --- Windows Includes
-#include <stdint.h> // uint16_t
-#include <stdio.h>  // FILE
-#include <signal.h> // SIGINT
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <signal.h>
 /* windows only */
 #include <Windows.h>
 #include <conio.h>  // _kbhit
@@ -970,12 +967,21 @@ HANDLE hStdin = INVALID_HANDLE_VALUE;
 To properly handle input to the terminal, we need to adjust some buffering settings.
 The implementation for these varies for each platform and should have been defined above.
 
+We include this setup code at the beginning of the program (start of main).
+
 --- Setup
 signal(SIGINT, handle_interrupt);
 disable_input_buffering();
 ---
 
 When the program is interrupted, we want to restore the terminal settings back to normal.
+This should be done at the end of the program.
+
+--- Shutdown
+restore_input_buffering();
+---
+
+Settings should also be restored if we receive a signal to end the program.
 
 --- Handle Interrupt
 void handle_interrupt(int signal)
@@ -984,10 +990,6 @@ void handle_interrupt(int signal)
     printf("\n");
     exit(-2);
 }
----
-
---- Shutdown
-restore_input_buffering();
 ---
 
 All that we have written should have been added to the C file in the following order:

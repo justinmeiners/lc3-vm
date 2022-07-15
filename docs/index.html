@@ -337,7 +337,7 @@ BRn LOOP                           ; go back to LOOP if the result was negative
                 break;
         }
     }
-    <em class="block-link nocode" title=""><a href="#shutdown-block-101">@{Shutdown}</a></em>
+    <em class="block-link nocode" title=""><a href="#shutdown-block-99">@{Shutdown}</a></em>
 }
 </code></pre>
 <p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> </small></p></div>
@@ -1087,7 +1087,8 @@ uint16_t mem_read(uint16_t address)
 
 
 <p>This section contains some tedious details that are needed to access the keyboard and behave nicely.
-These are not insightful or relevant to learning about VMs. Feel free to copy paste!</p>
+These are not insightful or relevant to learning about VMs. Feel free to copy paste!
+These functions should be declared somewhere above your main function.</p>
 
 <h3>Linux/macOS/UNIX</h3>
 
@@ -1142,12 +1143,10 @@ void restore_input_buffering()
 <pre class="prettyprint"><code class="">#include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 #include &lt;stdint.h&gt;
-#include &lt;string.h&gt;
 #include &lt;signal.h&gt;
-/* unix */
+/* unix only */
 #include &lt;unistd.h&gt;
 #include &lt;fcntl.h&gt;
-
 #include &lt;sys/time.h&gt;
 #include &lt;sys/types.h&gt;
 #include &lt;sys/termios.h&gt;
@@ -1157,9 +1156,6 @@ void restore_input_buffering()
 
 
 <h3>Windows</h3>
-
-<p>This section contains some tedious details that are needed to access the keyboard and behave nicely.
-These are not insightful or relevant to learning about VMs. Feel free to copy paste!</p>
 
 <p>NOTE: If you already included the <strong>Unix</strong> versions don&rsquo;t add these!</p>
 
@@ -1206,9 +1202,10 @@ void restore_input_buffering()
 <div class="code-block">
 <span class="block-header">
 <strong class="block-title"><em><a id="windows-includes-block-95" href="#windows-includes-block-95">Windows Includes</a></em></strong></span>
-<pre class="prettyprint"><code class="">#include &lt;stdint.h&gt; // uint16_t
-#include &lt;stdio.h&gt;  // FILE
-#include &lt;signal.h&gt; // SIGINT
+<pre class="prettyprint"><code class="">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;signal.h&gt;
 /* windows only */
 #include &lt;Windows.h&gt;
 #include &lt;conio.h&gt;  // _kbhit
@@ -1220,8 +1217,10 @@ HANDLE hStdin = INVALID_HANDLE_VALUE;
 
 <h3>All platforms</h3>
 
-<p>To properly handle input to the terminal we need to adjust some buffering settings.
-The implementation for these varies for each platform and should have been defined abo ve.</p>
+<p>To properly handle input to the terminal, we need to adjust some buffering settings.
+The implementation for these varies for each platform and should have been defined above.</p>
+
+<p>We include this setup code at the beginning of the program (start of main).</p>
 
 <div class="code-block">
 <span class="block-header">
@@ -1232,11 +1231,22 @@ disable_input_buffering();
 <p class="block-usages"><small>Used by <a href="#main-loop-block-17" title="Main Loop">1</a> <span title="/lc3-alt.cpp">2</span> <span title="/lc3-alt-win.cpp">3</span> </small></p></div>
 
 
-<p>When the program is interrupted, we want to restore the terminal settings back to normal.</p>
+<p>When the program is interrupted, we want to restore the terminal settings back to normal.
+This should be done at the end of the program.</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="handle-interrupt-block-99" href="#handle-interrupt-block-99">Handle Interrupt</a></em></strong></span>
+<strong class="block-title"><em><a id="shutdown-block-99" href="#shutdown-block-99">Shutdown</a></em></strong></span>
+<pre class="prettyprint"><code class="">restore_input_buffering();
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#main-loop-block-17" title="Main Loop">1</a> <span title="/lc3-alt.cpp">2</span> <span title="/lc3-alt-win.cpp">3</span> </small></p></div>
+
+
+<p>Settings should also be restored if we receive a signal to end the program.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="handle-interrupt-block-101" href="#handle-interrupt-block-101">Handle Interrupt</a></em></strong></span>
 <pre class="prettyprint"><code class="">void handle_interrupt(int signal)
 {
     restore_input_buffering();
@@ -1245,16 +1255,6 @@ disable_input_buffering();
 }
 </code></pre>
 <p class="block-usages"><small>Used by <a href="#-lc3.c-block-103" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> <span title="/lc3-alt.cpp">3</span> <span title="/lc3-alt-win.cpp">4</span> </small></p></div>
-
-
-
-
-<div class="code-block">
-<span class="block-header">
-<strong class="block-title"><em><a id="shutdown-block-101" href="#shutdown-block-101">Shutdown</a></em></strong></span>
-<pre class="prettyprint"><code class="">restore_input_buffering();
-</code></pre>
-<p class="block-usages"><small>Used by <a href="#main-loop-block-17" title="Main Loop">1</a> <span title="/lc3-alt.cpp">2</span> <span title="/lc3-alt-win.cpp">3</span> </small></p></div>
 
 
 <p>All that we have written should have been added to the C file in the following order:</p>
@@ -1276,7 +1276,7 @@ disable_input_buffering();
 <em class="block-link nocode" title=""><a href="#check-key-block-85">@{Check Key}</a></em>
 <em class="block-link nocode" title=""><a href="#memory-access-block-83">@{Memory Access}</a></em>
 <em class="block-link nocode" title=""><a href="#input-buffering-block-87">@{Input Buffering}</a></em>
-<em class="block-link nocode" title=""><a href="#handle-interrupt-block-99">@{Handle Interrupt}</a></em>
+<em class="block-link nocode" title=""><a href="#handle-interrupt-block-101">@{Handle Interrupt}</a></em>
 
 <em class="block-link nocode" title=""><a href="#main-loop-block-17">@{Main Loop}</a></em>
 </code></pre>

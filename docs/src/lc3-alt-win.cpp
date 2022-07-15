@@ -1,6 +1,7 @@
-#include <stdint.h> // uint16_t
-#include <stdio.h>  // FILE
-#include <signal.h> // SIGINT
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <signal.h>
 /* windows only */
 #include <Windows.h>
 #include <conio.h>  // _kbhit
