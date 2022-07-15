@@ -1155,8 +1155,8 @@ uint16_t check_key()
 <span class="block-header">
 <strong class="block-title"><em><a id="input-buffering-windows-block-89" href="#input-buffering-windows-block-89">Input Buffering Windows</a></em></strong></span>
 <pre class="prettyprint"><code class="">HANDLE hStdin = INVALID_HANDLE_VALUE;
-
 DWORD fdwMode, fdwOldMode;
+
 void disable_input_buffering()
 {
     hStdin = GetStdHandle(STD_INPUT_HANDLE);

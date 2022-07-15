@@ -139,8 +139,8 @@ uint16_t mem_read(uint16_t address)
     return memory[address];
 }
 HANDLE hStdin = INVALID_HANDLE_VALUE;
-
 DWORD fdwMode, fdwOldMode;
+
 void disable_input_buffering()
 {
     hStdin = GetStdHandle(STD_INPUT_HANDLE);

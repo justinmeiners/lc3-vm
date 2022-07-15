@@ -920,8 +920,8 @@ NOTE: If you already included the **Unix** versions don't add these!
 
 --- Input Buffering Windows
 HANDLE hStdin = INVALID_HANDLE_VALUE;
-
 DWORD fdwMode, fdwOldMode;
+
 void disable_input_buffering()
 {
     hStdin = GetStdHandle(STD_INPUT_HANDLE);
