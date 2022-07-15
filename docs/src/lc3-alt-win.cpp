@@ -138,13 +138,7 @@ uint16_t mem_read(uint16_t address)
     }
     return memory[address];
 }
-
 HANDLE hStdin = INVALID_HANDLE_VALUE;
-uint16_t check_key()
-{
-    return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 && _kbhit();
-}
-
 
 DWORD fdwMode, fdwOldMode;
 void disable_input_buffering()
@@ -162,6 +156,11 @@ void disable_input_buffering()
 void restore_input_buffering()
 {
     SetConsoleMode(hStdin, fdwOldMode);
+}
+
+uint16_t check_key()
+{
+    return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 && _kbhit();
 }
 void handle_interrupt(int signal)
 {

@@ -1155,11 +1155,6 @@ uint16_t check_key()
 <span class="block-header">
 <strong class="block-title"><em><a id="input-buffering-windows-block-89" href="#input-buffering-windows-block-89">Input Buffering Windows</a></em></strong></span>
 <pre class="prettyprint"><code class="">HANDLE hStdin = INVALID_HANDLE_VALUE;
-uint16_t check_key()
-{
-    return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 &amp;&amp; _kbhit();
-}
-
 
 DWORD fdwMode, fdwOldMode;
 void disable_input_buffering()
@@ -1177,6 +1172,11 @@ void disable_input_buffering()
 void restore_input_buffering()
 {
     SetConsoleMode(hStdin, fdwOldMode);
+}
+
+uint16_t check_key()
+{
+    return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 &amp;&amp; _kbhit();
 }
 </code></pre>
 <p class="block-usages"><small>Used by <span title="/lc3-win.c">1</span> <span title="/lc3-alt-win.cpp">2</span> </small></p></div>
