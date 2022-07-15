@@ -1,8 +1,8 @@
 # LC-3 VM
 
-# [READ TUTORIAL HERE](https://justinmeiners.github.io/lc3-vm/)
+# [READ TUTORIAL HERE](https://www.jmeiners.com/lc3-vm/)
 
-This is a tutorial and source code for creating a VM of the [LC3 computer](https://en.wikipedia.org/wiki/Little_Computer_3). 
+This is a tutorial and source code for creating a VM of the [LC3 computer](https://en.wikipedia.org/wiki/Little_Computer_3).
 
 ## Editing
 
@@ -16,7 +16,7 @@ This applies to the article and figures:
 
 [CC BY-NC-SA 4.0](http://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-This applies to all code: 
+This applies to all code:
 
 MIT License
 
@@ -27,5 +27,3 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
