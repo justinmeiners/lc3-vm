@@ -26,6 +26,12 @@ enum
 };
 enum
 {
+    FL_POS = 1 << 0, /* P */
+    FL_ZRO = 1 << 1, /* Z */
+    FL_NEG = 1 << 2, /* N */
+};
+enum
+{
     OP_BR = 0, /* branch */
     OP_ADD,    /* add  */
     OP_LD,     /* load */
@@ -42,12 +48,6 @@ enum
     OP_RES,    /* reserved (unused) */
     OP_LEA,    /* load effective address */
     OP_TRAP    /* execute trap */
-};
-enum
-{
-    FL_POS = 1 << 0, /* P */
-    FL_ZRO = 1 << 1, /* Z */
-    FL_NEG = 1 << 2, /* N */
 };
 enum
 {
@@ -68,6 +68,38 @@ enum
 uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 uint16_t reg[R_COUNT];
 
+struct termios original_tio;
+
+void disable_input_buffering()
+{
+    tcgetattr(STDIN_FILENO, &original_tio);
+    struct termios new_tio = original_tio;
+    new_tio.c_lflag &= ~ICANON & ~ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
+}
+
+void restore_input_buffering()
+{
+    tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
+}
+
+uint16_t check_key()
+{
+    fd_set readfds;
+    FD_ZERO(&readfds);
+    FD_SET(STDIN_FILENO, &readfds);
+
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
+    return select(1, &readfds, NULL, NULL, &timeout) != 0;
+}
+void handle_interrupt(int signal)
+{
+    restore_input_buffering();
+    printf("\n");
+    exit(-2);
+}
 uint16_t sign_extend(uint16_t x, int bit_count)
 {
     if ((x >> (bit_count - 1)) & 1) {
@@ -141,38 +173,6 @@ uint16_t mem_read(uint16_t address)
         }
     }
     return memory[address];
-}
-struct termios original_tio;
-
-void disable_input_buffering()
-{
-    tcgetattr(STDIN_FILENO, &original_tio);
-    struct termios new_tio = original_tio;
-    new_tio.c_lflag &= ~ICANON & ~ECHO;
-    tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
-}
-
-void restore_input_buffering()
-{
-    tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
-}
-
-uint16_t check_key()
-{
-    fd_set readfds;
-    FD_ZERO(&readfds);
-    FD_SET(STDIN_FILENO, &readfds);
-
-    struct timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 0;
-    return select(1, &readfds, NULL, NULL, &timeout) != 0;
-}
-void handle_interrupt(int signal)
-{
-    restore_input_buffering();
-    printf("\n");
-    exit(-2);
 }
 
 

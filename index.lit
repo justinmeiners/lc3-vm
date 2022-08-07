@@ -142,8 +142,8 @@ We are finished setting up the hardware components of our VM! After adding stand
 @{Includes}
 
 @{Registers}
-@{Opcodes}
 @{Condition Flags}
+@{Opcodes}
 ---
 
 ## Assembly examples
@@ -993,14 +993,14 @@ Everything we have written so far should have been added to the C file in the fo
 @{Memory Storage}
 @{Register Storage}
 
+@{Input Buffering}
+@{Handle Interrupt}
 @{Sign Extend}
 @{Swap}
 @{Update Flags}
 @{Read Image File}
 @{Read Image}
 @{Memory Access}
-@{Input Buffering}
-@{Handle Interrupt}
 
 @{Main Loop}
 ---
@@ -1019,14 +1019,14 @@ Everything we have written so far should have been added to the C file in the fo
 @{Memory Storage}
 @{Register Storage}
 
+@{Input Buffering Windows}
+@{Handle Interrupt}
 @{Sign Extend}
 @{Swap}
 @{Update Flags}
 @{Read Image File}
 @{Read Image}
 @{Memory Access}
-@{Input Buffering Windows}
-@{Handle Interrupt}
 
 @{Main Loop}
 ---
@@ -1196,14 +1196,14 @@ The full source is here: [unix](src/lc3-alt.cpp), [windows](src/lc3-alt-win.cpp)
 @{Memory Storage}
 @{Register Storage}
 
+@{Input Buffering}
+@{Handle Interrupt}
 @{Sign Extend}
 @{Swap}
 @{Update Flags}
 @{Read Image File}
 @{Read Image}
 @{Memory Access}
-@{Input Buffering}
-@{Handle Interrupt}
 
 int running = 1;
 @{Instruction C++}
@@ -1242,14 +1242,14 @@ int main(int argc, const char* argv[])
 @{Memory Storage}
 @{Register Storage}
 
+@{Input Buffering Windows}
+@{Handle Interrupt}
 @{Sign Extend}
 @{Swap}
 @{Update Flags}
 @{Read Image File}
 @{Read Image}
 @{Memory Access}
-@{Input Buffering Windows}
-@{Handle Interrupt}
 
 int running = 1;
 @{Instruction C++}
