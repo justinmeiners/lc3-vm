@@ -1297,6 +1297,7 @@ we decided to utilize GitHub tags to organize them.
 - [Scala](https://github.com/topics/lc3?l=scala)
 - [Swift](https://github.com/topics/lc3?l=swift)
 - [TypeScript](https://github.com/topics/lc3?l=typescript)
+- [Zig](https://github.com/topics/lc3?l=zig)
 
 To list your own project, just make sure it is tagged with the GitHub topic `lc3`.
 If your language is missing, feel free to submit a pull request.
