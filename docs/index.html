@@ -179,11 +179,11 @@ uint16_t memory[MEMORY_MAX];  /* 65536 locations */
 <div class="code-block">
 <span class="block-header">
 <strong class="block-title"><em><a id="-lc3.c-block-11" href="#-lc3.c-block-11">/lc3.c</a></em></strong></span>
-<pre class="prettyprint"><code class=""><em class="block-link nocode" title=""><a href="#includes-block-87">@{Includes}</a></em>
+<pre class="prettyprint"><code class=""><em class="block-link nocode"><a href="#includes-block-87">@{Includes}</a></em>
 
-<em class="block-link nocode" title=""><a href="#registers-block-3">@{Registers}</a></em>
-<em class="block-link nocode" title=""><a href="#condition-flags-block-9">@{Condition Flags}</a></em>
-<em class="block-link nocode" title=""><a href="#opcodes-block-7">@{Opcodes}</a></em>
+<em class="block-link nocode"><a href="#registers-block-3">@{Registers}</a></em>
+<em class="block-link nocode"><a href="#condition-flags-block-9">@{Condition Flags}</a></em>
+<em class="block-link nocode"><a href="#opcodes-block-7">@{Opcodes}</a></em>
 </code></pre>
 </div>
 
@@ -268,8 +268,8 @@ BRn LOOP                           ; go back to LOOP if the result was negative
 <strong class="block-title"><em><a id="main-loop-block-17" href="#main-loop-block-17">Main Loop</a></em></strong></span>
 <pre class="prettyprint"><code class="">int main(int argc, const char* argv[])
 {
-    <em class="block-link nocode" title=""><a href="#load-arguments-block-19">@{Load Arguments}</a></em>
-    <em class="block-link nocode" title=""><a href="#setup-block-93">@{Setup}</a></em>
+    <em class="block-link nocode"><a href="#load-arguments-block-19">@{Load Arguments}</a></em>
+    <em class="block-link nocode"><a href="#setup-block-93">@{Setup}</a></em>
 
     /* since exactly one condition flag should be set at any given time, set the Z flag */
     reg[R_COND] = FL_ZRO;
@@ -289,55 +289,55 @@ BRn LOOP                           ; go back to LOOP if the result was negative
         switch (op)
         {
             case OP_ADD:
-                <em class="block-link nocode" title=""><a href="#add-block-29">@{ADD}</a></em>
+                <em class="block-link nocode"><a href="#add-block-29">@{ADD}</a></em>
                 break;
             case OP_AND:
-                <em class="block-link nocode" title=""><a href="#and-block-37">@{AND}</a></em>
+                <em class="block-link nocode"><a href="#and-block-37">@{AND}</a></em>
                 break;
             case OP_NOT:
-                <em class="block-link nocode" title=""><a href="#not-block-39">@{NOT}</a></em>
+                <em class="block-link nocode"><a href="#not-block-39">@{NOT}</a></em>
                 break;
             case OP_BR:
-                <em class="block-link nocode" title=""><a href="#br-block-41">@{BR}</a></em>
+                <em class="block-link nocode"><a href="#br-block-41">@{BR}</a></em>
                 break;
             case OP_JMP:
-                <em class="block-link nocode" title=""><a href="#jmp-block-43">@{JMP}</a></em>
+                <em class="block-link nocode"><a href="#jmp-block-43">@{JMP}</a></em>
                 break;
             case OP_JSR:
-                <em class="block-link nocode" title=""><a href="#jsr-block-45">@{JSR}</a></em>
+                <em class="block-link nocode"><a href="#jsr-block-45">@{JSR}</a></em>
                 break;
             case OP_LD:
-                <em class="block-link nocode" title=""><a href="#ld-block-47">@{LD}</a></em>
+                <em class="block-link nocode"><a href="#ld-block-47">@{LD}</a></em>
                 break;
             case OP_LDI:
-                <em class="block-link nocode" title=""><a href="#ldi-block-33">@{LDI}</a></em>
+                <em class="block-link nocode"><a href="#ldi-block-33">@{LDI}</a></em>
                 break;
             case OP_LDR:
-                <em class="block-link nocode" title=""><a href="#ldr-block-49">@{LDR}</a></em>
+                <em class="block-link nocode"><a href="#ldr-block-49">@{LDR}</a></em>
                 break;
             case OP_LEA:
-                <em class="block-link nocode" title=""><a href="#lea-block-51">@{LEA}</a></em>
+                <em class="block-link nocode"><a href="#lea-block-51">@{LEA}</a></em>
                 break;
             case OP_ST:
-                <em class="block-link nocode" title=""><a href="#st-block-53">@{ST}</a></em>
+                <em class="block-link nocode"><a href="#st-block-53">@{ST}</a></em>
                 break;
             case OP_STI:
-                <em class="block-link nocode" title=""><a href="#sti-block-55">@{STI}</a></em>
+                <em class="block-link nocode"><a href="#sti-block-55">@{STI}</a></em>
                 break;
             case OP_STR:
-                <em class="block-link nocode" title=""><a href="#str-block-57">@{STR}</a></em>
+                <em class="block-link nocode"><a href="#str-block-57">@{STR}</a></em>
                 break;
             case OP_TRAP:
-                <em class="block-link nocode" title=""><a href="#trap-block-61">@{TRAP}</a></em>
+                <em class="block-link nocode"><a href="#trap-block-61">@{TRAP}</a></em>
                 break;
             case OP_RES:
             case OP_RTI:
             default:
-                <em class="block-link nocode" title=""><a href="#bad-opcode-block-35">@{BAD OPCODE}</a></em>
+                <em class="block-link nocode"><a href="#bad-opcode-block-35">@{BAD OPCODE}</a></em>
                 break;
         }
     }
-    <em class="block-link nocode" title=""><a href="#shutdown-block-95">@{Shutdown}</a></em>
+    <em class="block-link nocode"><a href="#shutdown-block-95">@{Shutdown}</a></em>
 }
 </code></pre>
 <p class="block-usages"><small>Used by <a href="#-lc3.c-block-99" title="/lc3.c">1</a> <span title="/lc3-win.c">2</span> </small></p></div>
@@ -822,22 +822,22 @@ When a trap code is invoked, a C function will be called. When it is completed, 
 switch (instr &amp; 0xFF)
 {
     case TRAP_GETC:
-        <em class="block-link nocode" title=""><a href="#trap-getc-block-65">@{TRAP GETC}</a></em>
+        <em class="block-link nocode"><a href="#trap-getc-block-65">@{TRAP GETC}</a></em>
         break;
     case TRAP_OUT:
-        <em class="block-link nocode" title=""><a href="#trap-out-block-67">@{TRAP OUT}</a></em>
+        <em class="block-link nocode"><a href="#trap-out-block-67">@{TRAP OUT}</a></em>
         break;
     case TRAP_PUTS:
-        <em class="block-link nocode" title=""><a href="#trap-puts-block-63">@{TRAP PUTS}</a></em>
+        <em class="block-link nocode"><a href="#trap-puts-block-63">@{TRAP PUTS}</a></em>
         break;
     case TRAP_IN:
-        <em class="block-link nocode" title=""><a href="#trap-in-block-69">@{TRAP IN}</a></em>
+        <em class="block-link nocode"><a href="#trap-in-block-69">@{TRAP IN}</a></em>
         break;
     case TRAP_PUTSP:
-        <em class="block-link nocode" title=""><a href="#trap-putsp-block-71">@{TRAP PUTSP}</a></em>
+        <em class="block-link nocode"><a href="#trap-putsp-block-71">@{TRAP PUTSP}</a></em>
         break;
     case TRAP_HALT:
-        <em class="block-link nocode" title=""><a href="#trap-halt-block-73">@{TRAP HALT}</a></em>
+        <em class="block-link nocode"><a href="#trap-halt-block-73">@{TRAP HALT}</a></em>
         break;
 }
 </code></pre>
@@ -1244,22 +1244,22 @@ This should be done at the end of the program.</p>
 <div class="code-block">
 <span class="block-header">
 <strong class="block-title"><em><a id="-lc3.c-block-99" href="#-lc3.c-block-99">/lc3.c</a></em></strong> <a href="#-lc3.c-block-11">+=</a></span>
-<pre class="prettyprint"><code class=""><em class="block-link nocode" title=""><a href="#memory-mapped-registers-block-81">@{Memory Mapped Registers}</a></em>
-<em class="block-link nocode" title=""><a href="#trap-codes-block-59">@{TRAP Codes}</a></em>
+<pre class="prettyprint"><code class=""><em class="block-link nocode"><a href="#memory-mapped-registers-block-81">@{Memory Mapped Registers}</a></em>
+<em class="block-link nocode"><a href="#trap-codes-block-59">@{TRAP Codes}</a></em>
 
-<em class="block-link nocode" title=""><a href="#memory-storage-block-1">@{Memory Storage}</a></em>
-<em class="block-link nocode" title=""><a href="#register-storage-block-5">@{Register Storage}</a></em>
+<em class="block-link nocode"><a href="#memory-storage-block-1">@{Memory Storage}</a></em>
+<em class="block-link nocode"><a href="#register-storage-block-5">@{Register Storage}</a></em>
 
-<em class="block-link nocode" title=""><a href="#input-buffering-block-85">@{Input Buffering}</a></em>
-<em class="block-link nocode" title=""><a href="#handle-interrupt-block-97">@{Handle Interrupt}</a></em>
-<em class="block-link nocode" title=""><a href="#sign-extend-block-25">@{Sign Extend}</a></em>
-<em class="block-link nocode" title=""><a href="#swap-block-77">@{Swap}</a></em>
-<em class="block-link nocode" title=""><a href="#update-flags-block-27">@{Update Flags}</a></em>
-<em class="block-link nocode" title=""><a href="#read-image-file-block-75">@{Read Image File}</a></em>
-<em class="block-link nocode" title=""><a href="#read-image-block-79">@{Read Image}</a></em>
-<em class="block-link nocode" title=""><a href="#memory-access-block-83">@{Memory Access}</a></em>
+<em class="block-link nocode"><a href="#input-buffering-block-85">@{Input Buffering}</a></em>
+<em class="block-link nocode"><a href="#handle-interrupt-block-97">@{Handle Interrupt}</a></em>
+<em class="block-link nocode"><a href="#sign-extend-block-25">@{Sign Extend}</a></em>
+<em class="block-link nocode"><a href="#swap-block-77">@{Swap}</a></em>
+<em class="block-link nocode"><a href="#update-flags-block-27">@{Update Flags}</a></em>
+<em class="block-link nocode"><a href="#read-image-file-block-75">@{Read Image File}</a></em>
+<em class="block-link nocode"><a href="#read-image-block-79">@{Read Image}</a></em>
+<em class="block-link nocode"><a href="#memory-access-block-83">@{Memory Access}</a></em>
 
-<em class="block-link nocode" title=""><a href="#main-loop-block-17">@{Main Loop}</a></em>
+<em class="block-link nocode"><a href="#main-loop-block-17">@{Main Loop}</a></em>
 </code></pre>
 </div>
 
@@ -1404,7 +1404,7 @@ void ins(uint16_t instr)
     if (0x0080 &amp; opbit) { mem_write(base_plus_off, reg[r0]); } // STR
     if (0x8000 &amp; opbit)  // TRAP
     {
-         <em class="block-link nocode" title=""><a href="#trap-block-61">@{TRAP}</a></em>
+         <em class="block-link nocode"><a href="#trap-block-61">@{TRAP}</a></em>
     }
     //if (0x0100 &amp; opbit) { } // RTI
     if (0x4666 &amp; opbit) { update_flags(r0); }
