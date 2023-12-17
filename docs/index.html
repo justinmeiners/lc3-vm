@@ -58,9 +58,11 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 <h2>2. LC-3 architecture<a id="s0:1"></a></h2>
 
 
-<p>Our VM will simulate a fictional computer called the <a href="https://en.wikipedia.org/wiki/Little_Computer_3">LC-3</a>. The LC-3 is popular for teaching university students how to program in assembly language. It has a simplified instruction set <a href="http://ref.x86asm.net/coder64.html">compared to x86</a>, but contains all the main ideas used in modern CPUs.</p>
+<p>Our VM will simulate the <a href="https://en.wikipedia.org/wiki/Little_Computer_3">LC-3</a>, an educational computer architecture commonly used to teach university students computer architecture and assembly. It has a simplified instruction set <a href="http://ref.x86asm.net/coder64.html">compared to x86</a>, but demonstrates the main ideas used by modern CPUs.</p>
 
-<p>First, we need to simulate the essential hardware components of the machine. Try to understand what each component is, but don&rsquo;t worry right now if you are unsure of how it fits into the larger picture. Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.</p>
+<blockquote><p><strong>Note:</strong> The LC-3 is defined in &ldquo;Introduction to Computing Systems: From Bits &amp; Gates to C/C++ &amp; Beyond&rdquo; by Yale N. Patt and Sanjay J. Patel. This tutorial is based on the second edition.</p></blockquote>
+
+<p>To start, we need to simulate the essential hardware components of the machine. Try to understand what each component is, but don&rsquo;t worry right now if you are unsure of how it fits into the larger picture. Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.</p>
 
 <h3>Memory</h3>
 

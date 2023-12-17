@@ -40,9 +40,11 @@ Another example of this behavior is demonstrated by [Ethereum smart contracts](h
 
 ## LC-3 architecture
 
-Our VM will simulate a fictional computer called the [LC-3](https://en.wikipedia.org/wiki/Little_Computer_3). The LC-3 is popular for teaching university students how to program in assembly language. It has a simplified instruction set [compared to x86](http://ref.x86asm.net/coder64.html), but contains all the main ideas used in modern CPUs.
+Our VM will simulate the [LC-3](https://en.wikipedia.org/wiki/Little_Computer_3), an educational computer architecture commonly used to teach university students computer architecture and assembly. It has a simplified instruction set [compared to x86](http://ref.x86asm.net/coder64.html), but demonstrates the main ideas used by modern CPUs.
 
-First, we need to simulate the essential hardware components of the machine. Try to understand what each component is, but don't worry right now if you are unsure of how it fits into the larger picture. Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.
+> **Note:** The LC-3 is defined in "Introduction to Computing Systems: From Bits & Gates to C/C++ & Beyond" by Yale N. Patt and Sanjay J. Patel. This tutorial is based on the second edition.
+
+To start, we need to simulate the essential hardware components of the machine. Try to understand what each component is, but don't worry right now if you are unsure of how it fits into the larger picture. Start by creating a C file. Each of the code snippets in this section should be placed in the global scope of this file.
 
 ### Memory
 
