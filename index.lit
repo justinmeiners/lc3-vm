@@ -32,7 +32,7 @@ Other VMs don't act like any real computer and are entirely made up! This is pri
 
 The [Java Virtual Machine (JVM)](https://en.wikipedia.org/wiki/Java_virtual_machine) is a very successful example. The JVM itself is a moderately sized program that is small enough for one programmer to understand. This has made it possible to be written for thousands of devices including phones. Once the JVM is implemented on a new device, any Java, Kotlin, or Clojure program ever written can run on it without modification. The only cost is the overhead of the VM itself and the [further abstraction](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/) from the machine. Most of the time, this is a pretty good tradeoff.
 
-A VM doesn't have to be large or pervasive to provide a similar benefit. Old [video games](https://fabiensanglard.net/anotherWorld_code_review/) often used small VMs to provide simple [scripting systems](https://sf2platinum.wordpress.com/page/1/).
+A VM doesn't have to be large or pervasive to provide a similar benefit. Old [video games](https://fabiensanglard.net/anotherWorld_code_review/) often used small VMs to provide simple [scripting systems](https://sf2platinum.wordpress.com/2017/01/20/the-ai-engine/).
 
 VMs are also useful for executing code in a secure or isolated way. One application of this is garbage collection. There [is no trivial way](https://www.lua.org/pil/24.2.html) to implement automatic garbage collection on top of C or C++ since a program cannot see its own stack or variables. However, a VM is “outside” the program it is running and can observe all of the [memory references](https://en.wikipedia.org/wiki/Tracing_garbage_collection) on the stack.
 
