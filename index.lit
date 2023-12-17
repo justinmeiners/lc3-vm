@@ -1069,13 +1069,21 @@ If the program doesn't work correctly, it is likely because you programmed an in
 
 ## Alternate C++ technique
 
-This section shows an advanced way of executing instructions that makes the code a whole lot smaller. This section is entirely optional.
+Here is an advanced way of organizing instructions that makes the code a whole lot shorter.
+This section is entirely optional.
 
-Since C++ has powerful compile-time generics, we can use the compiler to generate parts of the instructions for us. This method reduces code duplication and is actually closer to how the computer would be wired in hardware.
+You probably noticed that most of the instructions repeat similar tasks.
+For example, several use indirect addressing or sign extend a value and add it to the current PC value.
+Wouldn’t it be nice if we could write this code once for all?
 
-The idea here is to reuse the steps common to each instruction. For example, several of the instructions use indirect addressing or sign extend a value and add it to the current PC value. Wouldn't it be nice if we could write this code once for all instructions?
+The tricky part is that it's not clear how to condense this repetition into additional functions, as they need surrounding context.
+But what we can do is utilize the power of C++ generics to stitch together snippets of functionality at compile time.
+The idea is to think of instruction execution as a pipeline of smaller proccessing steps.
+Each kind of instruction is just a subset or "permutation" of the available steps.
 
-By thinking of the instruction as a pipeline of steps we can see that each instruction is just a permutation of several of the smaller steps. We will use bitwise flags to mark which steps to perform for each instruction. A `1` in the bit corresponding to the instruction number indicates the compiler should include this section of code for that instruction.
+We will implement this using bitwise flags.
+A 1 in the bit corresponding to the instruction number indicates the compiler should include this section of code for that instruction,
+while a 0 leaves it out.
 
 --- Instruction C++
 template <unsigned op>
@@ -1178,6 +1186,9 @@ static void (*op_table[16])(uint16_t) = {
     ins<12>, NULL, ins<14>, ins<15>
 };
 ---
+
+Not only does this method reduce code duplication, but it's also closer to how a computer would actually be wired in hardware,
+where each processing step must occupy physical space on a chip.
 
 > **Note:** I learned about this technique from [Bisqwit's NES emulator](https://www.youtube.com/watch?v=QIUVSD3yqqE).
 > If you are interested in emulation, or the NES, I highly recommend his videos.
