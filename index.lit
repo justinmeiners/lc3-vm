@@ -152,7 +152,7 @@ We are finished setting up the hardware components of our VM! After adding stand
 
 Now let's look at an LC-3 assembly program to get an idea of what the VM actually runs. You don't need to know how to program assembly or understand everything that is going on. Just try to get a general idea of what is going on. Here is a simple "Hello World":
 
---- Hello World Assembly
+--- Hello World Assembly --- noTangle
 .ORIG x3000                        ; this is the address in memory where the program will be loaded
 LEA R0, HELLO_STR                  ; load the address of the HELLO_STR string into R0
 PUTs                               ; output the string pointed to by R0 to the console
@@ -175,7 +175,7 @@ The commands `.ORIG` and `.STRINGZ` look like instructions but they aren't. They
 
 Loops and conditions are done with a [goto](https://en.wikipedia.org/wiki/Goto)-like instruction. Here is another example which counts to 10.
 
---- Loop Assembly
+--- Loop Assembly --- noTangle
 AND R0, R0, 0                      ; clear R0
 LOOP                               ; label at the top of our loop
 ADD R0, R0, 1                      ; add 1 to R0 and store back in R0
@@ -320,7 +320,7 @@ The encoding shows two rows because there are two different "modes" for this ins
 
 So we know where we want to store the result and we know the first number to add. The last bit of information we need is the second number to add. At this point, the two rows start to look different. Notice that on the top row the 5th bit is a `0` and in the second row it is `1`. This bit indicates whether it is *immediate mode* or *register mode*. In *register mode*, the second number is stored in a register just like the first. This is marked `SR2` and is contained in bits 2-0. Bits 3 and 4 are unused. In assembly this would be written as:
 
---- Add Register Assembly
+--- Add Register Assembly --- noTangle
 ADD R2 R0 R1 ; add the contents of R0 to R1 and store in R2.
 ---
 
@@ -332,7 +332,7 @@ The tradeoff is that the instruction only has room for a small number, up to `2^
 making immediate mode primarily useful for incrementing and decrementing. In assembly, it could be written as:
 
 
---- Add Immediate Assembly
+--- Add Immediate Assembly --- noTangle
 ADD R0 R0 1 ; add 1 to R0 and store back in R0
 ---
 
@@ -429,7 +429,7 @@ Just like before, we need to sign extend this 9-bit value, but this time add it 
 
 This may seem like a roundabout way to read from memory, but it is indispensable. The `LD` instruction is limited to address offsets that are 9 bits, whereas the memory requires 16 bits to address. `LDI` is useful for loading values that are stored in locations far away from the current PC, but to use it, the address of the final location needs to be stored in a neighborhood nearby. You can think of it like having a local variable in C which is a pointer to some data:
 
---- C LDI Sample
+--- C LDI Sample --- noTangle
 // the value of far_data is an address
 // of course far_data itself (the location in memory containing the address) has an address
 char* far_data = "apple";
